@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WNP Enterprise Ltd | Luxury Rigid Boxes & Perfume Packaging UK</title>
+<meta name="description" content="WNP Enterprise Ltd – UK company supplying custom luxury rigid boxes, perfume boxes, magnetic boxes and display packaging to brands across the UK, USA and Europe.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;
+    --ink-2:#1e1e1e;
+    --paper:#faf8f4;
+    --paper-2:#f1ede5;
+    --line:#e3ddd1;
+    --text:#2a2a2a;
+    --muted:#6b665d;
+    --gold:#b8935a;
+    --gold-dark:#9a7843;
+    --radius:14px;
+    --max:1180px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--text);background:var(--paper);line-height:1.6;font-size:16px}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;line-height:1.15;color:var(--ink)}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+  section{padding:88px 0}
+  .eyebrow{display:inline-block;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-dark);font-weight:600;margin-bottom:14px}
+  .section-head{text-align:center;max-width:680px;margin:0 auto 52px}
+  .section-head h2{font-size:clamp(32px,4.5vw,46px);margin-bottom:14px}
+  .section-head p{color:var(--muted)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:999px;font-weight:600;font-size:15px;transition:.2s;cursor:pointer;border:1px solid transparent}
+  .btn-gold{background:var(--gold);color:#fff}
+  .btn-gold:hover{background:var(--gold-dark)}
+  .btn-outline{border-color:rgba(255,255,255,.4);color:#fff}
+  .btn-outline:hover{background:rgba(255,255,255,.08)}
+  .btn-dark{background:var(--ink);color:#fff}
+  .btn-dark:hover{background:#000}
+
+  /* Top bar */
+  .topbar{background:var(--ink);color:#cfc8bb;font-size:13px}
+  .topbar .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:8px;padding-bottom:8px;flex-wrap:wrap}
+  .topbar a:hover{color:#fff}
+
+  /* Header */
+  header{position:sticky;top:0;z-index:50;background:rgba(250,248,244,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;height:74px}
+  .logo{display:flex;flex-direction:column;line-height:1}
+  .logo b{font-family:'Cormorant Garamond',serif;font-size:28px;letter-spacing:.06em;color:var(--ink)}
+  .logo span{font-size:10px;letter-spacing:.3em;color:var(--gold-dark);text-transform:uppercase;margin-top:4px}
+  nav ul{display:flex;gap:30px;list-style:none;align-items:center}
+  nav a{font-size:15px;font-weight:500}
+  nav a:hover{color:var(--gold-dark)}
+  .menu-btn{display:none;background:none;border:0;cursor:pointer;padding:8px}
+  .menu-btn span{display:block;width:24px;height:2px;background:var(--ink);margin:5px 0}
+
+  /* Hero */
+  .hero{background:var(--ink);color:#fff;padding:110px 0 100px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 30%,rgba(184,147,90,.25),transparent 55%)}
+  .hero .wrap{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center}
+  .hero h1{color:#fff;font-size:clamp(40px,6vw,68px);margin-bottom:22px}
+  .hero h1 em{color:var(--gold);font-style:italic}
+  .hero p{color:#cfc8bb;font-size:18px;max-width:540px;margin-bottom:34px}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+  .hero-badges{display:flex;gap:28px;margin-top:44px;flex-wrap:wrap}
+  .hero-badges div{font-size:13px;color:#a9a294}
+  .hero-badges strong{display:block;font-family:'Cormorant Garamond',serif;font-size:30px;color:#fff;font-weight:600}
+  .hero-card{background:linear-gradient(145deg,#232323,#171717);border:1px solid rgba(184,147,90,.35);border-radius:20px;padding:34px}
+  .hero-card h3{color:#fff;font-size:26px;margin-bottom:18px}
+  .hero-card ul{list-style:none}
+  .hero-card li{padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08);color:#d8d1c4;font-size:15px;display:flex;gap:12px}
+  .hero-card li:last-child{border:0}
+  .hero-card li::before{content:"✦";color:var(--gold)}
+
+  /* Trust strip */
+  .trust{background:var(--paper-2);padding:28px 0;border-bottom:1px solid var(--line)}
+  .trust .wrap{display:flex;justify-content:space-around;gap:20px;flex-wrap:wrap;text-align:center}
+  .trust div{font-size:14px;color:var(--muted);font-weight:500}
+  .trust b{display:block;color:var(--ink);font-size:15px}
+
+  /* Products */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:.25s}
+  .card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.08)}
+  .card-img{aspect-ratio:1/1;background:var(--paper-2);position:relative;display:flex;align-items:center;justify-content:center}
+  .card-img .ph{text-align:center;color:#a39c8e;font-size:13px;padding:20px}
+  .card-img .ph svg{width:46px;height:46px;margin:0 auto 10px;opacity:.6}
+  .card-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .card-body{padding:24px;display:flex;flex-direction:column;flex:1}
+  .card-body h3{font-size:25px;margin-bottom:8px}
+  .card-body p{color:var(--muted);font-size:15px;margin-bottom:16px;flex:1}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+  .tags span{font-size:12px;background:var(--paper-2);border:1px solid var(--line);padding:4px 10px;border-radius:999px;color:var(--muted)}
+  .card-body a{font-weight:600;color:var(--gold-dark);font-size:15px}
+  .card-body a:hover{text-decoration:underline}
+
+  /* Why us */
+  .why{background:var(--ink);color:#fff}
+  .why .section-head h2{color:#fff}
+  .why .section-head p{color:#b4ad9f}
+  .features{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+  .feature{border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:28px;background:rgba(255,255,255,.02)}
+  .feature .ico{width:46px;height:46px;border-radius:12px;background:rgba(184,147,90,.15);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:22px;margin-bottom:18px}
+  .feature h3{color:#fff;font-size:22px;margin-bottom:8px}
+  .feature p{color:#b4ad9f;font-size:14.5px}
+
+  /* Finishes */
+  .finishes{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .finish{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;text-align:center}
+  .finish b{display:block;font-family:'Cormorant Garamond',serif;font-size:21px;color:var(--ink);margin-bottom:4px}
+  .finish span{font-size:13.5px;color:var(--muted)}
+
+  /* Process */
+  .process{background:var(--paper-2)}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;counter-reset:s}
+  .step{position:relative;padding-top:58px}
+  .step::before{counter-increment:s;content:"0" counter(s);position:absolute;top:0;left:0;font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);font-weight:600;line-height:1}
+  .step h3{font-size:23px;margin-bottom:8px}
+  .step p{color:var(--muted);font-size:15px}
+
+  /* About */
+  .about .wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+  .about h2{font-size:clamp(32px,4.5vw,44px);margin-bottom:18px}
+  .about p{color:var(--muted);margin-bottom:16px}
+  .company-box{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:32px}
+  .company-box h3{font-size:24px;margin-bottom:18px}
+  .company-box dl{display:grid;grid-template-columns:auto 1fr;gap:12px 20px;font-size:15px}
+  .company-box dt{color:var(--muted)}
+  .company-box dd{color:var(--ink);font-weight:500}
+
+  /* FAQ */
+  .faq{max-width:820px;margin:0 auto}
+  details{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:12px;padding:0 24px}
+  summary{cursor:pointer;list-style:none;padding:20px 0;font-weight:600;color:var(--ink);display:flex;justify-content:space-between;gap:16px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";color:var(--gold-dark);font-size:22px;line-height:1}
+  details[open] summary::after{content:"–"}
+  details p{color:var(--muted);padding-bottom:20px;font-size:15px}
+
+  /* Quote */
+  .quote{background:var(--ink);color:#fff}
+  .quote .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start}
+  .quote h2{color:#fff;font-size:clamp(32px,4.5vw,46px);margin-bottom:16px}
+  .quote .intro p{color:#b4ad9f;margin-bottom:28px}
+  .contact-list{list-style:none}
+  .contact-list li{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08);color:#d8d1c4;font-size:15px}
+  .contact-list li b{display:block;color:#fff;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+  .contact-list .i{color:var(--gold);font-size:18px;width:22px;flex-shrink:0}
+  form{background:#fff;border-radius:18px;padding:34px;color:var(--text)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .field{margin-bottom:16px}
+  label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--ink)}
+  input,select,textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:15px;background:var(--paper);color:var(--text)}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);border-color:transparent}
+  textarea{min-height:110px;resize:vertical}
+  form .btn{width:100%;margin-top:6px;border:0}
+  .form-note{font-size:12.5px;color:var(--muted);margin-top:12px;text-align:center}
+
+  /* Footer */
+  footer{background:#0d0d0d;color:#9b9488;padding:56px 0 28px;font-size:14px}
+  .foot{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;margin-bottom:40px}
+  footer .logo b{color:#fff}
+  footer h4{color:#fff;font-size:14px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;font-family:'Inter',sans-serif}
+  footer ul{list-style:none}
+  footer li{margin-bottom:8px}
+  footer a:hover{color:#fff}
+  .legal{border-top:1px solid rgba(255,255,255,.08);padding-top:22px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px}
+
+  /* Responsive */
+  @media (max-width:980px){
+    .hero .wrap,.about .wrap,.quote .wrap{grid-template-columns:1fr}
+    .grid{grid-template-columns:repeat(2,1fr)}
+    .features,.steps,.finishes{grid-template-columns:repeat(2,1fr)}
+    .foot{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:760px){
+    section{padding:64px 0}
+    .menu-btn{display:block}
+    nav ul{display:none;position:absolute;top:74px;left:0;right:0;background:var(--paper);flex-direction:column;gap:0;border-bottom:1px solid var(--line);padding:8px 20px 20px}
+    nav ul.open{display:flex}
+    nav li{width:100%}
+    nav ul a{display:block;padding:12px 0}
+    nav .btn{width:100%;margin-top:8px}
+    .grid,.features,.steps,.foot{grid-template-columns:1fr}
+    .finishes{grid-template-columns:1fr 1fr}
+    .row{grid-template-columns:1fr}
+    .hero{padding:72px 0}
+    .topbar .tb-hide{display:none}
+    form{padding:24px}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="wrap">
+    <a href="#home" class="logo"><b>WNP</b><span>Enterprise Ltd</span></a>
+    <nav>
+      <button class="menu-btn" aria-label="Open menu" onclick="document.getElementById('menu').classList.toggle('open')"><span></span><span></span><span></span></button>
+      <ul id="menu">
+        <li><a href="#products">Products</a></li>
+        <li><a href="#why">Why Us</a></li>
+        <li><a href="#process">How It Works</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#quote" class="btn btn-dark">Get a Quote</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow" style="color:var(--gold)">Luxury Rigid Packaging</span>
+      <h1>Packaging that makes your brand feel <em>premium</em></h1>
+      <p>Custom rigid boxes, perfume boxes and display packaging, made to your exact size and design. Low minimums and delivery across the UK, USA and Europe.</p>
+      <div class="hero-actions">
+        <a href="#quote" class="btn btn-gold">Get a Quote</a>
+        <a href="#products" class="btn btn-outline">View Box Styles</a>
+      </div>
+      <div class="hero-badges">
+        <div><strong>100%</strong>Custom sizes</div>
+        <div><strong>Low</strong>Minimum orders</div>
+        <div><strong>Worldwide</strong>Shipping</div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <h3>Every order includes</h3>
+      <ul>
+        <li>Box made to your exact product size</li>
+        <li>Premium rigid board, not thin card</li>
+        <li>Custom foam, velvet or card inserts</li>
+        <li>Foil, emboss, spot UV &amp; soft-touch finishes</li>
+        <li>Quote within 24 hours</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust">
+  <div class="wrap">
+    <div><b>UK Registered</b>Company No. 16012866</div>
+    <div><b>Low MOQ</b>Small brands welcome</div>
+    <div><b>Premium Finishes</b>Foil, emboss, soft-touch</div>
+    <div><b>Fast Turnaround</b>Clear timelines</div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Our Box Styles</span>
+      <h2>Rigid boxes for perfume, cosmetics &amp; gifts</h2>
+      <p>Every box is built to your product. Pick a style below or send us your own idea and we will make it.</p>
+    </div>
+
+    <div class="grid">
+
+      <!-- CARD 1 – put photo at images/magnetic-flip-top-perfume-box.jpg -->
+      <article class="card">
+        <div class="card-img">
+          <div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Photo coming soon</div>
+          <img data-photo="magnetic-flip-top-perfume-box" alt="Magnetic flip-top perfume box with foam insert" style="display:none">
+        </div>
+        <div class="card-body">
+          <h3>Magnetic Flip-Top Perfume Box</h3>
+          <p>A tall rigid box with a magnetic lid that flips open to show the bottle. A foam insert holds the bottle firmly in place.</p>
+          <div class="tags"><span>Magnetic closure</span><span>Foam insert</span><span>Any colour</span></div>
+          <a href="#quote" data-product="Magnetic Flip-Top Perfume Box">Request a quote →</a>
+        </div>
+      </article>
+
+      <!-- CARD 2 – put photo at images/double-door-perfume-box.jpg -->
+      <article class="card">
+        <div class="card-img">
+          <div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Photo coming soon</div>
+          <img data-photo="double-door-perfume-box" alt="Double-door luxury perfume box opening from the centre" style="display:none">
+        </div>
+        <div class="card-body">
+          <h3>Double-Door Perfume Box</h3>
+          <p>Two side panels open out from the centre like doors to reveal the bottle on a display stand. Made for luxury launches and gift sets.</p>
+          <div class="tags"><span>Centre opening</span><span>Gold foil</span><span>Logo badge</span></div>
+          <a href="#quote" data-product="Double-Door Perfume Box">Request a quote →</a>
+        </div>
+      </article>
+
+      <!-- CARD 3 – put photo at images/drawer-box.jpg -->
+      <article class="card">
+        <div class="card-img">
+          <div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Photo coming soon</div>
+          <img data-photo="drawer-box" alt="Sliding drawer rigid box with ribbon pull" style="display:none">
+        </div>
+        <div class="card-body">
+          <h3>Sliding Drawer Box</h3>
+          <p>A sleeve with a tray that slides out using a ribbon pull. Great for perfume sets, jewellery and small luxury items.</p>
+          <div class="tags"><span>Ribbon pull</span><span>Velvet lining</span><span>Gift sets</span></div>
+          <a href="#quote" data-product="Sliding Drawer Box">Request a quote →</a>
+        </div>
+      </article>
+
+      <!-- CARD 4 – put photo at images/lid-and-base-box.jpg -->
+      <article class="card">
+        <div class="card-img">
+          <div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Photo coming soon</div>
+          <img data-photo="lid-and-base-box" alt="Two-piece lid and base rigid box" style="display:none">
+        </div>
+        <div class="card-body">
+          <h3>Two-Piece Lid &amp; Base Box</h3>
+          <p>A classic rigid box with a separate lid. Simple, strong and elegant for cosmetics, candles, apparel and corporate gifts.</p>
+          <div class="tags"><span>Classic style</span><span>Custom inserts</span><span>Emboss logo</span></div>
+          <a href="#quote" data-product="Two-Piece Lid & Base Box">Request a quote →</a>
+        </div>
+      </article>
+
+      <!-- CARD 5 – put photo at images/book-style-box.jpg -->
+      <article class="card">
+        <div class="card-img">
+          <div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Photo coming soon</div>
+          <img data-photo="book-style-box" alt="Book-style magnetic rigid box" style="display:none">
+        </div>
+        <div class="card-body">
+          <h3>Book-Style Magnetic Box</h3>
+          <p>Opens from the side like a book and closes with hidden magnets. A popular choice for skincare sets, watches and PR packages.</p>
+          <div class="tags"><span>Side opening</span><span>Hidden magnets</span><span>PR boxes</span></div>
+          <a href="#quote" data-product="Book-Style Magnetic Box">Request a quote →</a>
+        </div>
+      </article>
+
+      <!-- CARD 6 – put photo at images/display-box.jpg -->
+      <article class="card">
+        <div class="card-img">
+          <div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Photo coming soon</div>
+          <img data-photo="display-box" alt="Rigid display box for retail counters" style="display:none">
+        </div>
+        <div class="card-body">
+          <h3>Rigid Display Box</h3>
+          <p>Showcase boxes for retail counters and shelves, with window cut-outs or open fronts so customers see the product straight away.</p>
+          <div class="tags"><span>Retail ready</span><span>Window option</span><span>Multi-product</span></div>
+          <a href="#quote" data-product="Rigid Display Box">Request a quote →</a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why" id="why">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Why WNP Enterprise</span>
+      <h2>Luxury quality without luxury prices</h2>
+      <p>We work directly with our own production team, so you get premium boxes at a fair factory price.</p>
+    </div>
+    <div class="features">
+      <div class="feature"><div class="ico">◈</div><h3>Factory-direct prices</h3><p>No middlemen. You deal with us from design to delivery and save on every order.</p></div>
+      <div class="feature"><div class="ico">✎</div><h3>Design support</h3><p>Send your logo and bottle size. We help set up the structure and artwork for your box.</p></div>
+      <div class="feature"><div class="ico">▣</div><h3>Low minimums</h3><p>Start with a small run to test your launch, then scale up when sales grow.</p></div>
+      <div class="feature"><div class="ico">✈</div><h3>Shipped to your door</h3><p>Safe export packing and delivery to the UK, USA, Canada and Europe.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINISHES -->
+<section id="finishes">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Finishes &amp; Add-ons</span>
+      <h2>Make it unmistakably yours</h2>
+      <p>Mix and match materials and finishes to match your brand.</p>
+    </div>
+    <div class="finishes">
+      <div class="finish"><b>Hot Foil</b><span>Gold, silver, rose gold</span></div>
+      <div class="finish"><b>Embossing</b><span>Raised or debossed logo</span></div>
+      <div class="finish"><b>Spot UV</b><span>Gloss on matte contrast</span></div>
+      <div class="finish"><b>Soft-Touch</b><span>Velvet-feel lamination</span></div>
+      <div class="finish"><b>Textured Paper</b><span>Linen, leatherette, kraft</span></div>
+      <div class="finish"><b>Inserts</b><span>Foam, EVA, velvet, card</span></div>
+      <div class="finish"><b>Ribbons</b><span>Satin pulls &amp; ties</span></div>
+      <div class="finish"><b>Magnets</b><span>Hidden closures</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">How It Works</span>
+      <h2>From idea to delivered boxes</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><h3>Send your details</h3><p>Tell us the box style, size, quantity and finishes. A rough idea is fine.</p></div>
+      <div class="step"><h3>Get your quote</h3><p>We send you a clear price within 24 hours.</p></div>
+      <div class="step"><h3>Order a sample</h3><p>Order a paid sample to check size, colour and quality before bulk production.</p></div>
+      <div class="step"><h3>Production &amp; delivery</h3><p>We produce, quality-check and ship your order to your door.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">About Us</span>
+      <h2>A UK company built for premium brands</h2>
+      <p>WNP Enterprise Ltd is a UK-registered packaging company. We supply luxury rigid boxes to perfume houses, cosmetic brands, gift companies and online sellers who want their packaging to look as good as their product.</p>
+      <p>Working closely with our own experienced production team, we handle everything from structure and artwork to finishing and export, so you get one point of contact and consistent quality on every order.</p>
+      <a href="#quote" class="btn btn-dark" style="margin-top:8px">Start Your Project</a>
+    </div>
+    <div class="company-box">
+      <h3>Company Details</h3>
+      <dl>
+        <dt>Company</dt><dd>WNP Enterprise Ltd</dd>
+        <dt>Company No.</dt><dd>16012866</dd>
+        <dt>Registered in</dt><dd>England &amp; Wales</dd>
+        <dt>Address</dt><dd>Unit 5, Industrial Estate, Wednesfield Way, Well Lane, Wolverhampton WV11 1XP, United Kingdom</dd>
+        <dt>Email</dt><dd><a href="mailto:wnpenterpriseuk@gmail.com">wnpenterpriseuk@gmail.com</a></dd>
+        <dt>Phone</dt><dd><a href="tel:+923218662496">+92 321 8662496</a></dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background:var(--paper-2)">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">FAQ</span>
+      <h2>Common questions</h2>
+    </div>
+    <div class="faq">
+      <details><summary>What is your minimum order quantity?</summary><p>Our minimums are low so new brands can start small. The exact MOQ depends on the box style and finishes. Send us your details and we will confirm it in your quote.</p></details>
+      <details><summary>How much do the boxes cost?</summary><p>Every box is custom, so the price depends on size, material, finishes and quantity. Fill in the quote form and we will send an exact price within 24 hours.</p></details>
+      <details><summary>Can I get a sample before the full order?</summary><p>Yes, paid samples are available. The sample price depends on your box size, style and finishes. We share the exact sample cost with your quote.</p></details>
+      <details><summary>Do you help with the design?</summary><p>Yes. Send your logo and product size and we will help set up the box structure and artwork for production.</p></details>
+      <details><summary>Which countries do you deliver to?</summary><p>We deliver across the United Kingdom, the USA, Canada and Europe. Shipping cost and time are included in your quote.</p></details>
+      <details><summary>How long does production take?</summary><p>Timelines depend on quantity and finishes. We give you a clear production and delivery date before you confirm your order.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote" id="quote">
+  <div class="wrap">
+    <div class="intro">
+      <span class="eyebrow" style="color:var(--gold)">Get a Quote</span>
+      <h2>Tell us about your boxes</h2>
+      <p>Share a few details and we will reply with a price within 24 hours.</p>
+      <ul class="contact-list">
+        <li><span class="i">✉</span><div><b>Email</b><a href="mailto:wnpenterpriseuk@gmail.com">wnpenterpriseuk@gmail.com</a></div></li>
+        <li><span class="i">☎</span><div><b>Phone / WhatsApp</b><a href="https://wa.me/923218662496" target="_blank" rel="noopener">+92 321 8662496</a></div></li>
+        <li><span class="i">⌂</span><div><b>Address</b>Unit 5, Industrial Estate, Wednesfield Way, Well Lane, Wolverhampton WV11 1XP, UK</div></li>
+        <li><span class="i">◷</span><div><b>Response time</b>Within 24 hours, Monday to Friday</div></li>
+      </ul>
+    </div>
+
+    <form id="quoteForm">
+      <div class="row">
+        <div class="field"><label for="name">Full name *</label><input id="name" required></div>
+        <div class="field"><label for="email">Email *</label><input id="email" type="email" required></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="company">Company / Brand</label><input id="company"></div>
+        <div class="field"><label for="country">Country</label><input id="country" placeholder="e.g. United Kingdom"></div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="style">Box style</label>
+          <select id="style">
+            <option>Magnetic Flip-Top Perfume Box</option>
+            <option>Double-Door Perfume Box</option>
+            <option>Sliding Drawer Box</option>
+            <option>Two-Piece Lid &amp; Base Box</option>
+            <option>Book-Style Magnetic Box</option>
+            <option>Rigid Display Box</option>
+            <option>Not sure / Other</option>
+          </select>
+        </div>
+        <div class="field"><label for="qty">Quantity</label><input id="qty" placeholder="e.g. 500"></div>
+      </div>
+      <div class="field"><label for="size">Box size (L × W × H)</label><input id="size" placeholder="e.g. 8 × 8 × 14 cm"></div>
+      <div class="field"><label for="msg">Finishes &amp; other details</label><textarea id="msg" placeholder="Colours, foil, insert type, deadline…"></textarea></div>
+      <button type="submit" class="btn btn-gold" id="sendBtn">Send Quote Request</button>
+      <p class="form-note" id="formNote">We reply within 24 hours.</p>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a href="#home" class="logo"><b>WNP</b><span>Enterprise Ltd</span></a>
+        <p style="margin-top:16px;max-width:320px">Custom luxury rigid boxes and perfume packaging for brands in the UK, USA and Europe.</p>
+      </div>
+      <div>
+        <h4>Box Styles</h4>
+        <ul>
+          <li><a href="#products">Magnetic Flip-Top Box</a></li>
+          <li><a href="#products">Double-Door Perfume Box</a></li>
+          <li><a href="#products">Sliding Drawer Box</a></li>
+          <li><a href="#products">Lid &amp; Base Box</a></li>
+          <li><a href="#products">Book-Style Box</a></li>
+          <li><a href="#products">Display Box</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:wnpenterpriseuk@gmail.com">wnpenterpriseuk@gmail.com</a></li>
+          <li><a href="tel:+923218662496">+92 321 8662496</a></li>
+          <li>Unit 5, Industrial Estate, Wednesfield Way, Well Lane</li>
+          <li>Wolverhampton WV11 1XP</li>
+          <li>United Kingdom</li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <span>© <span id="yr"></span> WNP Enterprise Ltd. All rights reserved.</span>
+      <span>Registered in England &amp; Wales · Company No. 16012866</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // Card photos: looks in the images folder for the file name with any common extension
+  (function(){
+    var exts = ['jpg','jpeg','png','webp','JPG','JPEG','PNG','WEBP'];
+    var folders = ['images/','Images/','./'];
+    document.querySelectorAll('img[data-photo]').forEach(function(img){
+      var name = img.dataset.photo, tries = [];
+      folders.forEach(function(f){ exts.forEach(function(x){ tries.push(f + name + '.' + x); }); });
+      var i = 0;
+      img.onload = function(){ img.style.display = 'block'; var ph = img.parentNode.querySelector('.ph'); if (ph) ph.style.display = 'none'; };
+      img.onerror = function(){ i++; if (i < tries.length) img.src = tries[i]; };
+      img.src = tries[0];
+    });
+  })();
+
+  // Close mobile menu after tapping a link
+  document.querySelectorAll('#menu a').forEach(function(a){
+    a.addEventListener('click', function(){ document.getElementById('menu').classList.remove('open'); });
+  });
+
+  // "Request a quote" on a card pre-selects that box style
+  document.querySelectorAll('[data-product]').forEach(function(a){
+    a.addEventListener('click', function(){ document.getElementById('style').value = a.dataset.product; });
+  });
+
+  // Quote form sends straight to wnpenterpriseuk@gmail.com (FormSubmit)
+  document.getElementById('quoteForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var form = this;
+    var btn = document.getElementById('sendBtn');
+    var note = document.getElementById('formNote');
+    var v = function(id){ return document.getElementById(id).value.trim(); };
+
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    fetch('https://formsubmit.co/ajax/wnpenterpriseuk@gmail.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: 'New quote request – ' + v('style') + (v('company') ? ' – ' + v('company') : ''),
+        _template: 'table',
+        _captcha: 'false',
+        _replyto: v('email'),
+        'Name': v('name'),
+        'Email': v('email'),
+        'Company / Brand': v('company'),
+        'Country': v('country'),
+        'Box style': v('style'),
+        'Quantity': v('qty'),
+        'Box size': v('size'),
+        'Details': v('msg')
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data.success === 'true' || data.success === true) {
+        form.reset();
+        note.textContent = 'Thank you! Your request has been sent. We will reply within 24 hours.';
+        note.style.color = '#2e7d32';
+      } else {
+        throw new Error('failed');
+      }
+    })
+    .catch(function(){
+      note.innerHTML = 'Sorry, something went wrong. Please email us at <a href="mailto:wnpenterpriseuk@gmail.com" style="text-decoration:underline">wnpenterpriseuk@gmail.com</a>.';
+      note.style.color = '#c62828';
+    })
+    .finally(function(){
+      btn.disabled = false;
+      btn.textContent = 'Send Quote Request';
+    });
+  });
+</script>
+</body>
+</html>
