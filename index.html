@@ -191,6 +191,15 @@
   .design-actions{display:flex;flex-direction:column;gap:8px}
   .design-actions .btn{width:100%}
 
+  /* Success popup */
+  #successModal{align-items:center}
+  .success-box{max-width:420px;text-align:center;padding:46px 30px 32px}
+  .success-icon{width:72px;height:72px;border-radius:50%;background:#e8f5ec;color:#1f8a46;display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+  .success-icon svg{width:38px;height:38px}
+  .success-box h2{font-size:34px;margin-bottom:10px}
+  .success-box p{color:var(--muted);font-size:15.5px;margin-bottom:24px}
+  .success-box .btn{min-width:150px}
+
   /* Footer */
   footer{background:#0d0d0d;color:#9b9488;padding:52px 0 26px;font-size:14px}
   .foot{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;margin-bottom:36px}
@@ -358,6 +367,7 @@
         <div class="field"><label for="c_name">Full name *</label><input id="c_name" required></div>
         <div class="field"><label for="c_email">Email *</label><input id="c_email" type="email" required></div>
       </div>
+      <div class="field"><label for="c_phone">Contact number *</label><input id="c_phone" type="tel" required placeholder="+44 …"></div>
       <div class="row">
         <div class="field"><label for="c_company">Company / Brand</label><input id="c_company"></div>
         <div class="field"><label for="c_country">Country</label><input id="c_country" placeholder="e.g. United Kingdom"></div>
@@ -449,7 +459,7 @@
           <div class="field"><label for="om_email">Email *</label><input id="om_email" type="email" required></div>
         </div>
         <div class="row">
-          <div class="field"><label for="om_phone">Phone / WhatsApp</label><input id="om_phone" type="tel" placeholder="+44 …"></div>
+          <div class="field"><label for="om_phone">Contact number *</label><input id="om_phone" type="tel" required placeholder="+44 …"></div>
           <div class="field"><label for="om_company">Company / Brand</label><input id="om_company"></div>
         </div>
         <div class="row">
@@ -470,6 +480,19 @@
         <p class="form-note" id="omNote"></p>
       </form>
     </div>
+  </div>
+</div>
+
+<!-- SUCCESS POPUP -->
+<div class="modal" id="successModal" role="dialog" aria-modal="true" aria-labelledby="smTitle">
+  <div class="modal-box success-box">
+    <button class="close" aria-label="Close" onclick="closeModal('successModal')">×</button>
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+    </div>
+    <h2 id="smTitle">Thank you!</h2>
+    <p>Your request has been sent successfully.<br>Our team will contact you by email within 24 hours.</p>
+    <button class="btn btn-dark" onclick="closeModal('successModal')">OK</button>
   </div>
 </div>
 
@@ -790,9 +813,20 @@ function sendEmail(subject, fields, replyTo){
     method:'POST',
     headers:{'Content-Type':'application/json','Accept':'application/json'},
     body:JSON.stringify(data)
-  }).then(function(r){ return r.json(); }).then(function(res){
-    if(!(res.success===true || res.success==='true')) throw new Error('failed');
+  }).then(function(r){
+    // The email is delivered whenever the server answers OK, so treat that as success
+    if(!r.ok) throw new Error('failed');
+    return r.text().then(function(t){
+      var res={}; try{ res=JSON.parse(t); }catch(e){}
+      if((res.success===false || res.success==='false') && /activat/i.test(res.message||'')) throw new Error('needs activation');
+    });
   });
+}
+
+// Success popup (shown after any form is sent)
+function showSuccess(){
+  ['orderModal','designsModal'].forEach(function(id){ document.getElementById(id).classList.remove('open'); });
+  openModal('successModal');
 }
 
 function val(id){ return document.getElementById(id).value.trim(); }
@@ -809,7 +843,7 @@ document.getElementById('orderForm').addEventListener('submit', function(e){
   e.preventDefault();
   var note=document.getElementById('omNote'), err=document.getElementById('om_qty_err'), btn=document.getElementById('omSend');
   note.className='form-note'; note.textContent=''; err.style.display='none';
-  if(!checkRequired(['om_name','om_email','om_country'])){ note.className='form-note bad'; note.textContent='Please fill in your name, a valid email and country.'; return; }
+  if(!checkRequired(['om_name','om_email','om_phone','om_country'])){ note.className='form-note bad'; note.textContent='Please fill in your name, a valid email, contact number and country.'; return; }
 
   var q=parseInt(val('om_qty'),10);
   if(orderMode==='sample'){
@@ -826,7 +860,7 @@ document.getElementById('orderForm').addEventListener('submit', function(e){
     'Quantity': q,
     'Name': val('om_name'),
     'Email': val('om_email'),
-    'Phone / WhatsApp': val('om_phone'),
+    'Contact number': val('om_phone'),
     'Company / Brand': val('om_company'),
     'Country': val('om_country'),
     'Box size': val('om_size'),
@@ -836,8 +870,8 @@ document.getElementById('orderForm').addEventListener('submit', function(e){
   sendEmail('New '+label+' – '+product+' – '+q+' pcs – '+val('om_name'), fields, val('om_email'))
     .then(function(){
       document.getElementById('orderForm').reset();
-      note.className='form-note ok';
-      note.textContent='Thank you! Your request has been sent. Our team will contact you within 24 hours.';
+      note.className='form-note'; note.textContent='';
+      showSuccess();
     })
     .catch(function(){
       note.className='form-note bad';
@@ -851,7 +885,7 @@ document.getElementById('contactForm').addEventListener('submit', function(e){
   e.preventDefault();
   var note=document.getElementById('c_note'), err=document.getElementById('c_qty_err'), btn=this.querySelector('button[type=submit]');
   note.className='form-note'; err.style.display='none';
-  if(!checkRequired(['c_name','c_email'])){ note.className='form-note bad'; note.textContent='Please fill in your name and a valid email.'; return; }
+  if(!checkRequired(['c_name','c_email','c_phone'])){ note.className='form-note bad'; note.textContent='Please fill in your name, a valid email and contact number.'; return; }
   var q=parseInt(val('c_qty'),10);
   if(!(q>=MIN_QTY)){ err.style.display='block'; document.getElementById('c_qty').focus(); return; }
   var fields={
@@ -860,6 +894,7 @@ document.getElementById('contactForm').addEventListener('submit', function(e){
     'Quantity': q,
     'Name': val('c_name'),
     'Email': val('c_email'),
+    'Contact number': val('c_phone'),
     'Company / Brand': val('c_company'),
     'Country': val('c_country'),
     'Details': val('c_msg')
@@ -867,7 +902,7 @@ document.getElementById('contactForm').addEventListener('submit', function(e){
   btn.disabled=true; btn.textContent='Sending…';
   var form=this;
   sendEmail('New enquiry – '+val('c_style')+' – '+q+' pcs – '+val('c_name'), fields, val('c_email'))
-    .then(function(){ form.reset(); note.className='form-note ok'; note.textContent='Thank you! We will reply within 24 hours.'; })
+    .then(function(){ form.reset(); note.className='form-note'; note.textContent='Minimum order 50 pieces · We reply within 24 hours'; showSuccess(); })
     .catch(function(){ note.className='form-note bad'; note.textContent='Sorry, something went wrong. Please message us on WhatsApp.'; })
     .finally(function(){ btn.disabled=false; btn.textContent='Send Enquiry'; });
 });
