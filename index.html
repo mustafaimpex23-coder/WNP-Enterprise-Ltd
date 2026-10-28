@@ -812,7 +812,8 @@ function sendEmail(subject, fields, replyTo){
   return fetch('https://formsubmit.co/ajax/'+FORM_EMAIL, {
     method:'POST',
     headers:{'Content-Type':'application/json','Accept':'application/json'},
-    body:JSON.stringify(data)
+    body:JSON.stringify(data),
+    keepalive:true            // keeps sending even if the visitor closes the page
   }).then(function(r){
     // The email is delivered whenever the server answers OK, so treat that as success
     if(!r.ok) throw new Error('failed');
@@ -866,19 +867,23 @@ document.getElementById('orderForm').addEventListener('submit', function(e){
     'Box size': val('om_size'),
     'Details': val('om_msg')
   };
-  var oldText=btn.textContent; btn.disabled=true; btn.textContent='Sending…';
-  sendEmail('New '+label+' – '+product+' – '+q+' pcs – '+val('om_name'), fields, val('om_email'))
-    .then(function(){
-      document.getElementById('orderForm').reset();
-      note.className='form-note'; note.textContent='';
-      showSuccess();
-    })
-    .catch(function(){
-      note.className='form-note bad';
-      note.innerHTML='Sorry, something went wrong. Please use the WhatsApp button above or email wnpenterpriseuk@gmail.com.';
-    })
-    .finally(function(){ btn.disabled=false; btn.textContent=oldText; });
+  // Show the popup instantly; the email is sent in the background
+  sendInBackground('New '+label+' – '+product+' – '+q+' pcs – '+val('om_name'), fields, val('om_email'));
+  document.getElementById('orderForm').reset();
+  note.className='form-note'; note.textContent='';
+  showSuccess();
 });
+
+// Sends the email in the background and tries again automatically if it fails
+function sendInBackground(subject, fields, replyTo){
+  var tries=0;
+  (function attempt(){
+    tries++;
+    sendEmail(subject, fields, replyTo).catch(function(){
+      if(tries<3) setTimeout(attempt, 2000*tries);
+    });
+  })();
+}
 
 /* ================= CONTACT FORM ================= */
 document.getElementById('contactForm').addEventListener('submit', function(e){
@@ -899,12 +904,11 @@ document.getElementById('contactForm').addEventListener('submit', function(e){
     'Country': val('c_country'),
     'Details': val('c_msg')
   };
-  btn.disabled=true; btn.textContent='Sending…';
-  var form=this;
-  sendEmail('New enquiry – '+val('c_style')+' – '+q+' pcs – '+val('c_name'), fields, val('c_email'))
-    .then(function(){ form.reset(); note.className='form-note'; note.textContent='Minimum order 50 pieces · We reply within 24 hours'; showSuccess(); })
-    .catch(function(){ note.className='form-note bad'; note.textContent='Sorry, something went wrong. Please message us on WhatsApp.'; })
-    .finally(function(){ btn.disabled=false; btn.textContent='Send Enquiry'; });
+  // Show the popup instantly; the email is sent in the background
+  sendInBackground('New enquiry – '+val('c_style')+' – '+q+' pcs – '+val('c_name'), fields, val('c_email'));
+  this.reset();
+  note.className='form-note'; note.textContent='Minimum order 50 pieces · We reply within 24 hours';
+  showSuccess();
 });
 
 /* ================= GENERAL ================= */
