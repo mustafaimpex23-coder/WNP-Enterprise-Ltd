@@ -867,11 +867,15 @@ document.getElementById('orderForm').addEventListener('submit', function(e){
     'Box size': val('om_size'),
     'Details': val('om_msg')
   };
-  // Show the popup instantly; the email is sent in the background
+  // Email goes in the background; button shows "Sending…" for 1 second, then the popup
   sendInBackground('New '+label+' – '+product+' – '+q+' pcs – '+val('om_name'), fields, val('om_email'));
-  document.getElementById('orderForm').reset();
-  note.className='form-note'; note.textContent='';
-  showSuccess();
+  var oldText=btn.textContent; btn.disabled=true; btn.textContent='Sending…';
+  setTimeout(function(){
+    document.getElementById('orderForm').reset();
+    note.className='form-note'; note.textContent='';
+    btn.disabled=false; btn.textContent=oldText;
+    showSuccess();
+  }, 1000);
 });
 
 // Sends the email in the background and tries again automatically if it fails
@@ -904,11 +908,16 @@ document.getElementById('contactForm').addEventListener('submit', function(e){
     'Country': val('c_country'),
     'Details': val('c_msg')
   };
-  // Show the popup instantly; the email is sent in the background
+  // Email goes in the background; button shows "Sending…" for 1 second, then the popup
   sendInBackground('New enquiry – '+val('c_style')+' – '+q+' pcs – '+val('c_name'), fields, val('c_email'));
-  this.reset();
-  note.className='form-note'; note.textContent='Minimum order 50 pieces · We reply within 24 hours';
-  showSuccess();
+  var form=this;
+  btn.disabled=true; btn.textContent='Sending…';
+  setTimeout(function(){
+    form.reset();
+    note.className='form-note'; note.textContent='Minimum order 50 pieces · We reply within 24 hours';
+    btn.disabled=false; btn.textContent='Send Enquiry';
+    showSuccess();
+  }, 1000);
 });
 
 /* ================= GENERAL ================= */
