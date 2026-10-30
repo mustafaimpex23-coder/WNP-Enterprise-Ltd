@@ -1,0 +1,314 @@
+[
+ {
+  "id": "backup-magnetic-flip-top-perfume-box",
+  "slug": "magnetic-flip-top-perfume-box",
+  "name": "Magnetic Flip-Top Perfume Box",
+  "short_desc": "A tall rigid box with a magnetic lid that flips open to show the bottle.",
+  "min_order": 50,
+  "images": [],
+  "sort_order": 1,
+  "is_active": true,
+  "designs": [
+   {
+    "id": "backup-magnetic-flip-top-perfume-box-0",
+    "name": "Classic Flip-Top",
+    "description": "Clean tall box with a hidden magnetic lid and a fitted base.",
+    "tags": [
+     "Magnetic lid",
+     "Matte finish"
+    ],
+    "images": [],
+    "sort_order": 1,
+    "is_active": true
+   },
+   {
+    "id": "backup-magnetic-flip-top-perfume-box-1",
+    "name": "Foam Insert Flip-Top",
+    "description": "Black foam insert with a cut-out that holds the bottle tightly.",
+    "tags": [
+     "Foam insert",
+     "Extra protection"
+    ],
+    "images": [],
+    "sort_order": 2,
+    "is_active": true
+   },
+   {
+    "id": "backup-magnetic-flip-top-perfume-box-2",
+    "name": "Window Flip-Top",
+    "description": "A clear window on the lid so the bottle shows without opening.",
+    "tags": [
+     "PET window",
+     "Retail ready"
+    ],
+    "images": [],
+    "sort_order": 3,
+    "is_active": true
+   },
+   {
+    "id": "backup-magnetic-flip-top-perfume-box-3",
+    "name": "Leatherette Flip-Top",
+    "description": "Wrapped in textured leather-look paper for a rich, soft feel.",
+    "tags": [
+     "Leatherette",
+     "Debossed logo"
+    ],
+    "images": [],
+    "sort_order": 4,
+    "is_active": true
+   },
+   {
+    "id": "backup-magnetic-flip-top-perfume-box-4",
+    "name": "Satin-Lined Flip-Top",
+    "description": "Inside lined with satin or velvet for a luxury unboxing.",
+    "tags": [
+     "Satin lining",
+     "Gift ready"
+    ],
+    "images": [],
+    "sort_order": 5,
+    "is_active": true
+   },
+   {
+    "id": "backup-magnetic-flip-top-perfume-box-5",
+    "name": "Gold Foil Flip-Top",
+    "description": "Your logo and lines in shiny gold foil on a dark box.",
+    "tags": [
+     "Gold foil",
+     "Two-tone"
+    ],
+    "images": [],
+    "sort_order": 6,
+    "is_active": true
+   }
+  ]
+ },
+ {
+  "id": "backup-double-door-perfume-box",
+  "slug": "double-door-perfume-box",
+  "name": "Double-Door Perfume Box",
+  "short_desc": "Two panels open from the centre like doors to reveal the bottle.",
+  "min_order": 50,
+  "images": [],
+  "sort_order": 2,
+  "is_active": true,
+  "designs": [
+   {
+    "id": "backup-double-door-perfume-box-0",
+    "name": "Classic Double-Door",
+    "description": "Two equal doors with hidden magnets that open from the middle.",
+    "tags": [
+     "Centre opening",
+     "Magnets"
+    ],
+    "images": [],
+    "sort_order": 1,
+    "is_active": true
+   },
+   {
+    "id": "backup-double-door-perfume-box-1",
+    "name": "Ribbon-Tie Double-Door",
+    "description": "Doors close with a satin ribbon bow for gifting.",
+    "tags": [
+     "Satin ribbon",
+     "Gift style"
+    ],
+    "images": [],
+    "sort_order": 2,
+    "is_active": true
+   },
+   {
+    "id": "backup-double-door-perfume-box-2",
+    "name": "Gold Foil Double-Door",
+    "description": "Your logo in gold foil on the doors, with a foam insert inside.",
+    "tags": [
+     "Gold foil",
+     "Foam insert"
+    ],
+    "images": [],
+    "sort_order": 3,
+    "is_active": true
+   }
+  ]
+ },
+ {
+  "id": "backup-drawer-box",
+  "slug": "drawer-box",
+  "name": "Sliding Drawer Box",
+  "short_desc": "A sleeve with a tray that slides out. Great for sets and gifts.",
+  "min_order": 50,
+  "images": [],
+  "sort_order": 3,
+  "is_active": true,
+  "designs": [
+   {
+    "id": "backup-drawer-box-0",
+    "name": "Ribbon-Pull Drawer",
+    "description": "Tray slides out with a satin ribbon pull on the end.",
+    "tags": [
+     "Ribbon pull",
+     "Classic"
+    ],
+    "images": [],
+    "sort_order": 1,
+    "is_active": true
+   },
+   {
+    "id": "backup-drawer-box-1",
+    "name": "Thumb-Cut Drawer",
+    "description": "A half-moon thumb cut on the sleeve for easy opening.",
+    "tags": [
+     "Thumb cut",
+     "Minimal"
+    ],
+    "images": [],
+    "sort_order": 2,
+    "is_active": true
+   }
+  ]
+ },
+ {
+  "id": "backup-lid-and-base-box",
+  "slug": "lid-and-base-box",
+  "name": "Two-Piece Lid & Base Box",
+  "short_desc": "A classic rigid box with a separate lid. Simple, strong and elegant.",
+  "min_order": 50,
+  "images": [],
+  "sort_order": 4,
+  "is_active": true,
+  "designs": [
+   {
+    "id": "backup-lid-and-base-box-0",
+    "name": "Full-Lid Box",
+    "description": "Lid covers the full base for a clean, solid look.",
+    "tags": [
+     "Full lid",
+     "Classic"
+    ],
+    "images": [],
+    "sort_order": 1,
+    "is_active": true
+   },
+   {
+    "id": "backup-lid-and-base-box-1",
+    "name": "Half-Lid Box",
+    "description": "Shorter lid that shows part of the base colour.",
+    "tags": [
+     "Half lid",
+     "Easy open"
+    ],
+    "images": [],
+    "sort_order": 2,
+    "is_active": true
+   },
+   {
+    "id": "backup-lid-and-base-box-2",
+    "name": "Shoulder-Neck Box",
+    "description": "Lid sits on a visible inner neck, a top choice for perfume.",
+    "tags": [
+     "Shoulder neck",
+     "Two-tone"
+    ],
+    "images": [],
+    "sort_order": 3,
+    "is_active": true
+   }
+  ]
+ },
+ {
+  "id": "backup-book-style-box",
+  "slug": "book-style-box",
+  "name": "Book-Style Magnetic Box",
+  "short_desc": "Opens from the side like a book and closes with hidden magnets.",
+  "min_order": 50,
+  "images": [],
+  "sort_order": 5,
+  "is_active": true,
+  "designs": [
+   {
+    "id": "backup-book-style-box-0",
+    "name": "Classic Book Box",
+    "description": "Front flap with hidden magnets, opens like a book cover.",
+    "tags": [
+     "Magnetic flap",
+     "Classic"
+    ],
+    "images": [],
+    "sort_order": 1,
+    "is_active": true
+   },
+   {
+    "id": "backup-book-style-box-1",
+    "name": "Ribbon Book Box",
+    "description": "Ribbon on the flap to open it gently.",
+    "tags": [
+     "Ribbon",
+     "Gift style"
+    ],
+    "images": [],
+    "sort_order": 2,
+    "is_active": true
+   },
+   {
+    "id": "backup-book-style-box-2",
+    "name": "Foam Insert Book Box",
+    "description": "Custom foam inside to hold one or more bottles.",
+    "tags": [
+     "Foam insert",
+     "Protection"
+    ],
+    "images": [],
+    "sort_order": 3,
+    "is_active": true
+   }
+  ]
+ },
+ {
+  "id": "backup-display-box",
+  "slug": "display-box",
+  "name": "Rigid Display Box",
+  "short_desc": "Showcase boxes for counters and shelves so customers see the product.",
+  "min_order": 50,
+  "images": [],
+  "sort_order": 6,
+  "is_active": true,
+  "designs": [
+   {
+    "id": "backup-display-box-0",
+    "name": "Counter Display",
+    "description": "Stands on the counter and holds several bottles upright.",
+    "tags": [
+     "Counter",
+     "Multi-bottle"
+    ],
+    "images": [],
+    "sort_order": 1,
+    "is_active": true
+   },
+   {
+    "id": "backup-display-box-1",
+    "name": "Tray Display",
+    "description": "Open tray with slots for bottles or testers.",
+    "tags": [
+     "Slots",
+     "Testers"
+    ],
+    "images": [],
+    "sort_order": 2,
+    "is_active": true
+   },
+   {
+    "id": "backup-display-box-2",
+    "name": "Open-Front Showcase",
+    "description": "Open front with a raised back panel for your branding.",
+    "tags": [
+     "Open front",
+     "Branding panel"
+    ],
+    "images": [],
+    "sort_order": 3,
+    "is_active": true
+   }
+  ]
+ }
+]

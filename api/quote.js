@@ -11,9 +11,20 @@ const webpush = require('web-push');
 
 const env = (k, d = '') => (process.env[k] || d).trim();
 
+// Accepts any form of the Supabase address (with /rest/v1, a trailing slash,
+// spaces, quotes or even the dashboard link) and turns it into https://<id>.supabase.co
+function cleanSupabaseUrl(raw) {
+  let u = String(raw || '').trim().replace(/^['"]|['"]$/g, '').trim();
+  const dash = u.match(/supabase\.com\/dashboard\/project\/([a-z0-9]+)/i);
+  if (dash) return 'https://' + dash[1] + '.supabase.co';
+  if (u && !/^https?:\/\//i.test(u)) u = 'https://' + u;
+  try { return new URL(u).origin; } catch { return u; }
+}
+const cleanKey = (k) => String(k || '').trim().replace(/^['"]|['"]$/g, '').trim();
+
 let _sb;
 const sb = () =>
-  (_sb ||= createClient(env('SUPABASE_URL'), env('SUPABASE_SERVICE_ROLE_KEY'), { auth: { persistSession: false } }));
+  (_sb ||= createClient(cleanSupabaseUrl(env('SUPABASE_URL')), cleanKey(env('SUPABASE_SERVICE_ROLE_KEY')), { auth: { persistSession: false } }));
 
 const BRAND = env('BRAND_NAME', 'WNP Enterprise');
 const SITE_URL = env('SITE_URL', 'https://wnpenterprise.vercel.app').replace(/\/$/, '');

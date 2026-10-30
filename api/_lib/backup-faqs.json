@@ -1,0 +1,26 @@
+[
+ {
+  "question": "What is the minimum order?",
+  "answer": "The minimum order is 50 pieces per design. The more boxes you order, the lower the price per box."
+ },
+ {
+  "question": "How much do the boxes cost?",
+  "answer": "Every box is custom, so the price depends on size, material, finishes and quantity. Send your details through Get a Quote and we will reply with an exact price."
+ },
+ {
+  "question": "Can I get a sample first?",
+  "answer": "Yes, paid samples are available. The sample price depends on your box size, style and finishes. Use the \"Order a Paid Sample\" button and we will confirm the cost."
+ },
+ {
+  "question": "Can you print my logo?",
+  "answer": "Yes. Send your logo and we will add it with the finish you choose: foil, embossing, spot UV or print."
+ },
+ {
+  "question": "Which countries do you deliver to?",
+  "answer": "We deliver across the United Kingdom, the USA, Canada and Europe. Bulk order quotes include delivery. Sample shipping is quoted separately."
+ },
+ {
+  "question": "'+esc(f.question)+'",
+  "answer": "'+esc(f.answer||'')+'"
+ }
+]

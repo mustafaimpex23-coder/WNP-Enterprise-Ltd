@@ -1,0 +1,98 @@
+{
+"book-style-box-1": {
+"w": 800,
+"h": 800
+},
+"book-style-box-2": {
+"w": 900,
+"h": 1200
+},
+"book-style-box": {
+"w": 1200,
+"h": 900
+},
+"display-box-1": {
+"w": 600,
+"h": 600
+},
+"display-box-2": {
+"w": 554,
+"h": 554
+},
+"display-box-3": {
+"w": 479,
+"h": 639
+},
+"display-box": {
+"w": 500,
+"h": 500
+},
+"double-door-perfume-box-1": {
+"w": 1000,
+"h": 1000
+},
+"double-door-perfume-box-2": {
+"w": 800,
+"h": 800
+},
+"double-door-perfume-box-3": {
+"w": 900,
+"h": 900
+},
+"double-door-perfume-box": {
+"w": 736,
+"h": 736
+},
+"drawer-box-1": {
+"w": 720,
+"h": 720
+},
+"drawer-box-2": {
+"w": 650,
+"h": 650
+},
+"lid-and-base-box-1": {
+"w": 650,
+"h": 650
+},
+"lid-and-base-box-2": {
+"w": 1200,
+"h": 675
+},
+"lid-and-base-box-3": {
+"w": 648,
+"h": 523
+},
+"lid-and-base-box": {
+"w": 900,
+"h": 900
+},
+"magnetic-flip-top-perfume-box-1": {
+"w": 1200,
+"h": 1200
+},
+"magnetic-flip-top-perfume-box-2": {
+"w": 1200,
+"h": 1143
+},
+"magnetic-flip-top-perfume-box-3": {
+"w": 550,
+"h": 550
+},
+"magnetic-flip-top-perfume-box-4": {
+"w": 554,
+"h": 554
+},
+"magnetic-flip-top-perfume-box-5": {
+"w": 1200,
+"h": 1200
+},
+"magnetic-flip-top-perfume-box-6": {
+"w": 554,
+"h": 554
+},
+"magnetic-flip-top-perfume-box": {
+"w": 736,
+"h": 736
+}
+}

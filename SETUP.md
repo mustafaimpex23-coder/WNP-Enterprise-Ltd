@@ -64,3 +64,41 @@ Open your project on Vercel → **Settings → Environment Variables**. Add ever
 - If the panel ever can't be reached, the website still works using the built-in backup product list.
 - Free limits: Supabase includes 1 GB of photos and 500 MB of data, and Gmail sends about 500 emails a day. That's plenty for this.
 - A free Supabase project pauses after **7 days with no activity**. Website visits keep it active. If it ever pauses, press **Restore** in Supabase.
+
+---
+
+# Update 2 – multi-page website, blog, reviews, pages
+
+## One step you must do (2 minutes)
+
+Supabase → **SQL Editor** → **New query** → paste the whole of `supabase/update-2-multipage.sql` → **Run**.
+It adds the Blog, Reviews and Pages tables, the new settings (USA address, phone, booking link, Google codes),
+the new product fields (specifications, sizes, Google description, photo descriptions), 11 starting pages,
+7 more FAQ answers and 6 blog drafts. It is safe to run twice.
+
+Until you run it, the website still works (products, quote form, FAQ), but the new pages and the
+Content tab in the panel show a message asking for this update.
+
+## What changed
+
+- The website is now about 20 separate pages, sent as finished HTML so Google and AI tools can read them:
+  Home, one page per box style, Rigid Boxes, Perfume Boxes, Get a Quote, Samples, About, Shipping, FAQ,
+  Blog + posts, Reviews, UK / USA / Canada pages, Privacy (Terms and Returns once you publish them).
+- `sitemap.xml` and `robots.txt` are made automatically (AI crawlers are allowed).
+- Preview links from Vercel are hidden from Google; only the real address is indexed.
+- Admin panel → **Content** tab: Blog, Reviews, Pages and Offers.
+- Marking a query **Won** offers to send the buyer a one-time review link (by email if Gmail is set up,
+  or on WhatsApp). Customer reviews wait for your approval.
+- Products now have: full description, specifications, popular sizes (shown in cm and inches),
+  a Google description, and a description under each photo.
+- Photos uploaded in the panel are saved as smaller WebP files when the browser supports it.
+- Google Analytics: paste your ID (G-XXXXXXX) in Website → Google. A cookie notice then appears,
+  and Analytics only runs after the visitor accepts.
+- Search Console: paste the verification code (or the whole meta tag) in Website → Google.
+
+## Drafts waiting for your details
+
+- Pages **Terms** and **Returns** (Content → Pages): fill the [square brackets], remove the DRAFT line, publish.
+- FAQ **How long does production take?** and **Do you ship to the USA and Canada with duties paid?**
+  (Website → FAQ): add your numbers, then switch them on.
+- 6 blog posts (Content → Blog): read, adjust, publish.

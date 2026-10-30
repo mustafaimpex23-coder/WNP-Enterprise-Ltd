@@ -166,6 +166,10 @@
   .gadd input{display:none}
   .uploading{aspect-ratio:1;border-radius:10px;background:#f1ece3;display:grid;place-items:center;font-size:12px;color:var(--muted)}
 
+.gwrap{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .alt-in{padding:6px 8px;font-size:12px;border-radius:8px}
+  .gallery{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  .gadd{min-height:92px}
   /* settings */
   .sgroup{padding:18px;margin-bottom:14px}
   .sgroup h3{font-size:21px;margin-bottom:12px}
@@ -258,7 +262,7 @@
     <nav class="nav" id="nav">
       <a data-v="queries"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8M8 12h5"/></svg><span>Queries</span><span class="badge hidden" id="navBadge">0</span></a>
       <a data-v="products"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg><span>Products</span></a>
-      <a data-v="offers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg><span>Offers</span></a>
+      <a data-v="content"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12l4 4v12H4z"/><path d="M8 10h8M8 14h8M8 18h5"/></svg><span>Content</span><span class="badge hidden" id="navBadge2">0</span></a>
       <a data-v="website"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg><span>Website</span></a>
       <a data-v="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 003.4 0"/></svg><span>Alerts<span class="lbl-long"> &amp; Team</span></span></a>
     </nav>
@@ -284,7 +288,7 @@
 </div>
 <div id="toasts"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 /* =====================================================================
    WNP Admin – one page that controls queries, products, offers, website
@@ -392,7 +396,9 @@ async function startApp() {
 
   var p = new URLSearchParams(location.search);
   var startView = (location.hash || '').replace('#', '') || 'queries';
-  go(['queries', 'products', 'offers', 'website', 'settings'].indexOf(startView) > -1 ? startView : 'queries');
+  if (startView === 'offers') { contentTab = 'offers'; startView = 'content'; }
+  go(['queries', 'products', 'content', 'website', 'settings'].indexOf(startView) > -1 ? startView : 'queries');
+  checkPendingReviews();
   if (p.get('q')) openQuery(p.get('q'));
   clearBadge();
 }
@@ -402,7 +408,7 @@ function go(v) {
   $$('#nav a').forEach(function (a) { a.classList.toggle('on', a.dataset.v === v); });
   closeAllDrawers();
   window.scrollTo(0, 0);
-  ({ queries: renderQueries, products: renderProducts, offers: renderOffers, website: renderWebsite, settings: renderSettings })[v]();
+  ({ queries: renderQueries, products: renderProducts, content: renderContent, website: renderWebsite, settings: renderSettings })[v]();
 }
 
 /* =====================================================================
@@ -547,7 +553,11 @@ async function openQuery(id) {
     foot.innerHTML = '<button class="btn btn-red" id="qDel">Delete</button><span class="grow"></span><button class="btn btn-dark" id="qSave">Save</button>';
 
     var c = $('#qCopy', body); if (c) c.onclick = function () { navigator.clipboard.writeText(q.email); toast('Email copied'); };
-    $('#qStatus', body).onchange = function () { saveQ({ status: this.value }, 'Status updated'); };
+    $('#qStatus', body).onchange = async function () {
+      var v = this.value;
+      await saveQ({ status: v }, 'Status updated');
+      if (v === 'won' && confirm('Order won! Send ' + (q.name || 'the buyer') + ' a link to leave a review?')) askReview(q);
+    };
     $('#qSave', foot).onclick = function () { saveQ({ notes: $('#qNotes', body).value, status: $('#qStatus', body).value }, 'Saved'); };
     $('#qDel', foot).onclick = async function () {
       if (!confirm('Delete this query permanently?')) return;
@@ -584,7 +594,10 @@ function resizeImage(file, max) {
       var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
       var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
       URL.revokeObjectURL(url);
-      c.toBlob(function (b) { b ? resolve(b) : reject(new Error('Could not read photo')); }, 'image/jpeg', 0.86);
+      c.toBlob(function (b) {
+        if (b && b.type === 'image/webp') return resolve(b);   // smaller and faster
+        c.toBlob(function (j) { j ? resolve(j) : reject(new Error('Could not read photo')); }, 'image/jpeg', 0.86);
+      }, 'image/webp', 0.82);
     };
     img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('This file is not a photo the browser can read (try JPG or PNG).')); };
     img.src = url;
@@ -592,8 +605,9 @@ function resizeImage(file, max) {
 }
 async function uploadPhoto(file, folder) {
   var blob = await resizeImage(file);
-  var path = folder + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.jpg';
-  var r = await db.storage.from('media').upload(path, blob, { contentType: 'image/jpeg', cacheControl: '31536000', upsert: false });
+  var webp = blob.type === 'image/webp';
+  var path = folder + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + (webp ? '.webp' : '.jpg');
+  var r = await db.storage.from('media').upload(path, blob, { contentType: webp ? 'image/webp' : 'image/jpeg', cacheControl: '31536000', upsert: false });
   if (r.error) throw r.error;
   return db.storage.from('media').getPublicUrl(path).data.publicUrl;
 }
@@ -602,24 +616,31 @@ function removeStored(url) {
   if (m) db.storage.from('media').remove([decodeURIComponent(m)]).catch(function () {});
 }
 // Renders an editable photo list into `el`. `get()` returns the array, `set(arr)` saves it.
-function gallery(el, get, set, folder, single) {
+// `alts` (optional) = { get(), set(arr) } for the photo descriptions Google reads
+function gallery(el, get, set, folder, single, alts) {
+  function altArr() { var a = alts ? (alts.get() || []).slice() : []; while (a.length < get().length) a.push(''); return a.slice(0, get().length); }
   function draw(uploading) {
-    var arr = get();
+    var arr = get(), al = altArr();
     el.innerHTML = '<div class="gallery">' + arr.map(function (u, i) {
-      return '<div class="gimg" style="' + bgImg(u) + '">' + (i === 0 && !single ? '<span class="cov">Cover</span>' : '') +
+      return '<div class="gwrap"><div class="gimg" style="' + bgImg(u) + '">' + (i === 0 && !single ? '<span class="cov">Cover</span>' : '') +
         '<div class="gact">' + (single ? '<span></span>' : '<button type="button" data-a="left" data-i="' + i + '" title="Move left">‹</button>') +
         '<button type="button" data-a="del" data-i="' + i + '" title="Remove" style="color:#c0392b">✕</button>' +
-        (single ? '' : '<button type="button" data-a="right" data-i="' + i + '" title="Move right">›</button>') + '</div></div>';
+        (single ? '' : '<button type="button" data-a="right" data-i="' + i + '" title="Move right">›</button>') + '</div></div>' +
+        (alts ? '<input class="in alt-in" data-alt="' + i + '" placeholder="Describe photo" value="' + esc(al[i] || '') + '" title="Photo description for Google, e.g. Black magnetic perfume box with gold foil logo">' : '') + '</div>';
     }).join('') + (uploading ? Array(uploading).fill('<div class="uploading"><span class="spinner"></span></div>').join('') : '') +
       ((single && arr.length) ? '' : '<label class="gadd"><input type="file" accept="image/*" ' + (single ? '' : 'multiple') + '><span>＋<br>Add photo' + (single ? '' : 's') + '</span></label>') + '</div>';
     $$('button[data-a]', el).forEach(function (b) {
       b.onclick = function () {
-        var a = get().slice(), i = +b.dataset.i;
-        if (b.dataset.a === 'del') { if (!confirm('Remove this photo?')) return; removeStored(a[i]); a.splice(i, 1); }
-        if (b.dataset.a === 'left' && i > 0) { var t = a[i - 1]; a[i - 1] = a[i]; a[i] = t; }
-        if (b.dataset.a === 'right' && i < a.length - 1) { var t2 = a[i + 1]; a[i + 1] = a[i]; a[i] = t2; }
-        set(a); draw();
+        var a = get().slice(), al = altArr(), i = +b.dataset.i;
+        function sw(x, y) { var t = a[x]; a[x] = a[y]; a[y] = t; var t2 = al[x]; al[x] = al[y]; al[y] = t2; }
+        if (b.dataset.a === 'del') { if (!confirm('Remove this photo?')) return; removeStored(a[i]); a.splice(i, 1); al.splice(i, 1); }
+        if (b.dataset.a === 'left' && i > 0) sw(i - 1, i);
+        if (b.dataset.a === 'right' && i < a.length - 1) sw(i, i + 1);
+        set(a); if (alts) alts.set(al); draw();
       };
+    });
+    $$('input[data-alt]', el).forEach(function (x) {
+      x.oninput = function () { var al = altArr(); al[+x.dataset.alt] = x.value; alts.set(al); };
     });
     var inp = $('input[type=file]', el);
     if (inp) inp.onchange = async function () {
@@ -629,7 +650,7 @@ function gallery(el, get, set, folder, single) {
       for (var i = 0; i < files.length; i++) {
         try { a.push(await uploadPhoto(files[i], folder)); } catch (e) { fail(e); }
       }
-      set(a); draw();
+      set(a); if (alts) alts.set(altArr()); draw();
     };
   }
   draw();
@@ -675,10 +696,19 @@ function editProduct(id) {
       '<div class="field"><label class="l">Position (1 = first)</label><input class="in" id="p_sort" type="number" value="' + esc(p.sort_order) + '"></div></div>' +
       '<div class="row2"><div class="field"><label class="l">Badge (optional)</label><input class="in" id="p_badge" value="' + esc(p.badge || '') + '" placeholder="Best seller / New"></div>' +
       '<div class="field"><label class="l">Category (optional)</label><input class="in" id="p_cat" value="' + esc(p.category || '') + '" placeholder="Perfume boxes"></div></div>' +
-      '<p class="sec-t">Card photo</p><div id="p_gal"></div><p class="hint">The first photo is the cover on the website. If empty, the first design photo is used.</p>' +
+      '<p class="sec-t">Product page</p>' +
+      '<div class="field"><label class="l">Full description (optional)</label><textarea class="in" id="p_desc" style="min-height:110px" placeholder="Shown on the product page. ## for a heading, **bold**, - for a list.">' + esc(p.description || '') + '</textarea></div>' +
+      '<div class="field"><label class="l">Specifications (one per line)</label><textarea class="in" id="p_specs" style="min-height:90px" placeholder="Board: 2 mm greyboard&#10;Wrap: textured or printed paper&#10;Insert: foam, card or velvet">' + esc(p.specs || '') + '</textarea><p class="hint">Empty = standard specifications are shown.</p></div>' +
+      '<div class="field"><label class="l">Popular sizes in cm, one per line (shown in cm and inches)</label><textarea class="in" id="p_sizes" style="min-height:76px" placeholder="Small: 6 x 6 x 12&#10;Medium: 8 x 8 x 14">' + esc(p.sizes || '') + '</textarea></div>' +
+      '<div class="field"><label class="l">Google description (about 150 characters)</label><textarea class="in" id="p_meta" style="min-height:60px" maxlength="170">' + esc(p.meta_description || '') + '</textarea><p class="hint" id="p_meta_n"></p></div>' +
+      (p.slug ? '<p class="hint" style="margin:-4px 0 6px">Page: <a href="/' + esc(p.slug) + '" target="_blank" rel="noopener" style="color:var(--gold-2);font-weight:600">/' + esc(p.slug) + ' ↗</a></p>' : '') +
+      '<p class="sec-t">Card photo</p><div id="p_gal"></div><p class="hint">The first photo is the cover on the website. If empty, the first design photo is used. Type a short description under each photo – Google reads it.</p>' +
       (id ? '<p class="sec-t" style="display:flex;align-items:center;justify-content:space-between">Designs <button class="btn btn-sm btn-dark" id="d_add" style="letter-spacing:0;text-transform:none">＋ Add design</button></p><div class="rows" id="d_rows"></div>' :
         '<div class="notice" style="margin-top:18px">Save this box style first, then you can add its designs.</div>');
-    gallery($('#p_gal', body), function () { return p.images; }, function (a) { p.images = a; }, 'products/' + (p.slug || 'new'));
+    gallery($('#p_gal', body), function () { return p.images; }, function (a) { p.images = a; }, 'products/' + (p.slug || 'new'), false,
+      { get: function () { return p.image_alts || []; }, set: function (a) { p.image_alts = a; } });
+    var metaN = function () { var n = $('#p_meta', body).value.length; $('#p_meta_n', body).textContent = n + ' characters' + (n > 160 ? ' – a bit long, Google may cut it' : ''); };
+    $('#p_meta', body).oninput = metaN; metaN();
     if (id) drawDesigns();
     foot.innerHTML = (id ? '<button class="btn btn-red" id="p_del">Delete</button>' : '') + '<span class="grow"></span><button class="btn btn-dark" id="p_save">' + (id ? 'Save' : 'Create') + '</button>';
 
@@ -706,6 +736,7 @@ function editProduct(id) {
       p.name = $('#p_name', body).value; p.short_desc = $('#p_short', body).value;
       p.min_order = $('#p_moq', body).value; p.sort_order = $('#p_sort', body).value;
       p.badge = $('#p_badge', body).value; p.category = $('#p_cat', body).value; p.is_active = $('#p_on', body).checked;
+      p.description = $('#p_desc', body).value; p.specs = $('#p_specs', body).value; p.sizes = $('#p_sizes', body).value; p.meta_description = $('#p_meta', body).value;
     }
 
     $('#p_save', foot).onclick = async function () {
@@ -713,7 +744,10 @@ function editProduct(id) {
         name: $('#p_name', body).value.trim(), short_desc: $('#p_short', body).value.trim(),
         min_order: parseInt($('#p_moq', body).value, 10) || 50, sort_order: parseInt($('#p_sort', body).value, 10) || 0,
         badge: $('#p_badge', body).value.trim() || null, category: $('#p_cat', body).value.trim() || null,
-        images: p.images, is_active: $('#p_on', body).checked
+        images: p.images, is_active: $('#p_on', body).checked,
+        description: $('#p_desc', body).value.trim() || null, specs: $('#p_specs', body).value.trim() || null,
+        sizes: $('#p_sizes', body).value.trim() || null, meta_description: $('#p_meta', body).value.trim() || null,
+        image_alts: (p.image_alts || []).slice(0, p.images.length)
       };
       if (!row.name) return toast('Name is required', 'bad');
       this.disabled = true;
@@ -725,7 +759,7 @@ function editProduct(id) {
         r = await db.from('products').insert(row).select().single();
       }
       this.disabled = false;
-      if (r.error) return fail(r.error);
+      if (r.error) return fail(needUpdate(r.error));
       toast(id ? 'Saved – live on website' : 'Created – now add designs');
       await loadProducts();
       if (!id) { closeDrawer(); editProduct(r.data.id); } else { Object.assign(p, r.data); $('#dTitle').textContent = p.name; }
@@ -751,19 +785,21 @@ function editDesign(p, d, done) {
       '<div class="field"><label class="l">Description</label><textarea class="in" id="d_desc">' + esc(d.description || '') + '</textarea></div>' +
       '<div class="field"><label class="l">Tags (separate with commas)</label><input class="in" id="d_tags" value="' + esc(d.tags.join(', ')) + '" placeholder="Gold foil, Two-tone"></div>' +
       '<p class="sec-t">Photos</p><div id="d_gal"></div><p class="hint">First photo shows on the website. Tip: square or 4:3 photos look best.</p>';
-    gallery($('#d_gal', body), function () { return d.images; }, function (a) { d.images = a; }, 'designs/' + p.slug);
+    gallery($('#d_gal', body), function () { return d.images; }, function (a) { d.images = a; }, 'designs/' + p.slug, false,
+      { get: function () { return d.image_alts || []; }, set: function (a) { d.image_alts = a; } });
     foot.innerHTML = (isNew ? '' : '<button class="btn btn-red" id="d_del">Delete</button>') + '<span class="grow"></span><button class="btn btn-dark" id="d_save">Save design</button>';
     $('#d_save', foot).onclick = async function () {
       var row = {
         product_id: p.id, name: $('#d_name', body).value.trim(), description: $('#d_desc', body).value.trim(),
         tags: $('#d_tags', body).value.split(',').map(function (t) { return t.trim(); }).filter(Boolean),
-        images: d.images, is_active: $('#d_on', body).checked, sort_order: d.sort_order
+        images: d.images, is_active: $('#d_on', body).checked, sort_order: d.sort_order,
+        image_alts: (d.image_alts || []).slice(0, d.images.length)
       };
       if (!row.name) return toast('Design name is required', 'bad');
       this.disabled = true;
       var r = isNew ? await db.from('designs').insert(row).select().single() : await db.from('designs').update(row).eq('id', d.id).select().single();
       this.disabled = false;
-      if (r.error) return fail(r.error);
+      if (r.error) return fail(needUpdate(r.error));
       if (isNew) p.designs.push(r.data); else { var i = p.designs.findIndex(function (x) { return x.id === d.id; }); p.designs[i] = r.data; }
       toast('Design saved – live on website'); closeDrawer(); done();
     };
@@ -807,6 +843,241 @@ async function importPhotos() {
 }
 
 /* =====================================================================
+   CONTENT: Blog · Reviews · Pages · Offers
+   ===================================================================== */
+var contentTab = 'blog';
+function needUpdate(e) {
+  var m = (e && e.message) || '';
+  if (/column|relation|does not exist|schema cache|Could not find/i.test(m)) return new Error('Run the database update first (update-2-multipage.sql in Supabase → SQL Editor).');
+  return e;
+}
+function contentHead(tab, actions) {
+  var tabs = [['blog', 'Blog'], ['reviews', 'Reviews'], ['pages', 'Pages'], ['offers', 'Offers']];
+  return '<div class="top"><h1>Content</h1><div class="acts">' + (actions || '') + '</div></div>' +
+    '<div class="chips" style="margin-bottom:16px">' + tabs.map(function (t) {
+      return '<button class="chip' + (t[0] === tab ? ' on' : '') + '" data-ct="' + t[0] + '">' + t[1] + (t[0] === 'reviews' && S.pendingReviews ? '<em>' + S.pendingReviews + ' new</em>' : '') + '</button>';
+    }).join('') + '</div>';
+}
+function bindContentTabs() { $$('[data-ct]').forEach(function (b) { b.onclick = function () { contentTab = b.dataset.ct; renderContent(); }; }); }
+async function renderContent() {
+  $('#view').innerHTML = '<div class="loading"><span class="spinner"></span></div>';
+  if (contentTab === 'offers') await renderOffers();
+  else if (contentTab === 'reviews') await renderReviewsAdmin();
+  else if (contentTab === 'pages') await renderPagesAdmin();
+  else await renderBlog();
+  bindContentTabs();
+}
+function siteLink(path, label) { return '<a href="' + path + '" target="_blank" rel="noopener" style="color:var(--gold-2);font-weight:600">' + esc(label || path) + ' ↗</a>'; }
+function mdHint() { return '<p class="hint">Writing tips: <b>## Heading</b>, <b>**bold**</b>, <b>- list item</b>, <b>1. step</b>, <b>[link text](/quote)</b>.</p>'; }
+// Uploads a photo and puts it into a text box as Markdown
+function photoInserter(btn, ta, folder) {
+  var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+  btn.onclick = function () { inp.click(); };
+  inp.onchange = async function () {
+    if (!inp.files[0]) return;
+    btn.disabled = true; btn.textContent = 'Uploading…';
+    try {
+      var url = await uploadPhoto(inp.files[0], folder);
+      var alt = prompt('Describe this photo in a few words (for Google):', '') || 'Photo';
+      var pos = ta.selectionStart || ta.value.length;
+      ta.value = ta.value.slice(0, pos) + '\n\n![' + alt.replace(/[\[\]]/g, '') + '](' + url + ')\n\n' + ta.value.slice(pos);
+    } catch (e) { fail(e); }
+    btn.disabled = false; btn.textContent = '＋ Insert photo'; inp.value = '';
+  };
+}
+
+/* ---- Blog ---- */
+async function renderBlog() {
+  var r = await db.from('blog_posts').select('*').order('created_at', { ascending: false });
+  if (r.error) { $('#view').innerHTML = contentHead('blog') + '<div class="notice">' + esc(needUpdate(r.error).message) + '</div>'; return; }
+  S.posts = r.data;
+  $('#view').innerHTML = contentHead('blog', '<button class="btn btn-dark" id="bAdd">＋ New post</button>') +
+    '<p class="hint" style="margin:-6px 0 14px">Published posts appear at ' + siteLink('/blog') + ' and on the Home page. Drafts stay hidden until you publish them.</p>' +
+    (S.posts.length ? '<div class="rows">' + S.posts.map(function (b) {
+      return '<div class="rowi' + (b.is_published ? '' : ' inactive') + '" data-b="' + b.id + '" style="cursor:pointer"><div class="th" style="' + bgImg(b.cover_image) + '"></div><div class="tx"><b>' + esc(b.title) + '</b><span>' +
+        (b.is_published ? 'Published' + (b.published_at ? ' ' + new Date(b.published_at).toLocaleDateString('en-GB') : '') : 'Draft') + (b.category ? ' · ' + esc(b.category) : '') + '</span></div></div>';
+    }).join('') + '</div>' : '<div class="panel empty"><b>No posts yet</b>Write your first guide.</div>');
+  $('#bAdd').onclick = function () { editPost(null); };
+  $$('[data-b]').forEach(function (x) { x.onclick = function () { editPost(x.dataset.b); }; });
+}
+function editPost(id) {
+  var b = id ? Object.assign({}, S.posts.find(function (x) { return x.id === id; })) :
+    { title: '', slug: '', category: 'Guides', excerpt: '', body: '', cover_image: '', cover_alt: '', product_slugs: [], meta_description: '', is_published: false };
+  var cover = b.cover_image ? [b.cover_image] : [];
+  var prods = S.products && S.products.length ? Promise.resolve() : loadProducts();
+  openDrawer(id ? 'Edit post' : 'New post', async function (body, foot) {
+    await prods;
+    body.innerHTML =
+      '<label class="switch" style="margin-bottom:16px"><input type="checkbox" id="b_on"' + (b.is_published ? ' checked' : '') + '><i></i>Published on website</label>' +
+      '<div class="field"><label class="l">Title *</label><input class="in" id="b_title" value="' + esc(b.title) + '" placeholder="e.g. How to measure your bottle for a custom box"></div>' +
+      '<div class="row2"><div class="field"><label class="l">Category</label><input class="in" id="b_cat" value="' + esc(b.category || '') + '" placeholder="Guides"></div>' +
+      '<div class="field"><label class="l">Web address</label><input class="in" id="b_slug" value="' + esc(b.slug) + '" placeholder="made from the title"></div></div>' +
+      '<div class="field"><label class="l">Short summary (shows on the card)</label><textarea class="in" id="b_ex" style="min-height:60px">' + esc(b.excerpt || '') + '</textarea></div>' +
+      '<div class="field"><label class="l" style="display:flex;justify-content:space-between;align-items:center">Article <button type="button" class="btn btn-sm" id="b_ins">＋ Insert photo</button></label><textarea class="in" id="b_body" style="min-height:280px">' + esc(b.body || '') + '</textarea>' + mdHint() + '</div>' +
+      '<p class="sec-t">Cover photo</p><div id="b_gal"></div>' +
+      '<div class="field" style="margin-top:10px"><label class="l">Cover photo description</label><input class="in" id="b_alt" value="' + esc(b.cover_alt || '') + '"></div>' +
+      '<p class="sec-t">Box styles in this article</p><div style="display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:12px">' + (S.products || []).map(function (p) {
+        return '<label class="switch" style="font-size:14px"><input type="checkbox" data-ps="' + esc(p.slug) + '"' + ((b.product_slugs || []).indexOf(p.slug) > -1 ? ' checked' : '') + '><i></i>' + esc(p.name) + '</label>';
+      }).join('') + '</div>' +
+      '<div class="field"><label class="l">Google description (about 150 characters)</label><textarea class="in" id="b_meta" style="min-height:60px" maxlength="170">' + esc(b.meta_description || '') + '</textarea></div>' +
+      (b.slug && b.is_published ? '<p class="hint">Live at ' + siteLink('/blog/' + b.slug) + '</p>' : '');
+    gallery($('#b_gal', body), function () { return cover; }, function (a) { cover = a; }, 'blog', true);
+    photoInserter($('#b_ins', body), $('#b_body', body), 'blog');
+    foot.innerHTML = (id ? '<button class="btn btn-red" id="b_del">Delete</button>' : '') + '<span class="grow"></span><button class="btn btn-dark" id="b_save">Save</button>';
+    $('#b_save', foot).onclick = async function () {
+      var on = $('#b_on', body).checked;
+      var row = {
+        title: $('#b_title', body).value.trim(), category: $('#b_cat', body).value.trim() || null,
+        slug: slugify($('#b_slug', body).value.trim() || $('#b_title', body).value),
+        excerpt: $('#b_ex', body).value.trim() || null, body: $('#b_body', body).value,
+        cover_image: cover[0] || null, cover_alt: $('#b_alt', body).value.trim() || null,
+        product_slugs: $$('[data-ps]', body).filter(function (x) { return x.checked; }).map(function (x) { return x.dataset.ps; }),
+        meta_description: $('#b_meta', body).value.trim() || null, is_published: on,
+        published_at: on ? (b.published_at || new Date().toISOString()) : b.published_at || null
+      };
+      if (!row.title) return toast('Title is required', 'bad');
+      this.disabled = true;
+      var r = id ? await db.from('blog_posts').update(row).eq('id', id) : await db.from('blog_posts').insert(row);
+      this.disabled = false;
+      if (r.error) return fail(/duplicate|unique/i.test(r.error.message) ? new Error('Another post already uses this web address. Change it.') : needUpdate(r.error));
+      toast(on ? 'Published – live on website' : 'Saved as draft'); closeDrawer();
+    };
+    var del = $('#b_del', foot);
+    if (del) del.onclick = async function () {
+      if (!confirm('Delete this post?')) return;
+      var r = await db.from('blog_posts').delete().eq('id', id); if (r.error) return fail(r.error);
+      toast('Deleted'); closeDrawer();
+    };
+  }, function () { if (view === 'content') renderContent(); });
+}
+
+/* ---- Reviews ---- */
+async function checkPendingReviews() {
+  var r = await db.from('reviews').select('id', { count: 'exact', head: true }).eq('is_published', false).eq('source', 'customer');
+  S.pendingReviews = r.error ? 0 : (r.count || 0);
+  var b = $('#navBadge2'); if (b) { b.textContent = S.pendingReviews; b.classList.toggle('hidden', !S.pendingReviews); }
+}
+async function renderReviewsAdmin() {
+  var r = await db.from('reviews').select('*').order('created_at', { ascending: false });
+  if (r.error) { $('#view').innerHTML = contentHead('reviews') + '<div class="notice">' + esc(needUpdate(r.error).message) + '</div>'; return; }
+  S.reviewList = r.data;
+  await checkPendingReviews();
+  if (!S.products || !S.products.length) await loadProducts();
+  $('#view').innerHTML = contentHead('reviews', '<button class="btn btn-dark" id="rAdd">＋ Add review</button>') +
+    '<p class="hint" style="margin:-6px 0 14px">Shown reviews appear at ' + siteLink('/reviews') + ', on the Home page and on their box style page. Reviews sent by buyers wait here until you show them. Only publish real reviews.</p>' +
+    (S.reviewList.length ? '<div class="rows">' + S.reviewList.map(function (x) {
+      var pending = !x.is_published && x.source === 'customer';
+      return '<div class="rowi' + (x.is_published || pending ? '' : ' inactive') + '" data-r="' + x.id + '" style="cursor:pointer"><div class="th" style="' + bgImg(x.photo) + ';display:grid;place-items:center;color:var(--gold);font-size:13px">' + (x.photo ? '' : '★' + x.rating) + '</div><div class="tx"><b>' + esc(x.name) + (x.brand ? ' · ' + esc(x.brand) : '') + '</b><span>' +
+        (pending ? '<b style="color:var(--gold-2);display:inline">New from customer – tap to approve</b> · ' : x.is_published ? 'Shown · ' : 'Hidden · ') + '★'.repeat(x.rating) + ' · ' + esc((x.text || '').slice(0, 70)) + '</span></div></div>';
+    }).join('') + '</div>' : '<div class="panel empty"><b>No reviews yet</b>When you mark a query as Won, the panel can send the buyer a review link.</div>');
+  $('#rAdd').onclick = function () { editReview(null); };
+  $$('[data-r]').forEach(function (x) { x.onclick = function () { editReview(x.dataset.r); }; });
+}
+function editReview(id) {
+  var v = id ? Object.assign({}, S.reviewList.find(function (x) { return x.id === id; })) : { name: '', brand: '', country: '', rating: 5, text: '', photo: '', product_slug: '', is_published: true, source: 'admin' };
+  var ph = v.photo ? [v.photo] : [];
+  openDrawer(id ? 'Review' : 'New review', function (body, foot) {
+    body.innerHTML =
+      (v.source === 'customer' ? '<div class="notice">Sent by the buyer through their review link.</div>' : '') +
+      '<label class="switch" style="margin-bottom:16px"><input type="checkbox" id="r_on"' + (v.is_published ? ' checked' : '') + '><i></i>Show on website</label>' +
+      '<div class="row2"><div class="field"><label class="l">Customer name *</label><input class="in" id="r_name" value="' + esc(v.name) + '"></div>' +
+      '<div class="field"><label class="l">Brand / company</label><input class="in" id="r_brand" value="' + esc(v.brand || '') + '"></div></div>' +
+      '<div class="row2"><div class="field"><label class="l">Country</label><input class="in" id="r_country" value="' + esc(v.country || '') + '"></div>' +
+      '<div class="field"><label class="l">Stars</label><select class="in" id="r_rating">' + [5, 4, 3, 2, 1].map(function (n) { return '<option value="' + n + '"' + (+v.rating === n ? ' selected' : '') + '>' + '★'.repeat(n) + ' (' + n + ')</option>'; }).join('') + '</select></div></div>' +
+      '<div class="field"><label class="l">Review *</label><textarea class="in" id="r_text" style="min-height:110px">' + esc(v.text || '') + '</textarea></div>' +
+      '<div class="field"><label class="l">Box style</label><select class="in" id="r_prod"><option value="">—</option>' + (S.products || []).map(function (p) { return '<option value="' + esc(p.slug) + '"' + (v.product_slug === p.slug ? ' selected' : '') + '>' + esc(p.name) + '</option>'; }).join('') + '</select></div>' +
+      '<p class="sec-t">Photo of their boxes (optional)</p><div id="r_gal"></div>';
+    gallery($('#r_gal', body), function () { return ph; }, function (a) { ph = a; }, 'reviews', true);
+    foot.innerHTML = (id ? '<button class="btn btn-red" id="r_del">Delete</button>' : '') + '<span class="grow"></span><button class="btn btn-dark" id="r_save">Save</button>';
+    $('#r_save', foot).onclick = async function () {
+      var row = {
+        name: $('#r_name', body).value.trim(), brand: $('#r_brand', body).value.trim() || null, country: $('#r_country', body).value.trim() || null,
+        rating: +$('#r_rating', body).value, text: $('#r_text', body).value.trim(), product_slug: $('#r_prod', body).value || null,
+        photo: ph[0] || null, is_published: $('#r_on', body).checked
+      };
+      if (!row.name || !row.text) return toast('Name and review are required', 'bad');
+      if (!id) row.source = 'admin';
+      var r = id ? await db.from('reviews').update(row).eq('id', id) : await db.from('reviews').insert(row);
+      if (r.error) return fail(needUpdate(r.error));
+      toast(row.is_published ? 'Saved – shown on website' : 'Saved – hidden'); closeDrawer();
+    };
+    var del = $('#r_del', foot);
+    if (del) del.onclick = async function () {
+      if (!confirm('Delete this review?')) return;
+      var r = await db.from('reviews').delete().eq('id', id); if (r.error) return fail(r.error);
+      toast('Deleted'); closeDrawer();
+    };
+  }, function () { if (view === 'content') renderContent(); });
+}
+async function askReview(q) {
+  var s = (await db.auth.getSession()).data.session;
+  var r = await fetch('/api/review', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + s.access_token }, body: JSON.stringify({ action: 'request', query_id: q.id }) })
+    .then(function (x) { return x.json(); }).catch(function () { return { error: 'Network error' }; });
+  if (!r.ok) return toast(r.error || 'Could not create the review link', 'bad');
+  var wa = digits(q.phone);
+  var msg = 'Hi ' + (q.name || '').split(' ')[0] + ', thank you for your order with WNP Enterprise! Could you leave us a quick review? ' + r.link;
+  openDrawer('Review link', function (body, foot) {
+    body.innerHTML = '<div class="notice">' + (r.emailed ? '✅ Emailed to <b>' + esc(q.email) + '</b>.' : 'Email is not set up yet, so send the link yourself:') + '</div>' +
+      '<div class="field"><label class="l">Review link (works once)</label><input class="in" id="rv_link" value="' + esc(r.link) + '" readonly></div>' +
+      '<div class="acts3" style="grid-template-columns:1fr 1fr">' + (wa ? '<a class="btn btn-wa" target="_blank" rel="noopener" href="https://wa.me/' + wa + '?text=' + encodeURIComponent(msg) + '">Send on WhatsApp</a>' : '<span></span>') +
+      '<button class="btn" id="rv_copy">Copy link</button></div><p class="hint">When the buyer sends a review, you get a notification and it waits in Content → Reviews for your approval.</p>';
+    foot.innerHTML = '<span class="grow"></span><button class="btn btn-dark" id="rv_ok">Done</button>';
+    $('#rv_copy', body).onclick = function () { navigator.clipboard.writeText(r.link); toast('Link copied'); };
+    $('#rv_ok', foot).onclick = closeDrawer;
+  });
+}
+
+/* ---- Pages ---- */
+async function renderPagesAdmin() {
+  var r = await db.from('pages').select('*').order('sort_order');
+  if (r.error) { $('#view').innerHTML = contentHead('pages') + '<div class="notice">' + esc(needUpdate(r.error).message) + '</div>'; return; }
+  S.pageList = r.data;
+  $('#view').innerHTML = contentHead('pages', '<button class="btn btn-dark" id="pgAdd">＋ New page</button>') +
+    '<p class="hint" style="margin:-6px 0 14px">Pages such as About, Shipping, Privacy and the UK / USA / Canada pages. Pages marked Draft are hidden until you publish them.</p>' +
+    '<div class="rows">' + S.pageList.map(function (x) {
+      var draft = !x.is_published;
+      return '<div class="rowi' + (draft ? ' inactive' : '') + '" data-pg="' + esc(x.slug) + '" style="cursor:pointer"><div class="tx"><b>' + esc(x.title) + '</b><span>/' + esc(x.slug) + ' · ' + (draft ? 'Draft – needs your details' : 'Published') + '</span></div></div>';
+    }).join('') + '</div>';
+  $('#pgAdd').onclick = function () { editPage(null); };
+  $$('[data-pg]').forEach(function (x) { x.onclick = function () { editPage(x.dataset.pg); }; });
+}
+function editPage(slug) {
+  var isNew = !slug;
+  var g = slug ? Object.assign({}, S.pageList.find(function (x) { return x.slug === slug; })) : { slug: '', title: '', meta_description: '', body: '', is_published: false, sort_order: 30 };
+  openDrawer(isNew ? 'New page' : g.title, function (body, foot) {
+    body.innerHTML =
+      (/DRAFT/.test(g.body || '') ? '<div class="notice"><b>Draft:</b> fill in the parts in [square brackets] and delete the DRAFT line, then publish.</div>' : '') +
+      '<label class="switch" style="margin-bottom:16px"><input type="checkbox" id="pg_on"' + (g.is_published ? ' checked' : '') + '><i></i>Published on website</label>' +
+      '<div class="field"><label class="l">Title *</label><input class="in" id="pg_title" value="' + esc(g.title) + '"></div>' +
+      (isNew ? '<div class="field"><label class="l">Web address</label><input class="in" id="pg_slug" placeholder="e.g. wholesale"></div>' : '<p class="hint" style="margin:-6px 0 12px">Address: ' + siteLink('/' + g.slug) + '</p>') +
+      '<div class="field"><label class="l" style="display:flex;justify-content:space-between;align-items:center">Page text <button type="button" class="btn btn-sm" id="pg_ins">＋ Insert photo</button></label><textarea class="in" id="pg_body" style="min-height:320px">' + esc(g.body || '') + '</textarea>' + mdHint() + '</div>' +
+      '<div class="field"><label class="l">Google description (about 150 characters)</label><textarea class="in" id="pg_meta" style="min-height:60px" maxlength="170">' + esc(g.meta_description || '') + '</textarea></div>';
+    photoInserter($('#pg_ins', body), $('#pg_body', body), 'pages');
+    foot.innerHTML = (isNew || ['about', 'privacy', 'shipping', 'samples', 'rigid-boxes', 'perfume-boxes', 'uk', 'usa', 'canada'].indexOf(g.slug) > -1 ? '' : '<button class="btn btn-red" id="pg_del">Delete</button>') +
+      '<span class="grow"></span><button class="btn btn-dark" id="pg_save">Save</button>';
+    $('#pg_save', foot).onclick = async function () {
+      var row = { title: $('#pg_title', body).value.trim(), body: $('#pg_body', body).value, meta_description: $('#pg_meta', body).value.trim() || null, is_published: $('#pg_on', body).checked };
+      if (!row.title) return toast('Title is required', 'bad');
+      if (row.is_published && /\bDRAFT\b/.test(row.body)) { if (!confirm('This page still says DRAFT. Publish anyway?')) return; }
+      var r;
+      if (isNew) {
+        row.slug = slugify($('#pg_slug', body).value || row.title);
+        if (['quote', 'faq', 'blog', 'reviews', 'review', 'admin', 'api', 'assets', 'img'].indexOf(row.slug) > -1 || (S.products || []).some(function (p) { return p.slug === row.slug; })) return toast('That address is already used – pick another', 'bad');
+        r = await db.from('pages').insert(row);
+      } else r = await db.from('pages').update(row).eq('slug', g.slug);
+      if (r.error) return fail(/duplicate|unique/i.test(r.error.message) ? new Error('A page with this address already exists.') : needUpdate(r.error));
+      toast(row.is_published ? 'Saved – live on website' : 'Saved as draft'); closeDrawer();
+    };
+    var del = $('#pg_del', foot);
+    if (del) del.onclick = async function () {
+      if (!confirm('Delete this page?')) return;
+      var r = await db.from('pages').delete().eq('slug', g.slug); if (r.error) return fail(r.error);
+      toast('Deleted'); closeDrawer();
+    };
+  }, function () { if (view === 'content') renderContent(); });
+}
+
+/* =====================================================================
    OFFERS
    ===================================================================== */
 async function renderOffers() {
@@ -821,8 +1092,7 @@ async function renderOffers() {
     if (o.ends_at && new Date(o.ends_at) < now) return 'Ended';
     return o.ends_at ? 'Live until ' + new Date(o.ends_at).toLocaleDateString('en-GB') : 'Live';
   }
-  $('#view').innerHTML =
-    '<div class="top"><h1>Offers</h1><div class="acts"><button class="btn btn-dark" id="oAdd">＋ Add offer</button></div></div>' +
+  $('#view').innerHTML = contentHead('offers', '<button class="btn btn-dark" id="oAdd">＋ Add offer</button>') +
     '<p class="hint" style="margin:-8px 0 16px">Live offers show on the website in an “Offers” section below the trust strip. No live offers = the section is hidden.</p>' +
     (S.offers.length ? '<div class="rows">' + S.offers.map(function (o) {
       var st = state(o);
@@ -869,7 +1139,7 @@ function editOffer(id) {
       var r = await db.from('offers').delete().eq('id', id); if (r.error) return fail(r.error);
       if (o.image) removeStored(o.image); toast('Deleted'); closeDrawer();
     };
-  }, function () { if (view === 'offers') renderOffers(); });
+  }, function () { if (view === 'content') renderContent(); });
 }
 
 /* =====================================================================

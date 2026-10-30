@@ -1,0 +1,49 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/api/render?path="
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/render?path=sitemap.xml"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/api/render?path=robots.txt"
+    },
+    {
+      "source": "/:path((?!api/|api$|admin/|admin$|assets/|img/)[^.]*)",
+      "destination": "/api/render?path=:path"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/img/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/admin/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    }
+  ]
+}

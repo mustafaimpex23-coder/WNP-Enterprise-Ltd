@@ -5,7 +5,7 @@
   "description": "WNP Enterprise website + admin backend",
   "engines": { "node": ">=18" },
   "dependencies": {
-    "@supabase/supabase-js": "^2.45.4",
+    "@supabase/supabase-js": "^2.117.3",
     "nodemailer": "^6.9.14",
     "web-push": "^3.6.7"
   }
