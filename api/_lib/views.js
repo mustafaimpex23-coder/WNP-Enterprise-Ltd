@@ -101,6 +101,7 @@ function navHtml(ctx) {
   const on = (x) => (p === x || p.startsWith(x + '/') ? ' class="on" aria-current="page"' : '');
   const styles = d.products.map((x) => `<a href="/${esc(x.slug)}">${esc(x.name)}</a>`).join('');
   return `<ul id="menu">
+    <li><a href="/"${p === '/' ? ' class="on" aria-current="page"' : ''}>Home</a></li>
     <li class="dd"><button type="button" aria-expanded="false">Box Styles</button>
       <div class="dd-menu">${d.pages['rigid-boxes'] ? '<a href="/rigid-boxes">All rigid boxes</a>' : ''}${d.pages['perfume-boxes'] ? '<a href="/perfume-boxes">Perfume boxes</a>' : ''}<hr>${styles}</div></li>
     ${d.pages.samples ? `<li><a href="/samples"${on('/samples')}>Samples</a></li>` : ''}

@@ -118,7 +118,7 @@ on conflict (key) do nothing;
 
 -- New main heading, as the review suggests (only if it is still the old one)
 update public.site_settings
-   set value = 'Custom Luxury Rigid Boxes and Perfume Packaging, From *50 Pieces*'
+   set value = 'Custom Luxury Rigid Boxes and *Perfume Packaging*'
  where key = 'hero_title' and (value is null or value = '' or value = 'Packaging that makes your brand feel *premium*');
 
 -- 7) Starting pages ---------------------------------------------------------
