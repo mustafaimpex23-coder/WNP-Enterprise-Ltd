@@ -323,7 +323,7 @@ function home(ctx) {
 </div></section>
 <div class="trust"><div class="wrap">
   <div><b>UK Registered</b>Company No. ${COMPANY_NO}</div>
-  <div><b>Low Minimum</b>From ${ctx.min} pieces</div>
+  <div><b>Minimum Quantity</b>${ctx.min} pieces</div>
   <div><b>100% Custom</b>Any size, any colour</div>
   <div><b>Premium Finishes</b>Foil, emboss, soft-touch</div>
   <div><b>UK &amp; US offices</b>Delivered to UK, USA, Canada &amp; Europe</div>
