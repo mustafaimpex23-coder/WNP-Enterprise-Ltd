@@ -102,3 +102,21 @@ Content tab in the panel show a message asking for this update.
 - FAQ **How long does production take?** and **Do you ship to the USA and Canada with duties paid?**
   (Website → FAQ): add your numbers, then switch them on.
 - 6 blog posts (Content → Blog): read, adjust, publish.
+
+---
+
+# Update 3 – letterheads, job cards and invoices
+
+Run `supabase/update-3-letterheads.sql` once in Supabase → SQL Editor (safe to run twice).
+
+- Admin panel → **Content → Letterheads & invoices**: make a Quotation, Job Card, Proforma Invoice or
+  Invoice on the **UK (WNP Enterprise Ltd)** or **USA (Providers LLC)** letterhead. Numbers are automatic
+  (WNP-Q-2026-001, PRV-INV-2026-004 …).
+- Open any query and press **Create quotation / job card / invoice**: the customer, box and size are filled
+  in, and US / Canadian buyers get the USA letterhead and dollars automatically.
+- **PDF** downloads it, **Share** sends it straight to WhatsApp from a phone, **Email** sends it to the
+  customer with the PDF attached (needs the Gmail app password in Vercel).
+- Blank **UK letterhead** / **USA letterhead** PDFs for letters.
+- Company names, USA email/phone, default terms and payment details: Website → Contact / Letterheads.
+- The website footer and contact section now say "In the UK we operate as WNP Enterprise Ltd" and
+  "In the USA we operate as Providers LLC" next to each address.

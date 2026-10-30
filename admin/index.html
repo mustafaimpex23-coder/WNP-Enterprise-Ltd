@@ -544,6 +544,7 @@ async function openQuery(id) {
         '<a class="btn btn-dark" href="mailto:' + esc(q.email) + '?subject=' + encodeURIComponent(mailSub) + '&body=' + encodeURIComponent('Hi ' + first + ',\n\n') + '">Email</a>' +
         (wa ? '<a class="btn" href="tel:+' + wa + '">Call</a>' : '<button class="btn" id="qCopy">Copy email</button>') +
       '</div>' +
+      '<button class="btn btn-gold btn-block" id="qDoc" style="margin-bottom:14px">Create quotation / job card / invoice</button>' +
       '<div class="row2"><div class="field"><label class="l">Status</label><select class="in" id="qStatus">' + STATUSES.map(function (s) { return '<option value="' + s + '"' + (q.status === s ? ' selected' : '') + '>' + s.charAt(0).toUpperCase() + s.slice(1) + '</option>'; }).join('') + '</select></div><div></div></div>' +
       '<div class="panel"><dl class="kv">' + kv.map(function (x) { return '<dt>' + esc(x[0]) + '</dt><dd>' + esc(x[1]) + '</dd>'; }).join('') + '</dl></div>' +
       '<p class="sec-t">Your notes (only your team sees these)</p>' +
@@ -553,6 +554,7 @@ async function openQuery(id) {
     foot.innerHTML = '<button class="btn btn-red" id="qDel">Delete</button><span class="grow"></span><button class="btn btn-dark" id="qSave">Save</button>';
 
     var c = $('#qCopy', body); if (c) c.onclick = function () { navigator.clipboard.writeText(q.email); toast('Email copied'); };
+    $('#qDoc', body).onclick = function () { editDoc(null, q); };
     $('#qStatus', body).onchange = async function () {
       var v = this.value;
       await saveQ({ status: v }, 'Status updated');
@@ -845,14 +847,14 @@ async function importPhotos() {
 /* =====================================================================
    CONTENT: Blog · Reviews · Pages · Offers
    ===================================================================== */
-var contentTab = 'blog';
+var contentTab = 'docs';
 function needUpdate(e) {
   var m = (e && e.message) || '';
   if (/column|relation|does not exist|schema cache|Could not find/i.test(m)) return new Error('Run the database update first (update-2-multipage.sql in Supabase → SQL Editor).');
   return e;
 }
 function contentHead(tab, actions) {
-  var tabs = [['blog', 'Blog'], ['reviews', 'Reviews'], ['pages', 'Pages'], ['offers', 'Offers']];
+  var tabs = [['docs', 'Letterheads & invoices'], ['blog', 'Blog'], ['reviews', 'Reviews'], ['pages', 'Pages'], ['offers', 'Offers']];
   return '<div class="top"><h1>Content</h1><div class="acts">' + (actions || '') + '</div></div>' +
     '<div class="chips" style="margin-bottom:16px">' + tabs.map(function (t) {
       return '<button class="chip' + (t[0] === tab ? ' on' : '') + '" data-ct="' + t[0] + '">' + t[1] + (t[0] === 'reviews' && S.pendingReviews ? '<em>' + S.pendingReviews + ' new</em>' : '') + '</button>';
@@ -861,7 +863,8 @@ function contentHead(tab, actions) {
 function bindContentTabs() { $$('[data-ct]').forEach(function (b) { b.onclick = function () { contentTab = b.dataset.ct; renderContent(); }; }); }
 async function renderContent() {
   $('#view').innerHTML = '<div class="loading"><span class="spinner"></span></div>';
-  if (contentTab === 'offers') await renderOffers();
+  if (contentTab === 'docs') { S.st = S.st || await loadSettingsMap(); await renderDocs(); }
+  else if (contentTab === 'offers') await renderOffers();
   else if (contentTab === 'reviews') await renderReviewsAdmin();
   else if (contentTab === 'pages') await renderPagesAdmin();
   else await renderBlog();
@@ -1075,6 +1078,359 @@ function editPage(slug) {
       toast('Deleted'); closeDrawer();
     };
   }, function () { if (view === 'content') renderContent(); });
+}
+
+/* =====================================================================
+   DOCUMENTS: quotations, job cards and invoices on UK / USA letterhead
+   ===================================================================== */
+var DOC_TYPES = { quotation: ['Quotation', 'Q'], job_card: ['Job Card', 'JC'], proforma: ['Proforma Invoice', 'PI'], invoice: ['Invoice', 'INV'] };
+var CURRENCIES = ['GBP', 'USD', 'CAD', 'EUR'];
+async function loadSettingsMap() {
+  var r = await db.from('site_settings').select('key, value');
+  var m = {}; (r.data || []).forEach(function (x) { m[x.key] = x.value || ''; });
+  m.uk_company = m.uk_company || 'WNP Enterprise Ltd';
+  m.us_company = m.us_company || 'Providers LLC';
+  m.us_address = m.us_address || '2335 Broadway, Astoria, NY 11106, United States';
+  m.address = m.address || 'Unit 5, Industrial Estate, Wednesfield Way, Well Lane, Wolverhampton WV11 1XP, UK';
+  m.email = m.email || 'wnpenterpriseuk@gmail.com';
+  m.whatsapp = m.whatsapp || '+44 7394 499329';
+  return m;
+}
+function companyInfo(st, c) {
+  if (c === 'us') return { key: 'us', name: st.us_company, address: st.us_address, email: st.us_email || st.email, phone: st.us_phone || '', reg: 'United States', bank: st.bank_us || '', prefix: 'PRV', currency: 'USD' };
+  return { key: 'uk', name: st.uk_company, address: st.address, email: st.email, phone: st.phone || st.whatsapp, reg: 'Registered in England & Wales · Company No. 16012866', bank: st.bank_uk || '', prefix: 'WNP', currency: 'GBP' };
+}
+function money(n, cur) { try { return new Intl.NumberFormat({ USD: 'en-US', CAD: 'en-CA', EUR: 'en-IE' }[cur] || 'en-GB', { style: 'currency', currency: cur || 'GBP' }).format(+n || 0); } catch (e) { return (cur || '') + ' ' + (+n || 0).toFixed(2); } }
+function docTotals(d) {
+  var sub = (d.items || []).reduce(function (a, it) { return a + (+it.qty || 0) * (+it.price || 0); }, 0);
+  var tax = sub * (+d.tax_rate || 0) / 100;
+  return { sub: Math.round(sub * 100) / 100, tax: Math.round(tax * 100) / 100, total: Math.round((sub + tax) * 100) / 100 };
+}
+async function nextNumber(company, type) {
+  var pre = (company === 'us' ? 'PRV' : 'WNP') + '-' + DOC_TYPES[type][1] + '-' + new Date().getFullYear() + '-';
+  var r = await db.from('documents').select('number').like('number', pre + '%');
+  var max = 0; (r.data || []).forEach(function (x) { var n = parseInt(x.number.slice(pre.length), 10); if (n > max) max = n; });
+  return pre + String(max + 1).padStart(3, '0');
+}
+var _pdfLib;
+function loadPdfLib() {
+  if (_pdfLib) return _pdfLib;
+  var urls = ['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js', 'https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js'];
+  _pdfLib = new Promise(function (resolve, reject) {
+    (function next(i) {
+      if (window.jspdf) return resolve(window.jspdf.jsPDF);
+      if (i >= urls.length) { _pdfLib = null; return reject(new Error('Could not load the PDF maker. Check your internet and try again.')); }
+      var s = document.createElement('script'); s.src = urls[i];
+      s.onload = function () { window.jspdf ? resolve(window.jspdf.jsPDF) : next(i + 1); };
+      s.onerror = function () { next(i + 1); };
+      document.head.appendChild(s);
+    })(0);
+  });
+  return _pdfLib;
+}
+
+// Draws the letterhead + document. Returns a jsPDF object.
+async function buildPdf(d, st) {
+  var JsPDF = await loadPdfLib();
+  var co = companyInfo(st, d.company);
+  var pdf = new JsPDF({ unit: 'mm', format: 'a4' });
+  var W = 210, M = 18, R = W - M, GOLD = [184, 147, 90], INK = [20, 20, 20], MUTED = [110, 104, 95];
+  var y = 0;
+  var clean = function (t) { return String(t == null ? '' : t).replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/[^\x00-\xFF€–—•…]/g, ''); };
+  function header() {
+    pdf.setFillColor(20, 20, 20); pdf.rect(0, 0, W, 4, 'F');
+    pdf.setFont('times', 'bold'); pdf.setFontSize(22); pdf.setTextColor.apply(pdf, INK);
+    pdf.text(clean(co.name), M, 20);
+    pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8.5); pdf.setTextColor.apply(pdf, GOLD);
+    pdf.text(co.key === 'us' ? 'CUSTOM LUXURY RIGID BOXES · USA' : 'CUSTOM LUXURY RIGID BOXES · UNITED KINGDOM', M, 26);
+    pdf.setFontSize(8.5); pdf.setTextColor.apply(pdf, MUTED);
+    var lines = pdf.splitTextToSize(clean(co.address), 70);
+    if (co.email) lines.push(clean(co.email));
+    if (co.phone) lines.push(clean(co.phone));
+    lines.push('wnpenterprise.vercel.app');
+    pdf.text(lines, R, 14, { align: 'right' });
+    var hy = Math.max(31, 14 + lines.length * 3.8 + 2);
+    pdf.setDrawColor.apply(pdf, GOLD); pdf.setLineWidth(0.6); pdf.line(M, hy, R, hy);
+    return hy + 8;
+  }
+  function footer() {
+    var n = pdf.getNumberOfPages();
+    for (var i = 1; i <= n; i++) {
+      pdf.setPage(i);
+      pdf.setDrawColor(227, 221, 209); pdf.setLineWidth(0.3); pdf.line(M, 283, R, 283);
+      pdf.setFont('helvetica', 'normal'); pdf.setFontSize(7.5); pdf.setTextColor.apply(pdf, MUTED);
+      pdf.text(clean(co.name + '  ·  ' + co.reg), M, 288);
+      pdf.text('Page ' + i + ' of ' + n, R, 288, { align: 'right' });
+    }
+  }
+  function need(h) { if (y + h > 276) { pdf.addPage(); y = header(); } }
+  function para(label, text) {
+    if (!text) return;
+    pdf.setFont('helvetica', 'bold'); pdf.setFontSize(9); pdf.setTextColor.apply(pdf, GOLD);
+    need(10); pdf.text(label.toUpperCase(), M, y); y += 5;
+    pdf.setFont('helvetica', 'normal'); pdf.setFontSize(9.5); pdf.setTextColor.apply(pdf, INK);
+    pdf.splitTextToSize(clean(text), R - M).forEach(function (ln) { need(5); pdf.text(ln, M, y); y += 4.6; });
+    y += 4;
+  }
+
+  y = header();
+  // Title + numbers
+  var title = (DOC_TYPES[d.doc_type] || DOC_TYPES.quotation)[0];
+  pdf.setFont('times', 'bold'); pdf.setFontSize(20); pdf.setTextColor.apply(pdf, INK); pdf.text(title.toUpperCase(), M, y + 2);
+  pdf.setFont('helvetica', 'normal'); pdf.setFontSize(9); pdf.setTextColor.apply(pdf, MUTED);
+  var meta = [['Number', d.number], ['Date', fmtD(d.issue_date)]];
+  if (d.due_date) meta.push([d.doc_type === 'quotation' ? 'Valid until' : d.doc_type === 'job_card' ? 'Deadline' : 'Due date', fmtD(d.due_date)]);
+  meta.forEach(function (m, i) {
+    pdf.setTextColor.apply(pdf, MUTED); pdf.text(m[0], R - 45, y - 3 + i * 5);
+    pdf.setTextColor.apply(pdf, INK); pdf.text(clean(m[1] || ''), R, y - 3 + i * 5, { align: 'right' });
+  });
+  y += Math.max(10, meta.length * 5 + 2);
+
+  // Customer
+  var c = d.customer || {};
+  var cust = [c.name, c.company, c.address, c.country, c.email, c.phone].filter(Boolean).map(clean);
+  if (cust.length) {
+    pdf.setFont('helvetica', 'bold'); pdf.setFontSize(9); pdf.setTextColor.apply(pdf, GOLD);
+    pdf.text(d.doc_type === 'job_card' ? 'CUSTOMER' : 'BILL TO', M, y); y += 5;
+    pdf.setFont('helvetica', 'normal'); pdf.setFontSize(10); pdf.setTextColor.apply(pdf, INK);
+    cust.forEach(function (ln, i) {
+      pdf.splitTextToSize(ln, 100).forEach(function (l) { if (i === 0) pdf.setFont('helvetica', 'bold'); pdf.text(l, M, y); pdf.setFont('helvetica', 'normal'); y += 4.8; });
+    });
+    y += 5;
+  }
+
+  para(d.doc_type === 'job_card' ? 'Job specification' : 'Box specification', d.spec);
+
+  // Items table
+  var items = (d.items || []).filter(function (it) { return (it.desc || '').trim(); });
+  if (items.length) {
+    var prices = d.show_prices !== false;
+    var cols = prices ? [M, 128, 150, R] : [M, R];
+    need(14);
+    pdf.setFillColor(241, 237, 229); pdf.rect(M, y - 4.5, R - M, 7, 'F');
+    pdf.setFont('helvetica', 'bold'); pdf.setFontSize(8.5); pdf.setTextColor.apply(pdf, INK);
+    pdf.text('DESCRIPTION', M + 2, y);
+    if (prices) { pdf.text('QTY', 136, y, { align: 'right' }); pdf.text('UNIT PRICE', 168, y, { align: 'right' }); pdf.text('AMOUNT', R - 2, y, { align: 'right' }); }
+    else pdf.text('QTY', R - 2, y, { align: 'right' });
+    y += 7;
+    pdf.setFont('helvetica', 'normal'); pdf.setFontSize(9.5);
+    items.forEach(function (it) {
+      var lines = pdf.splitTextToSize(clean(it.desc), prices ? 100 : 140);
+      need(lines.length * 4.6 + 4);
+      pdf.setTextColor.apply(pdf, INK);
+      pdf.text(lines, M + 2, y);
+      var q = (+it.qty || 0).toLocaleString('en-GB');
+      if (prices) {
+        pdf.text(q, 136, y, { align: 'right' });
+        pdf.text(money(it.price, d.currency), 168, y, { align: 'right' });
+        pdf.text(money((+it.qty || 0) * (+it.price || 0), d.currency), R - 2, y, { align: 'right' });
+      } else pdf.text(q, R - 2, y, { align: 'right' });
+      y += lines.length * 4.6 + 2;
+      pdf.setDrawColor(227, 221, 209); pdf.setLineWidth(0.2); pdf.line(M, y - 1, R, y - 1); y += 3;
+    });
+    if (prices) {
+      var t = docTotals(d);
+      need(22);
+      var row = function (label, val, bold) {
+        pdf.setFont('helvetica', bold ? 'bold' : 'normal'); pdf.setFontSize(bold ? 11 : 9.5);
+        pdf.text(label, 150, y, { align: 'right' }); pdf.text(val, R - 2, y, { align: 'right' }); y += bold ? 7 : 5.5;
+      };
+      y += 2; row('Subtotal', money(t.sub, d.currency));
+      if (+d.tax_rate) row('Tax (' + (+d.tax_rate) + '%)', money(t.tax, d.currency));
+      pdf.setDrawColor.apply(pdf, GOLD); pdf.setLineWidth(0.4); pdf.line(118, y - 3.5, R, y - 3.5); y += 1.5;
+      row('Total (' + d.currency + ')', money(t.total, d.currency), true);
+      y += 4;
+    }
+  }
+  if ((d.doc_type === 'invoice' || d.doc_type === 'proforma') && co.bank) para('Payment details', co.bank);
+  para('Notes', d.notes);
+  para('Terms', d.terms);
+  if (d.doc_type === 'job_card') {
+    need(24); y += 6;
+    pdf.setDrawColor(150, 150, 150); pdf.setLineWidth(0.3);
+    pdf.line(M, y + 8, M + 70, y + 8); pdf.line(R - 70, y + 8, R, y + 8);
+    pdf.setFontSize(8.5); pdf.setTextColor.apply(pdf, MUTED);
+    pdf.text('Approved by customer (signature & date)', M, y + 13); pdf.text('For ' + clean(co.name), R, y + 13, { align: 'right' });
+  }
+  footer();
+  return pdf;
+}
+function fmtD(d) { if (!d) return ''; try { return new Date(d + (String(d).length === 10 ? 'T12:00:00' : '')).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); } catch (e) { return d; } }
+function pdfName(d) { return (d.number || 'document').replace(/[^\w-]+/g, '-') + '.pdf'; }
+
+async function renderDocs() {
+  var r = await db.from('documents').select('*').order('created_at', { ascending: false }).limit(300);
+  if (r.error) { $('#view').innerHTML = contentHead('docs') + '<div class="notice">' + esc(needUpdate(r.error).message.replace('update-2-multipage.sql', 'update-3-letterheads.sql')) + '</div>'; return; }
+  S.docs = r.data;
+  $('#view').innerHTML = contentHead('docs', '<button class="btn" id="lhUK">UK letterhead</button><button class="btn" id="lhUS">USA letterhead</button><button class="btn btn-dark" id="dNew">＋ New document</button>') +
+    '<p class="hint" style="margin:-6px 0 14px">Quotations, job cards and invoices on your UK (' + esc((S.st && S.st.uk_company) || 'WNP Enterprise Ltd') + ') or USA (' + esc((S.st && S.st.us_company) || 'Providers LLC') + ') letterhead. Open a query and press <b>Create document</b> to fill the customer in automatically.</p>' +
+    (S.docs.length ? '<div class="rows">' + S.docs.map(function (d) {
+      var t = DOC_TYPES[d.doc_type] || DOC_TYPES.quotation;
+      return '<div class="rowi" data-doc="' + d.id + '" style="cursor:pointer"><div class="th" style="display:grid;place-items:center;font-weight:700;font-size:11px;color:var(--gold-2)">' + (d.company === 'us' ? 'USA' : 'UK') + '</div><div class="tx"><b>' + esc(d.number) + ' · ' + esc((d.customer && (d.customer.company || d.customer.name)) || 'No customer') + '</b><span>' + t[0] + ' · ' + (d.show_prices !== false ? money(d.total, d.currency) + ' · ' : '') + esc(d.status) + ' · ' + fmtD(d.issue_date) + '</span></div></div>';
+    }).join('') + '</div>' : '<div class="panel empty"><b>No documents yet</b>Create a quotation, job card or invoice.</div>');
+  $('#dNew').onclick = function () { editDoc(null); };
+  $('#lhUK').onclick = function () { blankLetterhead('uk'); };
+  $('#lhUS').onclick = function () { blankLetterhead('us'); };
+  $$('[data-doc]').forEach(function (x) { x.onclick = function () { editDoc(x.dataset.doc); }; });
+}
+async function blankLetterhead(c) {
+  try {
+    S.st = S.st || await loadSettingsMap();
+    var JsPDF = await loadPdfLib();
+    var p2 = new JsPDF({ unit: 'mm', format: 'a4' });
+    var co = companyInfo(S.st, c);
+    p2.setFillColor(20, 20, 20); p2.rect(0, 0, 210, 4, 'F');
+    p2.setFont('times', 'bold'); p2.setFontSize(22); p2.setTextColor(20, 20, 20); p2.text(co.name, 18, 20);
+    p2.setFont('helvetica', 'normal'); p2.setFontSize(8.5); p2.setTextColor(184, 147, 90);
+    p2.text(c === 'us' ? 'CUSTOM LUXURY RIGID BOXES · USA' : 'CUSTOM LUXURY RIGID BOXES · UNITED KINGDOM', 18, 26);
+    p2.setTextColor(110, 104, 95);
+    var lines = p2.splitTextToSize(co.address, 70); if (co.email) lines.push(co.email); if (co.phone) lines.push(co.phone); lines.push('wnpenterprise.vercel.app');
+    p2.text(lines, 192, 14, { align: 'right' });
+    var hy = Math.max(31, 14 + lines.length * 3.8 + 2);
+    p2.setDrawColor(184, 147, 90); p2.setLineWidth(0.6); p2.line(18, hy, 192, hy);
+    p2.setDrawColor(227, 221, 209); p2.setLineWidth(0.3); p2.line(18, 283, 192, 283);
+    p2.setFontSize(7.5); p2.text(co.name + '  ·  ' + co.reg, 18, 288);
+    p2.save((c === 'us' ? 'USA' : 'UK') + '-letterhead.pdf');
+  } catch (e) { fail(e); }
+}
+
+async function editDoc(id, fromQuery) {
+  S.st = await loadSettingsMap();
+  var st = S.st;
+  var d;
+  if (id) d = JSON.parse(JSON.stringify(S.docs.find(function (x) { return x.id === id; })));
+  else {
+    var q = fromQuery || {};
+    var us = /\b(usa|us|united states|america|canada|ca)\b/i.test((q.country || '') + ' ' + (q.ip_country || ''));
+    var company = us ? 'us' : 'uk';
+    var specParts = [q.product && ('Box: ' + q.product), q.box_size && ('Size: ' + q.box_size), q.details && ('Details: ' + q.details)].filter(Boolean);
+    d = {
+      company: company, doc_type: 'quotation', query_id: q.id || null, status: 'draft',
+      customer: { name: q.name || '', company: q.company || '', email: q.email || '', phone: q.phone || '', country: q.country || '', address: '' },
+      spec: specParts.join('\n'),
+      items: [{ desc: q.product ? q.product + (q.box_size ? ' – ' + q.box_size : '') : '', qty: q.quantity || '', price: '' }],
+      currency: /canada|\bca\b/i.test(q.country || '') ? 'CAD' : company === 'us' ? 'USD' : 'GBP',
+      tax_rate: 0, show_prices: true, notes: '', terms: st.doc_terms || '',
+      issue_date: new Date().toISOString().slice(0, 10), due_date: ''
+    };
+  }
+  var typeSel = function () { return Object.keys(DOC_TYPES).map(function (k) { return '<option value="' + k + '"' + (d.doc_type === k ? ' selected' : '') + '>' + DOC_TYPES[k][0] + '</option>'; }).join(''); };
+  openDrawer(id ? d.number : 'New document', function (body, foot) {
+    var c = d.customer || {};
+    body.innerHTML =
+      '<div class="row2"><div class="field"><label class="l">Letterhead</label><select class="in" id="dc_co"><option value="uk"' + (d.company === 'uk' ? ' selected' : '') + '>UK – ' + esc(st.uk_company) + '</option><option value="us"' + (d.company === 'us' ? ' selected' : '') + '>USA – ' + esc(st.us_company) + '</option></select></div>' +
+      '<div class="field"><label class="l">Document</label><select class="in" id="dc_type">' + typeSel() + '</select></div></div>' +
+      '<div class="row2"><div class="field"><label class="l">Number</label><input class="in" id="dc_no" value="' + esc(d.number || '') + '" placeholder="made automatically"></div>' +
+      '<div class="field"><label class="l">Status</label><select class="in" id="dc_status">' + ['draft', 'sent', 'paid', 'cancelled'].map(function (s) { return '<option' + (d.status === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></div></div>' +
+      '<div class="row2"><div class="field"><label class="l">Date</label><input class="in" type="date" id="dc_date" value="' + esc(d.issue_date || '') + '"></div>' +
+      '<div class="field"><label class="l" id="dc_due_l">Valid until / due date</label><input class="in" type="date" id="dc_due" value="' + esc(d.due_date || '') + '"></div></div>' +
+      '<p class="sec-t">Customer</p>' +
+      '<div class="row2"><div class="field"><label class="l">Name</label><input class="in" id="dc_name" value="' + esc(c.name || '') + '"></div><div class="field"><label class="l">Company / brand</label><input class="in" id="dc_comp" value="' + esc(c.company || '') + '"></div></div>' +
+      '<div class="row2"><div class="field"><label class="l">Email</label><input class="in" id="dc_email" value="' + esc(c.email || '') + '"></div><div class="field"><label class="l">Phone</label><input class="in" id="dc_phone" value="' + esc(c.phone || '') + '"></div></div>' +
+      '<div class="row2"><div class="field"><label class="l">Address</label><textarea class="in" id="dc_addr" style="min-height:60px">' + esc(c.address || '') + '</textarea></div><div class="field"><label class="l">Country</label><input class="in" id="dc_country" value="' + esc(c.country || '') + '"></div></div>' +
+      '<p class="sec-t">Specification</p><textarea class="in" id="dc_spec" style="min-height:90px" placeholder="Box style, size, board, paper, finishes, insert, deadline…">' + esc(d.spec || '') + '</textarea>' +
+      '<p class="sec-t" style="display:flex;justify-content:space-between;align-items:center">Items <label class="switch" style="letter-spacing:0;text-transform:none;font-size:13px;color:var(--text)"><input type="checkbox" id="dc_prices"' + (d.show_prices !== false ? ' checked' : '') + '><i></i>Show prices</label></p>' +
+      '<div id="dc_items"></div><button type="button" class="btn btn-sm" id="dc_add" style="margin:6px 0 12px">＋ Add line</button>' +
+      '<div class="row2"><div class="field"><label class="l">Currency</label><select class="in" id="dc_cur">' + CURRENCIES.map(function (x) { return '<option' + (d.currency === x ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select></div>' +
+      '<div class="field"><label class="l">Tax / VAT %</label><input class="in" type="number" step="0.01" min="0" id="dc_tax" value="' + esc(d.tax_rate || 0) + '"></div></div>' +
+      '<div class="panel" style="padding:12px 14px;margin-bottom:14px;font-size:14px" id="dc_tot"></div>' +
+      '<div class="field"><label class="l">Notes (printed)</label><textarea class="in" id="dc_notes" style="min-height:60px">' + esc(d.notes || '') + '</textarea></div>' +
+      '<div class="field"><label class="l">Terms (printed)</label><textarea class="in" id="dc_terms" style="min-height:70px">' + esc(d.terms || '') + '</textarea></div>' +
+      '<p class="hint">Company names, addresses and payment details on the letterhead come from Website → Contact and Letterheads.</p>';
+
+    function drawItems() {
+      var box = $('#dc_items', body);
+      box.innerHTML = d.items.map(function (it, i) {
+        return '<div class="row2" style="grid-template-columns:1fr 70px 96px 32px;gap:6px;margin-bottom:6px">' +
+          '<input class="in" data-it="desc" data-i="' + i + '" value="' + esc(it.desc || '') + '" placeholder="Description, e.g. Magnetic box 8×8×14 cm, gold foil">' +
+          '<input class="in" data-it="qty" data-i="' + i + '" type="number" min="0" value="' + esc(it.qty || '') + '" placeholder="Qty">' +
+          '<input class="in" data-it="price" data-i="' + i + '" type="number" min="0" step="0.01" value="' + esc(it.price || '') + '" placeholder="Unit price">' +
+          '<button type="button" class="ib red" data-rm="' + i + '" title="Remove">✕</button></div>';
+      }).join('');
+      $$('[data-it]', box).forEach(function (x) { x.oninput = function () { d.items[+x.dataset.i][x.dataset.it] = x.value; drawTot(); }; });
+      $$('[data-rm]', box).forEach(function (x) { x.onclick = function () { d.items.splice(+x.dataset.rm, 1); if (!d.items.length) d.items.push({ desc: '', qty: '', price: '' }); drawItems(); drawTot(); }; });
+    }
+    function drawTot() {
+      d.tax_rate = +$('#dc_tax', body).value || 0; d.currency = $('#dc_cur', body).value;
+      var t = docTotals(d);
+      $('#dc_tot', body).innerHTML = 'Subtotal <b>' + money(t.sub, d.currency) + '</b>' + (d.tax_rate ? ' · Tax <b>' + money(t.tax, d.currency) + '</b>' : '') + ' · Total <b style="color:var(--ink)">' + money(t.total, d.currency) + '</b>';
+    }
+    function dueLabel() { var t = $('#dc_type', body).value; $('#dc_due_l', body).textContent = t === 'quotation' ? 'Valid until' : t === 'job_card' ? 'Deadline' : 'Due date'; }
+    drawItems(); drawTot(); dueLabel();
+    $('#dc_add', body).onclick = function () { d.items.push({ desc: '', qty: '', price: '' }); drawItems(); };
+    $('#dc_tax', body).oninput = drawTot; $('#dc_cur', body).onchange = drawTot;
+    $('#dc_co', body).onchange = function () { var v = this.value; if (!id) $('#dc_cur', body).value = v === 'us' ? 'USD' : 'GBP'; drawTot(); if (!id) $('#dc_no', body).value = ''; };
+    $('#dc_type', body).onchange = function () { dueLabel(); if (!id) $('#dc_no', body).value = ''; if (this.value === 'job_card') $('#dc_prices', body).checked = false; };
+
+    function collect() {
+      d.company = $('#dc_co', body).value; d.doc_type = $('#dc_type', body).value; d.status = $('#dc_status', body).value;
+      d.issue_date = $('#dc_date', body).value || new Date().toISOString().slice(0, 10); d.due_date = $('#dc_due', body).value || null;
+      d.customer = { name: $('#dc_name', body).value.trim(), company: $('#dc_comp', body).value.trim(), email: $('#dc_email', body).value.trim(), phone: $('#dc_phone', body).value.trim(), address: $('#dc_addr', body).value.trim(), country: $('#dc_country', body).value.trim() };
+      d.spec = $('#dc_spec', body).value.trim(); d.show_prices = $('#dc_prices', body).checked;
+      d.currency = $('#dc_cur', body).value; d.tax_rate = +$('#dc_tax', body).value || 0;
+      d.notes = $('#dc_notes', body).value.trim(); d.terms = $('#dc_terms', body).value.trim();
+      d.items = d.items.filter(function (it) { return (it.desc || '').trim() || it.qty || it.price; }).map(function (it) { return { desc: (it.desc || '').trim(), qty: +it.qty || 0, price: +it.price || 0 }; });
+      if (!d.items.length) d.items = [{ desc: '', qty: '', price: '' }];
+      var t = docTotals(d); d.subtotal = t.sub; d.total = t.total;
+      d.number = $('#dc_no', body).value.trim() || d.number || '';
+    }
+    async function save(quiet) {
+      collect();
+      if (!d.number) { d.number = await nextNumber(d.company, d.doc_type); $('#dc_no', body).value = d.number; }
+      var row = { number: d.number, doc_type: d.doc_type, company: d.company, query_id: d.query_id || null, customer: d.customer, items: d.items, spec: d.spec || null,
+        currency: d.currency, tax_rate: d.tax_rate, subtotal: d.subtotal, total: d.total, show_prices: d.show_prices, notes: d.notes || null, terms: d.terms || null,
+        issue_date: d.issue_date, due_date: d.due_date, status: d.status };
+      var r = d.id ? await db.from('documents').update(row).eq('id', d.id).select().single() : await db.from('documents').insert(row).select().single();
+      if (r.error) { fail(/duplicate|unique/i.test(r.error.message) ? new Error('That number is already used. Clear it to get a new one.') : needUpdate(r.error)); return false; }
+      d.id = r.data.id; id = d.id; $('#dTitle').textContent = d.number;
+      if (!quiet) toast('Saved ' + d.number);
+      return true;
+    }
+    foot.innerHTML = '<button class="btn btn-red" id="dc_del"' + (d.id ? '' : ' style="display:none"') + '>Delete</button><span class="grow"></span>' +
+      '<button class="btn" id="dc_pdf">PDF</button><button class="btn" id="dc_share">Share</button><button class="btn" id="dc_mail">Email</button><button class="btn btn-dark" id="dc_save">Save</button>';
+    $('#dc_save', foot).onclick = async function () { this.disabled = true; await save(); this.disabled = false; };
+    $('#dc_pdf', foot).onclick = async function () {
+      this.disabled = true;
+      try { if (await save(true)) (await buildPdf(d, st)).save(pdfName(d)); } catch (e) { fail(e); }
+      this.disabled = false;
+    };
+    $('#dc_share', foot).onclick = async function () {
+      this.disabled = true;
+      try {
+        if (!(await save(true))) { this.disabled = false; return; }
+        var pdf = await buildPdf(d, st), blob = pdf.output('blob');
+        var file = new File([blob], pdfName(d), { type: 'application/pdf' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: d.number, text: (DOC_TYPES[d.doc_type] || DOC_TYPES.quotation)[0] + ' ' + d.number });
+        } else { pdf.save(pdfName(d)); toast('Downloaded – attach it on WhatsApp or email'); }
+      } catch (e) { if (e && e.name !== 'AbortError') fail(e); }
+      this.disabled = false;
+    };
+    $('#dc_mail', foot).onclick = async function () {
+      collect();
+      if (!d.customer.email) return toast('Add the customer email first', 'bad');
+      var btn = this; btn.disabled = true; btn.textContent = 'Sending…';
+      try {
+        if (!(await save(true))) throw new Error('Not saved');
+        var pdf = await buildPdf(d, st);
+        var b64 = pdf.output('datauristring').split(',')[1];
+        var s = (await db.auth.getSession()).data.session;
+        var label = (DOC_TYPES[d.doc_type] || DOC_TYPES.quotation)[0];
+        var r = await fetch('/api/document', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + s.access_token },
+          body: JSON.stringify({ id: d.id, to: d.customer.email, name: d.customer.name, company: companyInfo(st, d.company).name, label: label, number: d.number, filename: pdfName(d), pdf: b64 }) })
+          .then(function (x) { return x.json(); }).catch(function () { return { error: 'Network error' }; });
+        if (!r.ok) throw new Error(r.error || 'Could not send');
+        d.status = d.status === 'draft' ? 'sent' : d.status; $('#dc_status', body).value = d.status;
+        toast('Emailed to ' + d.customer.email);
+      } catch (e) { fail(e); }
+      btn.disabled = false; btn.textContent = 'Email';
+    };
+    $('#dc_del', foot).onclick = async function () {
+      if (!confirm('Delete ' + d.number + '?')) return;
+      var r = await db.from('documents').delete().eq('id', d.id); if (r.error) return fail(r.error);
+      toast('Deleted'); closeDrawer();
+    };
+  }, function () { if (view === 'content' && contentTab === 'docs') renderContent(); });
 }
 
 /* =====================================================================

@@ -29,6 +29,8 @@ const DEFAULT_SETTINGS = {
   email: 'wnpenterpriseuk@gmail.com',
   address: 'Unit 5, Industrial Estate, Wednesfield Way, Well Lane, Wolverhampton WV11 1XP, UK',
   us_address: '2335 Broadway, Astoria, NY 11106, United States',
+  uk_company: 'WNP Enterprise Ltd',
+  us_company: 'Providers LLC',
   min_qty: '50',
   hero_eyebrow: 'Luxury Rigid Boxes · Made to Your Size',
   hero_title: 'Custom Luxury Rigid Boxes and *Perfume Packaging*',

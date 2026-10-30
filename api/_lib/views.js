@@ -68,15 +68,23 @@ function postal(str, country) {
 }
 function orgSchema(ctx) {
   const s = ctx.settings;
-  const addr = [postal(s.address, 'GB')];
-  if (s.us_address) addr.push(postal(s.us_address, 'US'));
-  return {
+  const addr = postal(s.address, 'GB');
+  const org = {
     '@context': 'https://schema.org', '@type': 'Organization', '@id': ctx.site + '/#org',
-    name: LEGAL, alternateName: BRAND, url: ctx.site + '/',
+    name: s.uk_company || LEGAL, alternateName: BRAND, url: ctx.site + '/',
     description: 'Custom luxury rigid boxes and perfume packaging from 50 pieces, for brands in the UK, USA, Canada and Europe.',
     email: s.email, telephone: '+' + digits(s.phone || s.whatsapp), address: addr,
     areaServed: ['GB', 'US', 'CA', 'EU'],
   };
+  if (s.us_address) {
+    // The US business is its own company with its own address
+    org.department = {
+      '@type': 'Organization', name: s.us_company || 'Providers LLC', address: postal(s.us_address, 'US'),
+      email: s.us_email || s.email, areaServed: ['US', 'CA'],
+      ...(s.us_phone ? { telephone: '+' + digits(s.us_phone) } : {}),
+    };
+  }
+  return org;
 }
 function crumbSchema(ctx, items) {
   return {
@@ -130,8 +138,8 @@ function footerHtml(ctx) {
         <li><a href="${waLink(ctx, 'Hi WNP Enterprise, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">WhatsApp ${esc(s.whatsapp)}</a></li>
         ${s.phone ? `<li><a href="tel:+${digits(phone)}">Call ${esc(phone)}</a></li>` : ''}
         ${s.booking_url ? `<li><a href="${esc(s.booking_url)}" target="_blank" rel="noopener">Book a call</a></li>` : ''}</ul>
-      <address style="margin-top:14px"><b>United Kingdom</b>${esc(s.address)}</address>
-      ${s.us_address ? `<address><b>United States</b>${esc(s.us_address)}</address>` : ''}
+      <address style="margin-top:14px"><b>United Kingdom</b>In the UK we operate as <strong>${esc(s.uk_company)}</strong><br>${esc(s.address)}</address>
+      ${s.us_address ? `<address><b>United States</b>In the USA we operate as <strong>${esc(s.us_company)}</strong><br>${esc(s.us_address)}</address>` : ''}
     </div></div>
     <div class="legal"><span>© ${year()} ${LEGAL}. All rights reserved. · <a href="/privacy">Privacy Policy</a>${d.pages.terms ? ' · <a href="/terms">Terms</a>' : ''}${d.pages.returns ? ' · <a href="/returns">Returns</a>' : ''}</span>
       <span>Registered in England &amp; Wales · Company No. ${COMPANY_NO}</span></div>
@@ -374,8 +382,8 @@ ${faqs.length ? `<section id="faq" style="background:var(--paper-2)"><div class=
       <li><span class="i">☎</span><div><b>WhatsApp</b><a href="${waLink(ctx, 'Hi WNP Enterprise, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">${esc(s.whatsapp)}</a></div></li>
       ${s.phone ? `<li><span class="i">✆</span><div><b>Phone</b><a href="tel:+${digits(s.phone)}">${esc(s.phone)}</a></div></li>` : ''}
       ${s.booking_url ? `<li><span class="i">◷</span><div><b>Book a call</b><a href="${esc(s.booking_url)}" target="_blank" rel="noopener">Pick a time that suits you</a></div></li>` : ''}
-      <li><span class="i">⌂</span><div><b>UK office</b>${esc(s.address)}</div></li>
-      ${s.us_address ? `<li><span class="i">⌂</span><div><b>US office</b>${esc(s.us_address)}</div></li>` : ''}
+      <li><span class="i">⌂</span><div><b>United Kingdom</b>In the UK we operate as <strong style="color:#fff">${esc(s.uk_company)}</strong><br>${esc(s.address)}</div></li>
+      ${s.us_address ? `<li><span class="i">⌂</span><div><b>United States</b>In the USA we operate as <strong style="color:#fff">${esc(s.us_company)}</strong><br>${esc(s.us_address)}</div></li>` : ''}
     </ul></div>
   ${quoteForm(ctx, { type: 'enquiry' })}
 </div></section>`;
