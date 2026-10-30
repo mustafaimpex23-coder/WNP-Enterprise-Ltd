@@ -159,7 +159,7 @@ $b$Want to check the quality, size and finish before a full order? Order a paid 
 1. Tell us the box style, your size and the finishes you want.
 2. We confirm the sample price and shipping cost before you pay.
 3. We make the sample and send it to you.
-4. When you are happy, we move to your bulk order.
+4. Once you’re satisfied, we’ll move forward with your bulk order.
 
 ## Good to know
 
@@ -334,7 +334,7 @@ select v.q, v.a, v.s, v.act from (values
  ('What file format do you need for my logo?',
   'A vector file (AI, EPS, SVG or PDF) is best. If you only have a PNG or JPG, send the largest size you have and we will check it before production.', 13, true),
  ('How do paid samples work?',
-  'You tell us the box style, size and finishes, we confirm the sample price and shipping before you pay, then we make and send the sample. When you are happy, we move to your bulk order.', 14, true),
+  'You tell us the box style, size and finishes, we confirm the sample price and shipping before you pay, then we make and send the sample. Once you’re satisfied, we’ll move forward with your bulk order.', 14, true),
  ('How long does production take?',
   'DRAFT – add your numbers: production takes about [X] working days after you approve the design, plus [Y] days for delivery to the UK, USA or Canada.', 15, false),
  ('Do you ship to the USA and Canada with duties paid?',
