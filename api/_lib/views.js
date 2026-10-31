@@ -112,7 +112,7 @@ function navHtml(ctx) {
     <li><a href="/"${p === '/' ? ' class="on" aria-current="page"' : ''}>Home</a></li>
     <li class="dd"><button type="button" aria-expanded="false">Box Styles</button>
       <div class="dd-menu">${d.pages['rigid-boxes'] ? '<a href="/rigid-boxes">All rigid boxes</a>' : ''}${d.pages['perfume-boxes'] ? '<a href="/perfume-boxes">Perfume boxes</a>' : ''}<hr>${styles}</div></li>
-    <li><a href="/our-work"${on('/our-work')}>Our Work</a></li>
+    <li><a href="/portfolio"${on('/portfolio')}>Portfolio</a></li>
     ${d.pages.samples ? `<li><a href="/samples"${on('/samples')}>Samples</a></li>` : ''}
     ${d.pages.about ? `<li><a href="/about"${on('/about')}>About</a></li>` : ''}
     ${d.posts.length ? `<li><a href="/blog"${on('/blog')}>Blog</a></li>` : ''}
@@ -131,7 +131,7 @@ function footerHtml(ctx) {
     <div><a href="/" class="logo"><b>WNP</b><span>Enterprise Ltd</span></a>
       <p style="margin-top:16px;max-width:320px">${esc(s.footer_text)}</p></div>
     <div><h4>Box Styles</h4><ul>${d.products.map((x) => `<li><a href="/${esc(x.slug)}">${esc(x.name)}</a></li>`).join('')}</ul></div>
-    <div><h4>Company</h4><ul><li><a href="/our-work">Our work</a></li>${pg('about', 'About us')}${pg('samples', 'Paid samples')}${pg('shipping', 'Shipping & delivery')}
+    <div><h4>Company</h4><ul><li><a href="/portfolio">Portfolio</a></li>${pg('about', 'About us')}${pg('samples', 'Paid samples')}${pg('shipping', 'Shipping & delivery')}
       <li><a href="/faq">FAQ</a></li>${d.posts.length ? '<li><a href="/blog">Blog</a></li>' : ''}${d.reviews.length ? '<li><a href="/reviews">Reviews</a></li>' : ''}
       ${pg('uk', 'UK')}${pg('usa', 'USA')}${pg('canada', 'Canada')}<li><a href="/quote">Get a quote</a></li></ul></div>
     <div><h4>Contact</h4>
@@ -282,9 +282,9 @@ function workPhotoCard(ctx, w) {
 }
 function homeWork(ctx) {
   return `<section id="our-work"><div class="wrap">
-  <div class="section-head"><span class="eyebrow">Our Work</span><h2>Real boxes we have <em>made</em></h2><p>No 3D renders. These are real boxes from our team, filmed as they open.</p></div>
+  <div class="section-head"><span class="eyebrow">Portfolio</span><h2>Real boxes we have <em>made</em></h2><p>No 3D renders. These are real boxes from our team, filmed as they open.</p></div>
   <div class="work-vids four">${WORK_VIDEOS.slice(0, 4).map(videoCard).join('')}</div>
-  <p class="more-link"><a class="btn btn-dark" href="/our-work">See all our work</a></p></div></section>`;
+  <p class="more-link"><a class="btn btn-dark" href="/portfolio">See our full portfolio</a></p></div></section>`;
 }
 
 function ourWork(ctx) {
@@ -293,7 +293,7 @@ function ourWork(ctx) {
     description: `${v[1]} – a real box made by ${LEGAL}.`,
     thumbnailUrl: `${ctx.site}/img/work/${v[0]}.jpg`, contentUrl: `${ctx.site}/img/work/${v[0]}.mp4`, uploadDate: '2026-10-31',
   }));
-  const body = `${pageHero(ctx, 'Real boxes, made by *our team*', 'Photos and short clips of boxes we have made. No 3D renders, just the real finish you will receive.', [['Home', '/'], ['Our Work', '/our-work']], 'Our Work')}
+  const body = `${pageHero(ctx, 'Real boxes, made by *our team*', 'Photos and short clips of boxes we have made. No 3D renders, just the real finish you will receive.', [['Home', '/'], ['Portfolio', '/portfolio']], 'Portfolio')}
 <section><div class="wrap">
   <div class="section-head"><span class="eyebrow">See them open</span><h2>Box openings</h2><p>Magnetic closures, double doors, inserts and lids, filmed on our table.</p></div>
   <div class="work-vids">${WORK_VIDEOS.map(videoCard).join('')}</div>
@@ -310,10 +310,10 @@ function ourWork(ctx) {
 </div></section>
 ${ctaBand(ctx, 'Like what you see?', `Send your size, finishes and quantity. We reply within 24 hours. Minimum ${ctx.min} pieces per design.`)}`;
   return layout(ctx, {
-    title: 'Our Work – Real Photos & Videos of Our Boxes',
+    title: 'Portfolio – Real Photos & Videos of Our Boxes',
     description: 'Real photos and videos of custom rigid boxes we have made: magnetic boxes, double-door boxes, shoe boxes, kraft boxes and display trays.',
-    path: '/our-work', body, image: '/img/work/double-door-box-doors-lifted-1200.jpg',
-    schema: [crumbSchema(ctx, [['Home', '/'], ['Our Work', '/our-work']])].concat(vids),
+    path: '/portfolio', body, image: '/img/work/double-door-box-doors-lifted-1200.jpg',
+    schema: [crumbSchema(ctx, [['Home', '/'], ['Portfolio', '/portfolio']])].concat(vids),
   });
 }
 
@@ -412,7 +412,7 @@ function home(ctx) {
   <div><b>Minimum Quantity</b>${ctx.min} pieces</div>
   <div><b>100% Custom</b>Any size, any colour</div>
   <div><b>Premium Finishes</b>Foil, emboss, soft-touch</div>
-  <div><b>UK &amp; US offices</b>Delivered to the UK, USA, Canada &amp; Europe</div>
+  <div><b>UK &amp; US companies</b>Delivered to the UK, USA, Canada &amp; Europe</div>
 </div></div>
 ${offerHtml}
 <section id="products"><div class="wrap">
@@ -713,7 +713,7 @@ function notFound(ctx) {
 /* ------------------------------------------------------------ sitemap */
 function sitemap(ctx) {
   const d = ctx.data;
-  const urls = [['/', null], ['/our-work', null], ['/quote', null], ['/faq', null]];
+  const urls = [['/', null], ['/portfolio', null], ['/quote', null], ['/faq', null]];
   ['rigid-boxes', 'perfume-boxes', 'samples', 'about', 'shipping', 'uk', 'usa', 'canada', 'privacy', 'terms', 'returns']
     .forEach((s) => { if (d.pages[s]) urls.push(['/' + s, d.pages[s].updated_at]); });
   d.products.forEach((p) => urls.push(['/' + p.slug, p.updated_at]));

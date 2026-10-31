@@ -8,7 +8,7 @@ const CANONICAL = (process.env.SITE_URL || 'https://wnpenterprise.vercel.app').t
 
 const COUNTRY = ['uk', 'usa', 'canada'];
 const CATEGORY = ['rigid-boxes', 'perfume-boxes'];
-const RESERVED = ['our-work', 'quote', 'faq', 'blog', 'reviews', 'review', 'sitemap.xml', 'robots.txt'];
+const RESERVED = ['portfolio', 'our-work', 'quote', 'faq', 'blog', 'reviews', 'review', 'sitemap.xml', 'robots.txt'];
 
 function send(res, status, body, type, cache) {
   res.statusCode = status;
@@ -50,7 +50,8 @@ module.exports = async (req, res) => {
     if (a === 'quote' && !b) {
       return send(res, 200, V.quotePage(ctx, { product: url.searchParams.get('product') || '', type: url.searchParams.get('type') || '' }));
     }
-    if (a === 'our-work' && !b) return send(res, 200, V.ourWork(ctx));
+    if (a === 'portfolio' && !b) return send(res, 200, V.ourWork(ctx));
+    if (a === 'our-work' && !b) { res.statusCode = 301; res.setHeader('Location', '/portfolio'); return res.end(); }
     if (a === 'faq' && !b) return send(res, 200, V.faqPage(ctx));
     if (a === 'blog') {
       if (!b) return send(res, 200, V.blogList(ctx));
