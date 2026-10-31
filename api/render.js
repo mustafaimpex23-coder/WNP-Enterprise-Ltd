@@ -3,7 +3,7 @@
 const { loadAll } = require('./_lib/data.js');
 const V = require('./_lib/views.js');
 
-const VERSION = '4';  // bump to refresh cached CSS/JS after a change
+const VERSION = '5';  // bump to refresh cached CSS/JS after a change
 const CANONICAL = (process.env.SITE_URL || 'https://wnpenterprise.vercel.app').trim().replace(/\/$/, '');
 
 const COUNTRY = ['uk', 'usa', 'canada'];

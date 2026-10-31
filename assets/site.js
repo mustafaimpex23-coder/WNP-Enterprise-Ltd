@@ -1,4 +1,4 @@
-/* WNP Enterprise – website script: menu, photo galleries, quote & review forms, cookies */
+/* Velvaro Boxes – website script: menu, photo galleries, quote & review forms, cookies */
 (function () {
   var body = document.body;
   var MIN = parseInt(body.getAttribute('data-min'), 10) || 50;
@@ -118,7 +118,7 @@
   function showError(note, e) {
     note.className = 'form-note bad js-note';
     note.textContent = (e && e.server ? e.message : 'Could not send – please check your internet and try again.') + ' ';
-    var a = document.createElement('a'); a.href = waLink('Hi WNP Enterprise, I would like a quote for custom boxes.');
+    var a = document.createElement('a'); a.href = waLink('Hi Velvaro Boxes, I would like a quote for custom boxes.');
     a.target = '_blank'; a.rel = 'noopener'; a.style.textDecoration = 'underline'; a.textContent = 'Message us on WhatsApp instead.';
     note.appendChild(a);
   }

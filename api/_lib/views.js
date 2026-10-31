@@ -1,9 +1,9 @@
-// HTML templates for every public page of the WNP Enterprise website.
+// HTML templates for every public page of the Velvaro Boxes website.
 // Pages are sent as finished HTML so Google and AI tools can read them.
 const { md, plain, esc } = require('./md.js');
 const PHOTOS = require('./photos.json');
 
-const BRAND = 'WNP Enterprise';
+const BRAND = 'Velvaro Boxes';
 const LEGAL = 'WNP Enterprise Ltd';
 const COMPANY_NO = '16012866';
 
@@ -71,8 +71,8 @@ function orgSchema(ctx) {
   const addr = postal(s.address, 'GB');
   const org = {
     '@context': 'https://schema.org', '@type': 'Organization', '@id': ctx.site + '/#org',
-    name: s.uk_company || LEGAL, alternateName: BRAND, url: ctx.site + '/',
-    description: 'Custom luxury rigid boxes and perfume packaging from 50 pieces, for brands in the UK, USA, Canada and Europe.',
+    name: BRAND, legalName: s.uk_company || LEGAL, url: ctx.site + '/',
+    description: 'Custom luxury rigid boxes, perfume boxes and display boxes from 50 pieces, for brands in the UK, USA, Canada and Europe.',
     email: s.email, telephone: '+' + digits(s.phone || s.whatsapp), address: addr,
     areaServed: ['GB', 'US', 'CA', 'EU'],
   };
@@ -128,7 +128,7 @@ function footerHtml(ctx) {
   const pg = (slug, label) => (d.pages[slug] ? `<li><a href="/${slug}">${esc(label)}</a></li>` : '');
   const phone = s.phone || s.whatsapp;
   return `<footer><div class="wrap"><div class="foot">
-    <div><a href="/" class="logo"><b>WNP</b><span>Enterprise Ltd</span></a>
+    <div><a href="/" class="logo"><b>Velvaro</b><span>Boxes</span></a>
       <p style="margin-top:16px;max-width:320px">${esc(s.footer_text)}</p></div>
     <div><h4>Box Styles</h4><ul>${d.products.map((x) => `<li><a href="/${esc(x.slug)}">${esc(x.name)}</a></li>`).join('')}</ul></div>
     <div><h4>Company</h4><ul><li><a href="/portfolio">Portfolio</a></li>${pg('about', 'About us')}${pg('samples', 'Paid samples')}${pg('shipping', 'Shipping & delivery')}
@@ -136,13 +136,13 @@ function footerHtml(ctx) {
       ${pg('uk', 'UK')}${pg('usa', 'USA')}${pg('canada', 'Canada')}<li><a href="/quote">Get a quote</a></li></ul></div>
     <div><h4>Contact</h4>
       <ul><li><a href="mailto:${esc(s.email)}">${esc(s.email)}</a></li>
-        <li><a href="${waLink(ctx, 'Hi WNP Enterprise, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">WhatsApp ${esc(s.whatsapp)}</a></li>
+        <li><a href="${waLink(ctx, 'Hi Velvaro Boxes, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">WhatsApp ${esc(s.whatsapp)}</a></li>
         ${s.phone ? `<li><a href="tel:+${digits(phone)}">Call ${esc(phone)}</a></li>` : ''}
         ${s.booking_url ? `<li><a href="${esc(s.booking_url)}" target="_blank" rel="noopener">Book a call</a></li>` : ''}</ul>
       <address style="margin-top:14px"><b>United Kingdom</b>In the UK we operate as <strong>${esc(s.uk_company)}</strong><br>${esc(s.address)}</address>
-      ${s.us_address ? `<address><b>United States</b>In the USA we operate as <strong>${esc(s.us_company)}</strong><br>${esc(s.us_address)}${s.us_email ? `<br><a href="mailto:${esc(s.us_email)}">${esc(s.us_email)}</a>` : ''}</address>` : ''}
+      ${s.us_address ? `<address><b>United States</b>In the USA we operate as <strong>${esc(s.us_company)}</strong><br>Registered address: ${esc(s.us_address)}${s.us_email ? `<br><a href="mailto:${esc(s.us_email)}">${esc(s.us_email)}</a>` : ''}</address>` : ''}
     </div></div>
-    <div class="legal"><span>© ${year()} ${LEGAL}. All rights reserved. · <a href="/privacy">Privacy Policy</a>${d.pages.terms ? ' · <a href="/terms">Terms</a>' : ''}${d.pages.returns ? ' · <a href="/returns">Returns</a>' : ''}</span>
+    <div class="legal"><span>© ${year()} ${BRAND}, a trading name of ${esc(ctx.settings.uk_company || LEGAL)}. All rights reserved. · <a href="/privacy">Privacy Policy</a>${d.pages.terms ? ' · <a href="/terms">Terms</a>' : ''}${d.pages.returns ? ' · <a href="/returns">Returns</a>' : ''}</span>
       <span>Registered in England &amp; Wales · Company No. ${COMPANY_NO}</span></div>
   </div></footer>`;
 }
@@ -166,13 +166,13 @@ ${o.noindex || ctx.noindex ? '<meta name="robots" content="noindex, nofollow">' 
 ${s.gsc_verification ? `<meta name="google-site-verification" content="${esc(s.gsc_verification.replace(/.*content="([^"]+)".*/, '$1'))}">` : ''}
 <meta name="theme-color" content="#141414">
 <meta property="og:type" content="${o.ogType || 'website'}">
-<meta property="og:site_name" content="${LEGAL}">
+<meta property="og:site_name" content="${BRAND}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${esc(canonical)}">
 <meta property="og:image" content="${esc(ogImg)}">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141414'/%3E%3Crect x='4' y='4' width='56' height='56' rx='11' fill='none' stroke='%23b8935a' stroke-width='2'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='36' font-weight='700' fill='%23b8935a'%3EW%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141414'/%3E%3Crect x='4' y='4' width='56' height='56' rx='11' fill='none' stroke='%23b8935a' stroke-width='2'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='36' font-weight='700' fill='%23b8935a'%3EV%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
@@ -184,7 +184,7 @@ ${schemas.map((x) => `<script type="application/ld+json">${JSON.stringify(x).rep
 <a class="skip" href="#main">Skip to content</a>
 ${s.announcement ? `<div class="announce">${esc(s.announcement)}</div>` : ''}
 <header><div class="wrap">
-  <a href="/" class="logo" aria-label="WNP Enterprise home"><b>WNP</b><span>Enterprise Ltd</span></a>
+  <a href="/" class="logo" aria-label="Velvaro Boxes home"><b>Velvaro</b><span>Boxes</span></a>
   <nav aria-label="Main"><button class="menu-btn" aria-label="Open menu" aria-controls="menu" aria-expanded="false"><span></span><span></span><span></span></button>
   ${navHtml(ctx)}</nav>
 </div></header>
@@ -192,7 +192,7 @@ ${s.announcement ? `<div class="announce">${esc(s.announcement)}</div>` : ''}
 ${o.body}
 </main>
 ${footerHtml(ctx)}
-<a class="wa-float" href="${waLink(ctx, 'Hi WNP Enterprise, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">${WA_ICON.replace('fill="currentColor"', 'fill="#fff"')}</a>
+<a class="wa-float" href="${waLink(ctx, 'Hi Velvaro Boxes, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">${WA_ICON.replace('fill="currentColor"', 'fill="#fff"')}</a>
 ${s.ga_id ? `<div class="cookie" id="cookie" role="dialog" aria-label="Cookies"><span>We use Google Analytics cookies to understand which pages are most useful. <a href="/privacy">Privacy policy</a></span><div class="btns"><button class="btn btn-ghost" data-cookie="no">No thanks</button><button class="btn btn-gold" data-cookie="yes">Accept</button></div></div>` : ''}
 <script src="/assets/site.js?v=${ctx.v}" defer></script>
 </body>
@@ -233,7 +233,7 @@ function fmtDate(d) { try { return new Date(d).toLocaleDateString('en-GB', { day
 function ctaBand(ctx, title, text) {
   return `<section class="cta-band"><div class="wrap"><h2>${esc(title || 'Ready to start your boxes?')}</h2>
     <p>${esc(text || `Send your size, finishes and quantity. We reply within 24 hours. Minimum ${ctx.min} pieces per design.`)}</p>
-    <div class="acts"><a class="btn btn-gold" href="/quote">Get a Quote</a><a class="btn btn-wa" href="${waLink(ctx, 'Hi WNP Enterprise, I would like a quote for custom boxes.')}" target="_blank" rel="noopener">${WA_ICON} Chat on WhatsApp</a></div></div></section>`;
+    <div class="acts"><a class="btn btn-gold" href="/quote">Get a Quote</a><a class="btn btn-wa" href="${waLink(ctx, 'Hi Velvaro Boxes, I would like a quote for custom boxes.')}" target="_blank" rel="noopener">${WA_ICON} Chat on WhatsApp</a></div></div></section>`;
 }
 
 function pageHero(ctx, title, sub, items, eyebrow) {
@@ -277,7 +277,7 @@ function workPhotoCard(ctx, w) {
   const prod = ctx.data.products.find((p) => p.slug === w[2]);
   const href = prod ? '/' + prod.slug : '/quote?product=' + encodeURIComponent(w[1]);
   return `<a class="work-ph" href="${esc(href)}"><div class="work-img"><picture><source type="image/webp" srcset="/img/work/${w[0]}-600.webp 600w, /img/work/${w[0]}-1200.webp 1200w" sizes="(max-width:760px) 50vw, 25vw">
-    <img src="/img/work/${w[0]}-600.jpg" alt="${esc(w[1])} made by ${LEGAL}" width="600" height="600" loading="lazy" decoding="async"></picture><span class="real-tag">Real photo</span></div>
+    <img src="/img/work/${w[0]}-600.jpg" alt="${esc(w[1])} made by ${BRAND}" width="600" height="600" loading="lazy" decoding="async"></picture><span class="real-tag">Real photo</span></div>
     <span class="cap">${esc(w[1])}${prod ? `<small>${esc(prod.name)} →</small>` : '<small>Get a quote →</small>'}</span></a>`;
 }
 function homeWork(ctx) {
@@ -290,7 +290,7 @@ function homeWork(ctx) {
 function ourWork(ctx) {
   const vids = WORK_VIDEOS.concat(FACTORY_VIDEOS).map((v) => ({
     '@context': 'https://schema.org', '@type': 'VideoObject', name: v[1],
-    description: `${v[1]} – a real box made by ${LEGAL}.`,
+    description: `${v[1]} – a real box made by ${BRAND}.`,
     thumbnailUrl: `${ctx.site}/img/work/${v[0]}.jpg`, contentUrl: `${ctx.site}/img/work/${v[0]}.mp4`, uploadDate: '2026-10-31',
   }));
   const body = `${pageHero(ctx, 'Real boxes, made by *our team*', 'Photos and short clips of boxes we have made. No 3D renders, just the real finish you will receive.', [['Home', '/'], ['Portfolio', '/portfolio']], 'Portfolio')}
@@ -369,7 +369,7 @@ function quoteForm(ctx, o = {}) {
     <div class="field"><label for="f_msg">${o.us ? 'Colors' : 'Colours'}, finishes &amp; other details</label><textarea id="f_msg" name="details" placeholder="${o.us ? 'Color' : 'Colour'}, logo finish (foil / emboss), insert type, deadline…"></textarea></div>
     <div class="form-actions">
       <button type="submit" class="btn btn-gold">${type === 'sample' ? 'Request sample price' : isEnq ? 'Send enquiry' : 'Send quote request'}</button>
-      <a class="btn btn-wa" href="${waLink(ctx, 'Hi WNP Enterprise, I would like a quote for custom boxes.')}" target="_blank" rel="noopener">${WA_ICON} Or chat with us on WhatsApp</a>
+      <a class="btn btn-wa" href="${waLink(ctx, 'Hi Velvaro Boxes, I would like a quote for custom boxes.')}" target="_blank" rel="noopener">${WA_ICON} Or chat with us on WhatsApp</a>
     </div>
     <p class="form-note js-note">Minimum order ${ctx.min} pieces · We reply within 24 hours</p>
     <p class="consent">By sending this form you agree to our <a href="/privacy">Privacy Policy</a>.</p>
@@ -388,7 +388,7 @@ function home(ctx) {
   const offerHtml = offers.length ? `<section class="offers" id="offers"><div class="wrap"><div class="section-head"><span class="eyebrow">Offers</span><h2>${rich(s.offers_title)}</h2></div>
     <div class="offer-grid">${offers.map((o) => {
       const link = o.cta_link || '/quote';
-      const href = link === 'whatsapp' ? waLink(ctx, `Hi WNP Enterprise, I am interested in your offer: "${o.title}".`)
+      const href = link === 'whatsapp' ? waLink(ctx, `Hi Velvaro Boxes, I am interested in your offer: "${o.title}".`)
         : link === 'quote' ? '/quote?product=' + encodeURIComponent('Offer: ' + o.title)
         : link === '#samples' ? '/samples' : link === '#products' ? '/#products' : link === '#contact' ? '/#contact' : link;
       return `<article class="offer">${o.image ? `<div class="ph-box">${photo(o.image, o.title)}</div>` : ''}<div class="offer-body"><span class="eyebrow">Offer</span><h3>${esc(o.title)}</h3><p>${esc(o.text || '')}</p>
@@ -405,7 +405,7 @@ function home(ctx) {
   <h1>${rich(s.hero_title)}</h1>
   <p>${esc(s.hero_subtitle)}</p>
   <div class="hero-actions"><a href="/quote" class="btn btn-gold">Get a Quote</a>
-    <a class="btn btn-outline" href="${waLink(ctx, 'Hi WNP Enterprise, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">Talk to a Representative</a></div>
+    <a class="btn btn-outline" href="${waLink(ctx, 'Hi Velvaro Boxes, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">Talk to a Representative</a></div>
 </div></section>
 <div class="trust"><div class="wrap">
   <div><b>UK Registered</b>Company No. ${COMPANY_NO}</div>
@@ -432,7 +432,7 @@ ${homeWork(ctx)}
   <div><span class="eyebrow" style="color:var(--gold)">Paid Samples</span><h2>See it in your hands before you order in bulk</h2>
     <p>Want to check the quality, size and finish before placing a full order? Order a paid sample of any box style.</p>
     <div class="sample-actions"><a class="btn btn-gold" href="/samples">Order a Paid Sample</a>
-      <a class="btn btn-wa" href="${waLink(ctx, 'Hi WNP Enterprise, I would like to order a paid sample. Please share the sample price and details.')}" target="_blank" rel="noopener">Ask on WhatsApp</a></div></div>
+      <a class="btn btn-wa" href="${waLink(ctx, 'Hi Velvaro Boxes, I would like to order a paid sample. Please share the sample price and details.')}" target="_blank" rel="noopener">Ask on WhatsApp</a></div></div>
   <ul class="sample-points">
     <li><span><b>Sample price depends on size, style and finishes.</b> We confirm the exact cost before you pay.</span></li>
     <li><span>A single custom sample costs more per piece than bulk, because it is made individually.</span></li>
@@ -440,7 +440,7 @@ ${homeWork(ctx)}
     <li><span>Sample shipping is charged separately, based on your country.</span></li>
   </ul></div></section>
 <section id="why"><div class="wrap">
-  <div class="section-head"><span class="eyebrow">Why WNP Enterprise</span><h2>${rich(s.why_title)}</h2><p>${esc(s.why_text)}</p></div>
+  <div class="section-head"><span class="eyebrow">Why Velvaro Boxes</span><h2>${rich(s.why_title)}</h2><p>${esc(s.why_text)}</p></div>
   <div class="why-grid">
     <div class="why-item"><div class="ico">◈</div><h3>One point of contact</h3><p>One team from your first message to delivery.</p></div>
     <div class="why-item"><div class="ico">✎</div><h3>Made to your size</h3><p>Every box is built around your bottle or product.</p></div>
@@ -458,20 +458,20 @@ ${faqs.length ? `<section id="faq" style="background:var(--paper-2)"><div class=
   <div class="intro"><span class="eyebrow" style="color:var(--gold)">Contact Us</span><h2>${rich(s.contact_title)}</h2><p>${esc(s.contact_text)}</p>
     <ul class="contact-list">
       <li><span class="i">✉</span><div><b>Email</b><a href="mailto:${esc(s.email)}">${esc(s.email)}</a></div></li>
-      <li><span class="i">☎</span><div><b>WhatsApp</b><a href="${waLink(ctx, 'Hi WNP Enterprise, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">${esc(s.whatsapp)}</a></div></li>
+      <li><span class="i">☎</span><div><b>WhatsApp</b><a href="${waLink(ctx, 'Hi Velvaro Boxes, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">${esc(s.whatsapp)}</a></div></li>
       ${s.phone ? `<li><span class="i">✆</span><div><b>Phone</b><a href="tel:+${digits(s.phone)}">${esc(s.phone)}</a></div></li>` : ''}
       ${s.booking_url ? `<li><span class="i">◷</span><div><b>Book a call</b><a href="${esc(s.booking_url)}" target="_blank" rel="noopener">Pick a time that suits you</a></div></li>` : ''}
       <li><span class="i">⌂</span><div><b>United Kingdom</b>In the UK we operate as <strong style="color:#fff">${esc(s.uk_company)}</strong><br>${esc(s.address)}</div></li>
-      ${s.us_address ? `<li><span class="i">⌂</span><div><b>United States</b>In the USA we operate as <strong style="color:#fff">${esc(s.us_company)}</strong><br>${esc(s.us_address)}${s.us_email ? `<br><a href="mailto:${esc(s.us_email)}">${esc(s.us_email)}</a>` : ''}</div></li>` : ''}
+      ${s.us_address ? `<li><span class="i">⌂</span><div><b>United States</b>In the USA we operate as <strong style="color:#fff">${esc(s.us_company)}</strong><br>Registered address: ${esc(s.us_address)}${s.us_email ? `<br><a href="mailto:${esc(s.us_email)}">${esc(s.us_email)}</a>` : ''}</div></li>` : ''}
     </ul></div>
   ${quoteForm(ctx, { type: 'enquiry' })}
 </div></section>`;
 
   return layout(ctx, {
-    rawTitle: 'Custom Luxury Rigid Boxes & Perfume Boxes | WNP Enterprise',
-    description: `Custom luxury rigid boxes and perfume boxes made to your size, from just ${ctx.min} pieces. Delivered to the UK, USA, Canada and Europe.`,
+    rawTitle: 'Custom Rigid, Perfume & Display Boxes | Velvaro Boxes',
+    description: `Custom luxury rigid boxes, perfume boxes and display boxes made to your size, from just ${ctx.min} pieces. Delivered to the UK, USA, Canada and Europe.`,
     path: '/', body,
-    schema: [{ '@context': 'https://schema.org', '@type': 'WebSite', name: LEGAL, url: ctx.site + '/' }],
+    schema: [{ '@context': 'https://schema.org', '@type': 'WebSite', name: BRAND, url: ctx.site + '/' }],
   });
 }
 
@@ -520,7 +520,7 @@ function product(ctx, p) {
       <div class="design-body"><h3>${esc(dz.name)}</h3><p>${esc(dz.description || '')}</p>
         ${dz.tags.length ? `<div class="tags">${dz.tags.map((t) => `<span>${esc(t)}</span>`).join('')}</div>` : ''}
         <div class="design-actions"><a class="btn btn-dark btn-sm" href="/quote?product=${encodeURIComponent(full)}">Get a quote for this design</a>
-          <a class="btn btn-wa btn-sm" href="${waLink(ctx, `Hi WNP Enterprise, I am interested in the "${full}". Please share price and details. (Minimum ${min} pieces)`)}" target="_blank" rel="noopener">${WA_ICON} Talk to a representative</a></div></div></article>`;
+          <a class="btn btn-wa btn-sm" href="${waLink(ctx, `Hi Velvaro Boxes, I am interested in the "${full}". Please share price and details. (Minimum ${min} pieces)`)}" target="_blank" rel="noopener">${WA_ICON} Talk to a representative</a></div></div></article>`;
   }).join('');
 
   const body = `
@@ -535,7 +535,7 @@ ${pageHero(ctx, p.name, p.short_desc, items, p.badge || 'Custom rigid box')}
     <p class="lead">${esc(p.short_desc || '')} Choose a design below, or tell us your own idea.</p>
     <div class="moq-bar"><span><b>Minimum order: ${min} pieces</b> per design · The more you order, the lower the price per box</span></div>
     <div class="pp-actions"><a class="btn btn-gold" href="/quote?product=${encodeURIComponent(p.name)}">Get a Quote</a>
-      <a class="btn btn-wa" href="${waLink(ctx, `Hi WNP Enterprise, I am interested in the "${p.name}". Please share price and details. (Minimum ${min} pieces)`)}" target="_blank" rel="noopener">${WA_ICON} WhatsApp</a>
+      <a class="btn btn-wa" href="${waLink(ctx, `Hi Velvaro Boxes, I am interested in the "${p.name}". Please share price and details. (Minimum ${min} pieces)`)}" target="_blank" rel="noopener">${WA_ICON} WhatsApp</a>
       ${d.pages.samples ? '<a class="btn btn-dark" href="/samples">Order a sample</a>' : ''}</div>
     <div class="facts"><h3>Specifications</h3><ul>${facts.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>${sizesTable(p.sizes) ? `<h3 style="margin-top:18px">Popular sizes</h3>${sizesTable(p.sizes)}` : ''}</div>
   </div>
@@ -606,7 +606,7 @@ function quotePage(ctx, q) {
       <li>✦ The higher the quantity, the lower the price per box</li>
       <li>✦ Delivery is included in bulk quotes</li>
       <li>✦ Paid samples available before bulk</li></ul></div>
-    <div class="side-card"><h3>Prefer to talk?</h3><p>Message us on WhatsApp at <a style="text-decoration:underline" href="${waLink(ctx, 'Hi WNP Enterprise, I would like a quote for custom boxes.')}" target="_blank" rel="noopener">${esc(s.whatsapp)}</a> or email <a style="text-decoration:underline" href="mailto:${esc(s.email)}">${esc(s.email)}</a>.</p>
+    <div class="side-card"><h3>Prefer to talk?</h3><p>Message us on WhatsApp at <a style="text-decoration:underline" href="${waLink(ctx, 'Hi Velvaro Boxes, I would like a quote for custom boxes.')}" target="_blank" rel="noopener">${esc(s.whatsapp)}</a> or email <a style="text-decoration:underline" href="mailto:${esc(s.email)}">${esc(s.email)}</a>.</p>
       ${s.booking_url ? `<p style="margin-top:10px"><a class="btn btn-dark btn-sm" href="${esc(s.booking_url)}" target="_blank" rel="noopener">Book a call</a></p>` : ''}</div>
     <div class="side-card"><h3>Artwork</h3><p>A vector logo (AI, EPS, SVG or PDF) is best. You can send it by email or WhatsApp after you submit.</p></div>
   </aside>
@@ -681,7 +681,7 @@ function reviewsPage(ctx) {
 <section><div class="wrap">${r.length ? `<div class="rating-big"><b>${avg.toFixed(1)}</b>${stars(avg)}<span>from ${r.length} review${r.length === 1 ? '' : 's'}</span></div><div class="reviews">${r.map((x) => reviewCard(ctx, x)).join('')}</div>`
     : '<p style="text-align:center;color:var(--muted)">Reviews from our customers will appear here.</p>'}</div></section>
 ${ctaBand(ctx)}`;
-  return layout(ctx, { title: 'Customer Reviews', description: 'Reviews from brands that ordered custom rigid boxes and perfume packaging from WNP Enterprise.', path: '/reviews', body, schema: [crumbSchema(ctx, items)] });
+  return layout(ctx, { title: 'Customer Reviews', description: 'Reviews from brands that ordered custom rigid boxes and perfume packaging from Velvaro Boxes.', path: '/reviews', body, schema: [crumbSchema(ctx, items)] });
 }
 
 function reviewForm(ctx, token) {
@@ -700,7 +700,7 @@ function reviewForm(ctx, token) {
 </form>
 <div class="form-done" role="status"><div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><h3>Thank you!</h3><p>We have received your review.</p></div>
 </div></div></section>`;
-  return layout(ctx, { title: 'Leave a Review', description: 'Leave a review for your WNP Enterprise boxes.', path: '/review/' + token, body, noindex: true });
+  return layout(ctx, { title: 'Leave a Review', description: 'Leave a review for your Velvaro Boxes order.', path: '/review/' + token, body, noindex: true });
 }
 
 function notFound(ctx) {

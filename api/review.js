@@ -10,7 +10,7 @@ const { sb, pushAll } = require('./quote.js');
 
 const env = (k, d = '') => (process.env[k] || d).trim();
 const SITE_URL = env('SITE_URL', 'https://wnpenterprise.vercel.app').replace(/\/$/, '');
-const BRAND = env('BRAND_NAME', 'WNP Enterprise');
+const BRAND = env('BRAND_NAME', 'Velvaro Boxes');
 const clip = (v, n) => (v == null ? '' : String(v).trim().slice(0, n));
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
