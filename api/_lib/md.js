@@ -1,6 +1,7 @@
 // Tiny, safe Markdown renderer for pages and blog posts written in the
 // admin panel. Supports: ## / ### headings, paragraphs, **bold**, *italic*,
-// [links](url), ![images](url), - bullet and 1. numbered lists, > quotes, ---.
+// [links](url), ![images](url), - bullet and 1. numbered lists, > quotes, ---,
+// and simple | pipe | tables |.
 // All text is HTML-escaped first, so nothing typed can break the page.
 
 const esc = (s) =>
@@ -30,17 +31,29 @@ function inline(text) {
 function md(src) {
   const lines = String(src || '').replace(/\r\n?/g, '\n').split('\n');
   const out = [];
-  let para = [], list = null, quote = [];
+  let para = [], list = null, quote = [], table = [];
+
+  const cells = (row) => row.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((c) => c.trim());
+  const flushTable = () => {
+    if (!table.length) return;
+    const rows = table.filter((r) => !/^\|?\s*:?-{2,}/.test(r.trim()));
+    const head = cells(rows[0]), body = rows.slice(1).map(cells);
+    out.push('<div class="table-wrap"><table class="md-table"><thead><tr>' + head.map((c) => '<th>' + inline(c) + '</th>').join('') + '</tr></thead><tbody>' +
+      body.map((r) => '<tr>' + r.map((c) => '<td>' + inline(c) + '</td>').join('') + '</tr>').join('') + '</tbody></table></div>');
+    table = [];
+  };
 
   const flushPara = () => { if (para.length) { out.push('<p>' + inline(para.join(' ')) + '</p>'); para = []; } };
   const flushList = () => { if (list) { out.push(`<${list.type}>` + list.items.map((i) => '<li>' + inline(i) + '</li>').join('') + `</${list.type}>`); list = null; } };
   const flushQuote = () => { if (quote.length) { out.push('<blockquote>' + inline(quote.join(' ')) + '</blockquote>'); quote = []; } };
-  const flushAll = () => { flushPara(); flushList(); flushQuote(); };
+  const flushAll = () => { flushPara(); flushList(); flushQuote(); flushTable(); };
 
   for (const raw of lines) {
     const line = raw.trimEnd();
     let m;
     if (!line.trim()) { flushAll(); continue; }
+    if (/^\s*\|.*\|\s*$/.test(line)) { flushPara(); flushList(); flushQuote(); table.push(line); continue; }
+    flushTable();
     if ((m = line.match(/^(#{1,4})\s+(.*)$/))) {
       flushAll();
       const lvl = Math.min(4, Math.max(2, m[1].length)); // a single # still becomes h2 (the page has its own h1)
