@@ -193,7 +193,7 @@ ${o.body}
 </main>
 ${footerHtml(ctx)}
 <a class="wa-float" href="${waLink(ctx, 'Hi WNP Enterprise, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">${WA_ICON.replace('fill="currentColor"', 'fill="#fff"')}</a>
-${s.ga_id ? `<div class="cookie" id="cookie" role="dialog" aria-label="Cookies"><span>We use Google Analytics cookies to see which pages are useful. <a href="/privacy">Privacy policy</a></span><div class="btns"><button class="btn btn-ghost" data-cookie="no">No thanks</button><button class="btn btn-gold" data-cookie="yes">Accept</button></div></div>` : ''}
+${s.ga_id ? `<div class="cookie" id="cookie" role="dialog" aria-label="Cookies"><span>We use Google Analytics cookies to understand which pages are most useful. <a href="/privacy">Privacy policy</a></span><div class="btns"><button class="btn btn-ghost" data-cookie="no">No thanks</button><button class="btn btn-gold" data-cookie="yes">Accept</button></div></div>` : ''}
 <script src="/assets/site.js?v=${ctx.v}" defer></script>
 </body>
 </html>`;
@@ -365,7 +365,7 @@ function quoteForm(ctx, o = {}) {
         <input name="size_w" type="number" step="0.1" min="0" inputmode="decimal" placeholder="Width" aria-label="Width">
         <input name="size_h" type="number" step="0.1" min="0" inputmode="decimal" placeholder="Height" aria-label="Height">
         <select name="size_unit" aria-label="Unit"><option value="cm"${unit === 'cm' ? ' selected' : ''}>cm</option><option value="in"${unit === 'in' ? ' selected' : ''}>inches</option></select>
-      </div><div class="hint">Or your bottle size. Leave empty if you are not sure yet.</div></div>
+      </div><div class="hint">Or give your bottle size. Leave this blank if you are not sure yet.</div></div>
     <div class="field"><label for="f_msg">${o.us ? 'Colors' : 'Colours'}, finishes &amp; other details</label><textarea id="f_msg" name="details" placeholder="${o.us ? 'Color' : 'Colour'}, logo finish (foil / emboss), insert type, deadline…"></textarea></div>
     <div class="form-actions">
       <button type="submit" class="btn btn-gold">${type === 'sample' ? 'Request sample price' : isEnq ? 'Send enquiry' : 'Send quote request'}</button>
@@ -412,7 +412,7 @@ function home(ctx) {
   <div><b>Minimum Quantity</b>${ctx.min} pieces</div>
   <div><b>100% Custom</b>Any size, any colour</div>
   <div><b>Premium Finishes</b>Foil, emboss, soft-touch</div>
-  <div><b>UK &amp; US offices</b>Delivered to UK, USA, Canada &amp; Europe</div>
+  <div><b>UK &amp; US offices</b>Delivered to the UK, USA, Canada &amp; Europe</div>
 </div></div>
 ${offerHtml}
 <section id="products"><div class="wrap">
@@ -429,7 +429,7 @@ ${homeWork(ctx)}
     <div class="step"><h3>Delivered</h3><p>Export-packed and delivered to your door in the UK, USA, Canada or Europe.</p></div>
   </div></div></section>
 <section class="sample" id="samples"><div class="wrap">
-  <div><span class="eyebrow" style="color:var(--gold)">Paid Samples</span><h2>See it in your hands before bulk</h2>
+  <div><span class="eyebrow" style="color:var(--gold)">Paid Samples</span><h2>See it in your hands before you order in bulk</h2>
     <p>Want to check the quality, size and finish before placing a full order? Order a paid sample of any box style.</p>
     <div class="sample-actions"><a class="btn btn-gold" href="/samples">Order a Paid Sample</a>
       <a class="btn btn-wa" href="${waLink(ctx, 'Hi WNP Enterprise, I would like to order a paid sample. Please share the sample price and details.')}" target="_blank" rel="noopener">Ask on WhatsApp</a></div></div>
@@ -445,7 +445,7 @@ ${homeWork(ctx)}
     <div class="why-item"><div class="ico">◈</div><h3>One point of contact</h3><p>One team from your first message to delivery.</p></div>
     <div class="why-item"><div class="ico">✎</div><h3>Made to your size</h3><p>Every box is built around your bottle or product.</p></div>
     <div class="why-item"><div class="ico">✦</div><h3>Premium finishes</h3><p>Foil, embossing, spot UV, soft-touch, velvet and foam inserts.</p></div>
-    <div class="why-item"><div class="ico">✈</div><h3>Delivered to you</h3><p>Safe export packing to the UK, USA, Canada and Europe.</p></div>
+    <div class="why-item"><div class="ico">✈</div><h3>Delivered to you</h3><p>Safely export-packed for the UK, USA, Canada and Europe.</p></div>
   </div></div></section>
 ${reviews.length ? `<section style="background:var(--paper-2)"><div class="wrap"><div class="section-head"><span class="eyebrow">Reviews</span><h2>What our customers say</h2></div>
   <div class="reviews">${reviews.map((r) => reviewCard(ctx, r)).join('')}</div><p class="more-link"><a class="btn btn-dark" href="/reviews">All reviews</a></p></div></section>` : ''}
@@ -533,7 +533,7 @@ ${pageHero(ctx, p.name, p.short_desc, items, p.badge || 'Custom rigid box')}
   <div class="pp-info">
     <h2>Made to your size, colour and logo</h2>
     <p class="lead">${esc(p.short_desc || '')} Choose a design below, or tell us your own idea.</p>
-    <div class="moq-bar"><span><b>Minimum order: ${min} pieces</b> per design · Higher quantity = lower price per box</span></div>
+    <div class="moq-bar"><span><b>Minimum order: ${min} pieces</b> per design · The more you order, the lower the price per box</span></div>
     <div class="pp-actions"><a class="btn btn-gold" href="/quote?product=${encodeURIComponent(p.name)}">Get a Quote</a>
       <a class="btn btn-wa" href="${waLink(ctx, `Hi WNP Enterprise, I am interested in the "${p.name}". Please share price and details. (Minimum ${min} pieces)`)}" target="_blank" rel="noopener">${WA_ICON} WhatsApp</a>
       ${d.pages.samples ? '<a class="btn btn-dark" href="/samples">Order a sample</a>' : ''}</div>
@@ -577,7 +577,7 @@ ${o.grid ? `<section style="background:var(--paper-2)"><div class="wrap"><div cl
 ${o.noCta ? '' : ctaBand(ctx, o.ctaTitle, us ? `Send your size, colors and quantity. We reply within 24 hours. Minimum ${ctx.min} pieces per design.` : undefined)}`;
   return layout(ctx, {
     title: page.title, description: page.meta_description || plain(page.body, 155), path: '/' + page.slug, body,
-    lang: us ? 'en-US' : 'en-GB',
+    lang: o.lang || (us ? 'en-US' : 'en-GB'),
     schema: [crumbSchema(ctx, items)].concat(o.schema || []),
   });
 }
@@ -623,7 +623,7 @@ function samplesPage(ctx, page) {
 
 function countryPage(ctx, page) {
   const us = page.slug === 'usa' || page.slug === 'canada';
-  return genericPage(ctx, page, { us, grid: productGrid(ctx, ctx.data.products), eyebrow: page.slug === 'uk' ? 'United Kingdom' : page.slug === 'usa' ? 'United States' : 'Canada' });
+  return genericPage(ctx, page, { us, lang: page.slug === 'canada' ? 'en-CA' : undefined, grid: productGrid(ctx, ctx.data.products), eyebrow: page.slug === 'uk' ? 'United Kingdom' : page.slug === 'usa' ? 'United States' : 'Canada' });
 }
 
 function faqPage(ctx) {
