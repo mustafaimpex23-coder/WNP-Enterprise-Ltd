@@ -58,6 +58,19 @@
   }
   $$('.ph-box img').forEach(function (img) { if (img.complete) fitCheck(img); else img.addEventListener('load', function () { fitCheck(img); }); });
 
+  /* ---------- real videos: play while on screen, pause when scrolled away ---------- */
+  var vids = $$('video[data-auto]');
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (vids.length) {
+    if (still || !('IntersectionObserver' in window)) vids.forEach(function (v) { v.controls = true; });
+    else {
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { var v = e.target; if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function () { v.controls = true; }); } else v.pause(); });
+      }, { threshold: 0.35 });
+      vids.forEach(function (v) { io.observe(v); });
+    }
+  }
+
   /* ---------- quote / sample / enquiry forms ---------- */
   function val(f, n) { var el = f.elements[n]; return el ? String(el.value || '').trim() : ''; }
   function typeOf(f) {
