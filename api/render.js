@@ -3,10 +3,10 @@
 const { loadAll } = require('./_lib/data.js');
 const V = require('./_lib/views.js');
 
-const VERSION = '7';  // bump to refresh cached CSS/JS after a change
+const VERSION = '8';  // bump to refresh cached CSS/JS after a change
 const CANONICAL = (process.env.SITE_URL || 'https://wnpenterprise.vercel.app').trim().replace(/\/$/, '');
 
-const COUNTRY = ['uk', 'usa', 'canada'];
+const COUNTRY = ['uk', 'usa', 'canada', 'europe'];
 const CATEGORY = ['rigid-boxes', 'perfume-boxes'];
 const RESERVED = ['portfolio', 'our-work', 'quote', 'faq', 'blog', 'reviews', 'review', 'sitemap.xml', 'robots.txt'];
 

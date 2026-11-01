@@ -95,9 +95,13 @@
     var u = val(f, 'size_unit') || 'cm';
     var nums = [l, w, h].filter(function (x) { return x > 0; });
     if (!nums.length) return '';
-    var r1 = function (x) { return Math.round(x * 10) / 10; };
-    var main = nums.map(r1).join(' × ') + (u === 'in' ? ' in' : ' cm');
-    var other = nums.map(function (x) { return r1(u === 'in' ? x * 2.54 : x / 2.54); }).join(' × ') + (u === 'in' ? ' cm' : ' in');
+    var r = function (x, d) { var k = Math.pow(10, d); return Math.round(x * k) / k; };
+    var toMm = { mm: 1, cm: 10, in: 25.4 }[u] || 10;
+    var main = nums.map(function (x) { return r(x, 2); }).join(' × ') + ' ' + u;
+    // always show the other system too: inches for metric sizes, millimetres for inches
+    var other = u === 'in'
+      ? nums.map(function (x) { return Math.round(x * toMm); }).join(' × ') + ' mm'
+      : nums.map(function (x) { return r(x * toMm / 25.4, 2); }).join(' × ') + ' in';
     return main + ' (' + other + ')';
   }
   function post(url, data) {

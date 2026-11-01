@@ -75,6 +75,11 @@ function orgSchema(ctx) {
     description: 'Custom luxury rigid boxes, perfume boxes and display boxes from 50 pieces, for brands in the UK, USA, Canada and Europe.',
     email: s.email, telephone: '+' + digits(s.phone || s.whatsapp), address: addr,
     areaServed: ['GB', 'US', 'CA', 'EU'],
+    contactPoint: [
+      { '@type': 'ContactPoint', contactType: 'sales', telephone: '+' + digits(s.phone || s.whatsapp), email: s.email, areaServed: ['GB', 'EU'], availableLanguage: ['en'] },
+      { '@type': 'ContactPoint', contactType: 'customer service', email: s.us_email || s.email, areaServed: ['US', 'CA'], availableLanguage: ['en'],
+        ...(s.us_phone ? { telephone: '+' + digits(s.us_phone) } : {}) },
+    ],
   };
   if (s.us_address) {
     // The US business is its own company with its own address
@@ -98,6 +103,36 @@ function crumbs(items) {
 }
 
 /* --------------------------------------------------------------- layout */
+// Search titles (30–60 characters) and, for pages built in code, search descriptions
+const SEO = {
+  '/': { t: `Custom Rigid Boxes & Luxury Packaging | ${BRAND}`, d: 'Custom luxury rigid boxes, perfume packaging and display boxes from 50 pieces. Premium finishes, delivered to the UK, USA, Canada and Europe.' },
+  '/portfolio': { t: `Custom Box Portfolio – Real Rigid Boxes | ${BRAND}`, d: 'Real photos and videos of custom rigid boxes we have made: magnetic closures, double-door boxes, drawer boxes, kraft boxes and display trays.' },
+  '/quote': { t: `Request a Custom Packaging Quote | ${BRAND}`, d: 'Get a quote for custom luxury rigid boxes, perfume boxes and display packaging from 50 pieces. We reply within 24 hours, for UK, US, Canadian and EU orders.' },
+  '/faq': { t: `Packaging FAQs – Custom Rigid Boxes | ${BRAND}`, d: 'Answers about custom rigid boxes: the 50-piece minimum, sizes in mm and inches, inserts, paid samples, artwork files, finishes and international delivery.' },
+  '/rigid-boxes': { t: `Custom Rigid Boxes Wholesale | ${BRAND}` },
+  '/perfume-boxes': { t: `Custom Perfume Boxes & Fragrance Packaging | ${BRAND}` },
+  '/samples': { t: `Order Paid Custom Packaging Samples | ${BRAND}` },
+  '/about': { t: `About ${BRAND} – UK & US Packaging Supplier` },
+  '/shipping': { t: `Shipping & Delivery – UK, USA, Canada, EU | ${BRAND}` },
+  '/uk': { t: `Custom Rigid Boxes UK | ${BRAND}` },
+  '/usa': { t: `Custom Rigid Boxes USA | ${BRAND}` },
+  '/canada': { t: `Custom Rigid Boxes Canada | ${BRAND}` },
+  '/europe': { t: `Custom Rigid Boxes Europe | ${BRAND}` },
+  '/privacy': { t: `Privacy Policy – Data Protection | ${BRAND}` },
+  '/terms': { t: `Terms of Sale – Custom Packaging | ${BRAND}` },
+  '/returns': { t: `Returns Policy – Custom Boxes | ${BRAND}` },
+};
+
+// Country versions of the site, so Google shows each buyer their own page
+const REGIONS = [['uk', ['en-gb']], ['usa', ['en-us']], ['canada', ['en-ca']], ['europe', ['en-ie', 'en-de', 'en-fr', 'en-nl', 'en-es', 'en-it']]];
+function hreflangTags(ctx, path) {
+  const d = ctx.data;
+  const pages = REGIONS.filter(([slug]) => d.pages[slug]);
+  if (!pages.length || !(path === '/' || pages.some(([slug]) => path === '/' + slug))) return '';
+  return pages.map(([slug, langs]) => langs.map((l) => `<link rel="alternate" hreflang="${l}" href="${ctx.site}/${slug}">`).join('\n')).join('\n') +
+    `\n<link rel="alternate" hreflang="x-default" href="${ctx.site}/">`;
+}
+
 function pageTitle(t) {
   if (String(t).includes(BRAND)) return t;
   const full = `${t} | ${BRAND}`;
@@ -133,7 +168,7 @@ function footerHtml(ctx) {
     <div><h4>Box Styles</h4><ul>${d.products.map((x) => `<li><a href="/${esc(x.slug)}">${esc(x.name)}</a></li>`).join('')}</ul></div>
     <div><h4>Company</h4><ul><li><a href="/portfolio">Portfolio</a></li>${pg('about', 'About us')}${pg('samples', 'Paid samples')}${pg('shipping', 'Shipping & delivery')}
       <li><a href="/faq">FAQ</a></li>${d.posts.length ? '<li><a href="/blog">Blog</a></li>' : ''}${d.reviews.length ? '<li><a href="/reviews">Reviews</a></li>' : ''}
-      ${pg('uk', 'UK')}${pg('usa', 'USA')}${pg('canada', 'Canada')}<li><a href="/quote">Get a quote</a></li></ul></div>
+      ${pg('uk', 'UK')}${pg('usa', 'USA')}${pg('canada', 'Canada')}${pg('europe', 'Europe')}<li><a href="/quote">Get a quote</a></li></ul></div>
     <div><h4>Contact</h4>
       <ul><li><a href="mailto:${esc(s.email)}">${esc(s.email)}</a></li>
         <li><a href="${waLink(ctx, 'Hi Pack Nest, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">WhatsApp ${esc(s.whatsapp)}</a></li>
@@ -149,8 +184,9 @@ function footerHtml(ctx) {
 
 function layout(ctx, o) {
   const s = ctx.settings;
-  const title = o.rawTitle || pageTitle(o.title);
-  const desc = clip(o.description || s.hero_subtitle, 158);
+  const seo = SEO[o.path || ctx.path] || {};
+  const title = seo.t || o.rawTitle || pageTitle(o.title);
+  const desc = clip(seo.d || o.description || s.hero_subtitle, 158);
   const canonical = ctx.site + (o.path || ctx.path);
   const schemas = [orgSchema(ctx)].concat(o.schema || []);
   const ogImg = o.image ? absUrl(ctx, o.image) : ctx.site + '/img/magnetic-flip-top-perfume-box-1200.jpg';
@@ -162,6 +198,7 @@ function layout(ctx, o) {
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${esc(canonical)}">
+${hreflangTags(ctx, o.path || ctx.path)}
 ${o.noindex || ctx.noindex ? '<meta name="robots" content="noindex, nofollow">' : ''}
 ${s.gsc_verification ? `<meta name="google-site-verification" content="${esc(s.gsc_verification.replace(/.*content="([^"]+)".*/, '$1'))}">` : ''}
 <meta name="theme-color" content="#141414">
@@ -364,7 +401,7 @@ function quoteForm(ctx, o = {}) {
         <input name="size_l" type="number" step="0.1" min="0" inputmode="decimal" placeholder="Length" aria-label="Length">
         <input name="size_w" type="number" step="0.1" min="0" inputmode="decimal" placeholder="Width" aria-label="Width">
         <input name="size_h" type="number" step="0.1" min="0" inputmode="decimal" placeholder="Height" aria-label="Height">
-        <select name="size_unit" aria-label="Unit"><option value="cm"${unit === 'cm' ? ' selected' : ''}>cm</option><option value="in"${unit === 'in' ? ' selected' : ''}>inches</option></select>
+        <select name="size_unit" aria-label="Unit"><option value="mm"${unit === 'mm' ? ' selected' : ''}>mm</option><option value="cm"${unit === 'cm' ? ' selected' : ''}>cm</option><option value="in"${unit === 'in' ? ' selected' : ''}>inches</option></select>
       </div><div class="hint">Or give your bottle size. Leave this blank if you are not sure yet.</div></div>
     <div class="field"><label for="f_msg">${o.us ? 'Colors' : 'Colours'}, finishes &amp; other details</label><textarea id="f_msg" name="details" placeholder="${o.us ? 'Color' : 'Colour'}, logo finish (foil / emboss), insert type, deadline…"></textarea></div>
     <div class="form-actions">
@@ -421,12 +458,13 @@ ${offerHtml}
 </div></section>
 ${homeWork(ctx)}
 <section id="how" style="background:var(--paper-2)"><div class="wrap">
-  <div class="section-head"><span class="eyebrow">How It Works</span><h2>From idea to your door</h2><p>A simple process, with one point of contact from start to finish.</p></div>
-  <div class="steps">
-    <div class="step"><h3>Get a quote</h3><p>Send your box size, finishes and quantity. We reply with an exact price within 24 hours.</p></div>
-    <div class="step"><h3>Approve your design</h3><p>We confirm the design with you. Order a paid sample first if you want to check it in hand.</p></div>
-    <div class="step"><h3>Production</h3><p>Your boxes are made to your size, colours and logo finish.</p></div>
-    <div class="step"><h3>Delivered</h3><p>Export-packed and delivered to your door in the UK, USA, Canada or Europe.</p></div>
+  <div class="section-head"><span class="eyebrow">How It Works</span><h2>From idea to your door</h2><p>Five clear stages, with one point of contact from start to finish.</p></div>
+  <div class="steps five">
+    <div class="step"><h3>Quote &amp; dieline proof</h3><p>Send your size, finishes and quantity. We reply within 24 hours, then send a digital dieline and design proof to approve.</p></div>
+    <div class="step"><h3>Paid sample</h3><p>Optional: check the size, board strength and finish in your hands before bulk production.</p></div>
+    <div class="step"><h3>Production</h3><p>Your boxes are cut, wrapped and finished to your approved size, colours and logo.</p></div>
+    <div class="step"><h3>Quality check</h3><p>Every order is checked against your approved proof before it is packed.</p></div>
+    <div class="step"><h3>Door-to-door delivery</h3><p>Export-packed and delivered to the UK, USA, Canada or Europe.</p></div>
   </div></div></section>
 <section class="sample" id="samples"><div class="wrap">
   <div><span class="eyebrow" style="color:var(--gold)">Paid Samples</span><h2>See it in your hands before you order in bulk</h2>
@@ -484,13 +522,13 @@ function sizesTable(text) {
     const u = (m[5] || 'cm').toLowerCase();
     if (u === 'mm') { a /= 10; b /= 10; c /= 10; }
     if (u.startsWith('in') || u === '"') { a *= 2.54; b *= 2.54; c *= 2.54; }
-    const cm = [a, b, c].map((x) => +x.toFixed(1)).join(' × ');
-    const inch = [a, b, c].map((x) => +(x / 2.54).toFixed(1)).join(' × ');
-    return { label: m[1] || '', cm, inch };
+    const mm = [a, b, c].map((x) => Math.round(x * 10)).join(' × ');
+    const inch = [a, b, c].map((x) => +(x / 2.54).toFixed(2)).join(' × ');
+    return { label: m[1] || '', mm, inch };
   }).filter(Boolean);
   if (!rows.length) return '';
-  return `<table class="sizes"><thead><tr><th>Size</th><th>Centimetres</th><th>Inches</th></tr></thead><tbody>${rows.map((r, i) =>
-    `<tr><td>${esc(r.label || 'Size ' + (i + 1))}</td><td>${r.cm} cm</td><td>${r.inch} in</td></tr>`).join('')}</tbody></table>`;
+  return `<table class="sizes"><thead><tr><th>Size (L × W × H)</th><th>Millimetres</th><th>Inches</th></tr></thead><tbody>${rows.map((r, i) =>
+    `<tr><td>${esc(r.label || 'Size ' + (i + 1))}</td><td>${r.mm} mm</td><td>${r.inch} in</td></tr>`).join('')}</tbody></table>`;
 }
 
 function product(ctx, p) {
@@ -516,7 +554,7 @@ function product(ctx, p) {
     const full = `${p.name} – ${dz.name}`;
     return `<article class="design" id="design-${i + 1}">
       <div class="ph-box"${ph.length > 1 ? ' data-gal' : ''}><span class="num">Design ${i + 1}</span>${ph[0] ? photo(ph[0].url, ph[0].alt) : PH}</div>
-      ${ph.length > 1 ? `<div class="mini" style="padding-top:10px">${ph.map((x, k) => `<button type="button" class="${k ? '' : 'on'}" data-src="${esc(photoSrc(x.url))}" data-alt="${esc(x.alt)}" aria-label="Photo ${k + 1}">${photo(x.url, '', { sizes: '44px' })}</button>`).join('')}</div>` : ''}
+      ${ph.length > 1 ? `<div class="mini" style="padding-top:10px">${ph.map((x, k) => `<button type="button" class="${k ? '' : 'on'}" data-src="${esc(photoSrc(x.url))}" data-alt="${esc(x.alt)}" aria-label="Photo ${k + 1}">${photo(x.url, x.alt, { sizes: '44px' })}</button>`).join('')}</div>` : ''}
       <div class="design-body"><h3>${esc(dz.name)}</h3><p>${esc(dz.description || '')}</p>
         ${dz.tags.length ? `<div class="tags">${dz.tags.map((t) => `<span>${esc(t)}</span>`).join('')}</div>` : ''}
         <div class="design-actions"><a class="btn btn-dark btn-sm" href="/quote?product=${encodeURIComponent(full)}">Get a quote for this design</a>
@@ -528,7 +566,7 @@ ${pageHero(ctx, p.name, p.short_desc, items, p.badge || 'Custom rigid box')}
 <section style="padding-top:56px"><div class="wrap pp">
   <div class="pp-gallery">
     <div class="main">${main ? photo(main.url, main.alt, { eager: true, sizes: '(max-width:980px) 100vw, 50vw' }) : `<div class="ph-box" style="height:100%">${PH}</div>`}</div>
-    ${photos.length > 1 ? `<div class="thumbs">${photos.slice(0, 10).map((x, k) => `<button type="button" class="${k ? '' : 'on'}" data-src="${esc(photoSrc(x.url))}" data-alt="${esc(x.alt)}" aria-label="Show photo ${k + 1}">${photo(x.url, '', { sizes: '72px' })}</button>`).join('')}</div>` : ''}
+    ${photos.length > 1 ? `<div class="thumbs">${photos.slice(0, 10).map((x, k) => `<button type="button" class="${k ? '' : 'on'}" data-src="${esc(photoSrc(x.url))}" data-alt="${esc(x.alt)}" aria-label="Show photo ${k + 1}">${photo(x.url, x.alt, { sizes: '72px' })}</button>`).join('')}</div>` : ''}
   </div>
   <div class="pp-info">
     <h2>Made to your size, colour and logo</h2>
@@ -623,7 +661,7 @@ function samplesPage(ctx, page) {
 
 function countryPage(ctx, page) {
   const us = page.slug === 'usa' || page.slug === 'canada';
-  return genericPage(ctx, page, { us, lang: page.slug === 'canada' ? 'en-CA' : undefined, grid: productGrid(ctx, ctx.data.products), eyebrow: page.slug === 'uk' ? 'United Kingdom' : page.slug === 'usa' ? 'United States' : 'Canada' });
+  return genericPage(ctx, page, { us, lang: page.slug === 'canada' ? 'en-CA' : undefined, grid: productGrid(ctx, ctx.data.products), eyebrow: { uk: 'United Kingdom', usa: 'United States', canada: 'Canada', europe: 'Europe' }[page.slug] || '' });
 }
 
 function faqPage(ctx) {
@@ -714,7 +752,7 @@ function notFound(ctx) {
 function sitemap(ctx) {
   const d = ctx.data;
   const urls = [['/', null], ['/portfolio', null], ['/quote', null], ['/faq', null]];
-  ['rigid-boxes', 'perfume-boxes', 'samples', 'about', 'shipping', 'uk', 'usa', 'canada', 'privacy', 'terms', 'returns']
+  ['rigid-boxes', 'perfume-boxes', 'samples', 'about', 'shipping', 'uk', 'usa', 'canada', 'europe', 'privacy', 'terms', 'returns']
     .forEach((s) => { if (d.pages[s]) urls.push(['/' + s, d.pages[s].updated_at]); });
   d.products.forEach((p) => urls.push(['/' + p.slug, p.updated_at]));
   if (d.posts.length) { urls.push(['/blog', d.posts[0].updated_at]); d.posts.forEach((b) => urls.push(['/blog/' + b.slug, b.updated_at || b.published_at])); }
