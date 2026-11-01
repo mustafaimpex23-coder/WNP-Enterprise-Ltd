@@ -25,6 +25,13 @@ const REDIRECTS = {
   'custom-rigid-boxes-with-inserts': 'rigid-boxes-with-inserts', 'custom-box-inserts': 'rigid-boxes-with-inserts',
   'custom-rigid-boxes-canada': 'canada', 'custom-rigid-boxes-uk': 'uk', 'luxury-rigid-boxes-uk': 'uk', 'rigid-boxes-europe': 'europe',
   'custom-packaging-usa': 'usa', 'rigid-box-quote': 'quote',
+  'shoulder-neck-boxes': 'shoulder-neck-rigid-boxes', 'rigid-box-manufacturers': 'rigid-boxes', 'luxury-candle-packaging': 'candle-boxes',
+  'lid-and-base-boxes': 'lid-and-base-box', 'book-style-boxes': 'book-style-box',
+};
+const BLOG_REDIRECTS = {
+  'how-rigid-boxes-are-made': 'what-is-a-rigid-box', 'magnetic-closure-boxes-benefits': 'magnetic-box-vs-drawer-box',
+  'how-much-do-custom-boxes-cost': 'custom-rigid-box-cost-factors', 'custom-rigid-box-pricing-guide': 'custom-rigid-box-cost-factors',
+  'custom-box-finishes-guide': 'foil-vs-embossing-vs-spot-uv', 'choosing-packaging-inserts': 'rigid-box-inserts-guide',
 };
 const RESERVED = ['portfolio', 'our-work', 'quote', 'faq', 'blog', 'reviews', 'review', 'sitemap.xml', 'robots.txt'];
 
@@ -76,6 +83,7 @@ module.exports = async (req, res) => {
       if (!b) return send(res, 200, V.blogList(ctx));
       const post = data.posts.find((x) => x.slug === b);
       if (post) return send(res, 200, V.post(ctx, post));
+      if (BLOG_REDIRECTS[b]) { res.statusCode = 301; res.setHeader('Location', '/blog/' + BLOG_REDIRECTS[b]); return res.end(); }
     }
     if (a === 'reviews' && !b) return send(res, 200, V.reviewsPage(ctx));
     if (a === 'review' && b) return send(res, 200, V.reviewForm(ctx, b), null, 'no-store');
