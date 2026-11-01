@@ -1147,7 +1147,7 @@ async function buildPdf(d, st) {
     var lines = pdf.splitTextToSize(clean(co.address), 70);
     if (co.email) lines.push(clean(co.email));
     if (co.phone) lines.push(clean(co.phone));
-    lines.push('wnpenterprise.vercel.app');
+    lines.push('luxorapackaging.vercel.app');
     pdf.text(lines, R, 14, { align: 'right' });
     var hy = Math.max(31, 14 + lines.length * 3.8 + 2);
     pdf.setDrawColor.apply(pdf, GOLD); pdf.setLineWidth(0.6); pdf.line(M, hy, R, hy);
@@ -1284,7 +1284,7 @@ async function blankLetterhead(c) {
     p2.setFont('helvetica', 'normal'); p2.setFontSize(8.5); p2.setTextColor(184, 147, 90);
     p2.text(c === 'us' ? 'CUSTOM LUXURY RIGID BOXES · USA' : 'CUSTOM LUXURY RIGID BOXES · UNITED KINGDOM', 18, 26);
     p2.setTextColor(110, 104, 95);
-    var lines = p2.splitTextToSize(co.address, 70); if (co.email) lines.push(co.email); if (co.phone) lines.push(co.phone); lines.push('wnpenterprise.vercel.app');
+    var lines = p2.splitTextToSize(co.address, 70); if (co.email) lines.push(co.email); if (co.phone) lines.push(co.phone); lines.push('luxorapackaging.vercel.app');
     p2.text(lines, 192, 14, { align: 'right' });
     var hy = Math.max(31, 14 + lines.length * 3.8 + 2);
     p2.setDrawColor(184, 147, 90); p2.setLineWidth(0.6); p2.line(18, hy, 192, hy);

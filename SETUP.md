@@ -21,8 +21,8 @@ Keep your existing `images/` folder as it is. Put everything above next to it, i
 2. When the project is ready, open **SQL Editor** → **New query**. Paste the **whole** of `supabase/schema.sql` and press **Run**. You should see "Success". This also adds your current 6 box styles, 20 designs and FAQ.
 3. Go to **Authentication → Sign In / Providers** and turn **OFF** "Allow new users to sign up", so strangers can't create accounts.
 4. Go to **Authentication → URL Configuration**:
-   - Site URL: `https://wnpenterprise.vercel.app/admin/`
-   - Redirect URLs: add `https://wnpenterprise.vercel.app/admin/`
+   - Site URL: `https://luxorapackaging.vercel.app/admin/`
+   - Redirect URLs: add `https://luxorapackaging.vercel.app/admin/`
 5. Create your own login: **Authentication → Users → Add user → Create new user**. Enter your email and a password, and tick **Auto Confirm User**.
 6. Give yourself admin access. Back in **SQL Editor**, run:
    ```sql
@@ -48,7 +48,7 @@ Open your project on Vercel → **Settings → Environment Variables**. Add ever
 
 ## Step 4: Use it
 
-1. Open **https://wnpenterprise.vercel.app/admin** and sign in.
+1. Open **https://luxorapackaging.vercel.app/admin** and sign in.
 2. **Products** → press **Import photos from website** once. This links the photos already in your `images/` folder.
 3. **Alerts & Team** → turn on notifications on this device.
    - **iPhone:** open the panel in **Safari** → Share → **Add to Home Screen**. Open **WNP Admin** from the Home Screen, sign in, then turn on notifications (iPhone only allows alerts from the Home Screen app).
