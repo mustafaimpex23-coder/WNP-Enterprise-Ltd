@@ -45,13 +45,15 @@ function photo(url, alt, o = {}) {
 // Photos for a product card / a design, falling back to the photo files in the website folder
 function fileIf(name) { return PHOTOS[name] ? '/' + name + '.jpg' : null; }
 function designPhotos(p, d, i) {
-  if (d.images && d.images.length) return d.images.map((u, k) => ({ url: u, alt: (d.image_alts || [])[k] || `${p.name} – ${d.name}` }));
+  const alt = `${d.name} – custom ${p.name.toLowerCase()} with logo`;
+  if (d.images && d.images.length) return d.images.map((u, k) => ({ url: u, alt: (d.image_alts || [])[k] || alt }));
   const f = fileIf(`${p.slug}-${i + 1}`);
-  return f ? [{ url: f, alt: `${p.name} – ${d.name}` }] : [];
+  return f ? [{ url: f, alt }] : [];
 }
 function productPhotos(p) {
-  const list = (p.images || []).map((u, k) => ({ url: u, alt: (p.image_alts || [])[k] || p.name }));
-  if (!list.length) { const f = fileIf(p.slug); if (f) list.push({ url: f, alt: p.name }); }
+  const alt = `${p.name} – custom rigid box with logo, made to your size`;
+  const list = (p.images || []).map((u, k) => ({ url: u, alt: (p.image_alts || [])[k] || alt }));
+  if (!list.length) { const f = fileIf(p.slug); if (f) list.push({ url: f, alt }); }
   p.designs.forEach((d, i) => designPhotos(p, d, i).forEach((x) => list.push(x)));
   return list;
 }
@@ -359,7 +361,7 @@ function ourWork(ctx) {
     description: `${v[1]} – a real box made by ${BRAND}.`,
     thumbnailUrl: `${ctx.site}/img/work/${v[0]}.jpg`, contentUrl: `${ctx.site}/img/work/${v[0]}.mp4`, uploadDate: '2026-10-31',
   }));
-  const body = `${pageHero(ctx, 'Real boxes, made by *our team*', 'Photos and short clips of boxes we have made. No 3D renders, just the real finish you will receive.', [['Home', '/'], ['Portfolio', '/portfolio']], 'Portfolio')}
+  const body = `${pageHero(ctx, 'Real custom boxes made for *luxury brands*', 'Photos and short clips of boxes we have made. No 3D renders, just the real finish you will receive.', [['Home', '/'], ['Portfolio', '/portfolio']], 'Portfolio')}
 <section><div class="wrap">
   <div class="section-head"><span class="eyebrow">See them open</span><h2>Box openings</h2><p>Magnetic closures, double doors, inserts and lids, filmed on our table.</p></div>
   <div class="work-vids">${WORK_VIDEOS.map(videoCard).join('')}</div>
@@ -607,7 +609,7 @@ ${pageHero(ctx, p.name, p.short_desc, items, p.badge || 'Custom rigid box')}
     <div class="facts"><h3>Specifications</h3><ul>${facts.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>${sizesTable(p.sizes) ? `<h3 style="margin-top:18px">Popular sizes</h3>${sizesTable(p.sizes)}` : ''}</div>
   </div>
 </div></section>
-${p.designs.length ? `<section style="background:var(--paper-2)"><div class="wrap"><div class="section-head"><span class="eyebrow">${p.designs.length} design${p.designs.length === 1 ? '' : 's'}</span><h2>Designs for the ${esc(p.name)}</h2><p>Every design is made to your size, colour and logo.</p></div>
+${p.designs.length ? `<section style="background:var(--paper-2)"><div class="wrap"><div class="section-head"><span class="eyebrow">${p.designs.length} design${p.designs.length === 1 ? '' : 's'}</span><h2>${esc(p.name)} styles &amp; insert variations</h2><p>Every design is made to your size, colour and logo.</p></div>
   <div class="designs${p.designs.length < 3 ? '' : ''}">${designsHtml}</div></div></section>` : ''}
 ${p.description ? `<section><div class="wrap"><div class="prose" style="margin:0 auto">${md(p.description)}</div></div></section>` : ''}
 ${reviews.length ? `<section><div class="wrap"><div class="section-head"><span class="eyebrow">Reviews</span><h2>What customers say</h2></div><div class="reviews">${reviews.slice(0, 6).map((r) => reviewCard(ctx, r)).join('')}</div></div></section>` : ''}
@@ -673,7 +675,7 @@ function quotePage(ctx, q) {
   const s = ctx.settings;
   const type = q.type === 'sample' ? 'sample' : 'order';
   const items = [['Home', '/'], ['Get a quote', '/quote']];
-  const body = `${pageHero(ctx, 'Request a Custom Packaging Quote', 'Fill in your details and we will send you the price and next steps within 24 hours.', items, 'Get a Quote')}
+  const body = `${pageHero(ctx, 'Request a Custom Wholesale Packaging Quote', 'Fill in your details and we will send you the price and next steps within 24 hours.', items, 'Get a Quote')}
 <section><div class="wrap form-wrap">
   <div><h2 class="form-h">Select your packaging specifications</h2>
   <p class="form-lead">Choose a box style, your size in mm, cm or inches, and your quantity. Not sure yet? Leave it blank and we will suggest the right fit.</p>
@@ -685,6 +687,7 @@ function quotePage(ctx, q) {
       <li>✦ Delivery is included in bulk quotes</li>
       <li>✦ Paid samples available before bulk</li></ul></div>
     <div class="side-card"><h3>Prefer to talk?</h3><p>Message us on WhatsApp at <a style="text-decoration:underline" href="${waLink(ctx, 'Hi Pack Nest, I would like a quote for custom boxes.')}" target="_blank" rel="noopener">${esc(s.whatsapp)}</a> or email <a style="text-decoration:underline" href="mailto:${esc(s.email)}">${esc(s.email)}</a>.</p>
+      ${s.us_email ? `<p style="margin-top:10px"><b>USA &amp; Canada:</b> ${esc(s.us_company)}, ${esc(s.us_address)} · <a style="text-decoration:underline" href="mailto:${esc(s.us_email)}">${esc(s.us_email)}</a>${s.us_phone ? ` · <a style="text-decoration:underline" href="tel:+${digits(s.us_phone)}">${esc(s.us_phone)}</a>` : ''}</p>` : ''}
       ${s.booking_url ? `<p style="margin-top:10px"><a class="btn btn-dark btn-sm" href="${esc(s.booking_url)}" target="_blank" rel="noopener">Book a call</a></p>` : ''}</div>
     <div class="side-card"><h3>Artwork</h3><p>A vector logo (AI, EPS, SVG or PDF) is best. You can send it by email or WhatsApp after you submit.</p></div>
   </aside>
@@ -724,7 +727,7 @@ function countryPage(ctx, page) {
 function faqPage(ctx) {
   const items = [['Home', '/'], ['FAQ', '/faq']];
   const faqs = ctx.data.faqs;
-  const body = `${pageHero(ctx, 'Frequently asked questions', 'Straight answers about custom rigid boxes, samples, finishes and delivery.', items, 'FAQ')}
+  const body = `${pageHero(ctx, 'Frequently asked questions about custom rigid boxes', 'Straight answers about sizes, samples, finishes and delivery.', items, 'FAQ')}
 <section><div class="wrap"><div class="faq">${faqs.map((f) => `<details><summary>${esc(f.question)}</summary><p>${esc(f.answer || '')}</p></details>`).join('')}</div></div></section>
 ${ctaBand(ctx, 'Still have a question?', 'Send us a message and we will reply within 24 hours.')}`;
   return layout(ctx, {
