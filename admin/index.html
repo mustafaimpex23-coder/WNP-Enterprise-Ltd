@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>WNP Admin</title>
+<title>Luxora Admin</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#1d1b18">
 <link rel="manifest" href="/admin/manifest.json">
@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="WNP Admin">
+<meta name="apple-mobile-web-app-title" content="Luxora Admin">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap">
@@ -239,7 +239,7 @@
 <!-- ================= LOGIN ================= -->
 <div id="login" class="hidden">
   <form class="login-box" id="loginForm">
-    <div class="brand"><b>WNP</b><span>Admin</span></div>
+    <div class="brand"><b>Luxora</b><span>Admin</span></div>
     <p class="sub" id="loginSub">Sign in to see queries and manage your website.</p>
     <div id="loginFields">
       <div class="field"><label class="l" for="lg_email">Email</label><input class="in" id="lg_email" type="email" autocomplete="username" required></div>
@@ -258,7 +258,7 @@
 <!-- ================= APP ================= -->
 <div id="app" class="hidden">
   <aside>
-    <div class="brand"><b>WNP</b><span>Admin</span></div>
+    <div class="brand"><b>Luxora</b><span>Admin</span></div>
     <nav class="nav" id="nav">
       <a data-v="queries"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8M8 12h5"/></svg><span>Queries</span><span class="badge hidden" id="navBadge">0</span></a>
       <a data-v="products"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg><span>Products</span></a>
@@ -273,7 +273,7 @@
   </aside>
   <main>
     <div class="mobile-head">
-      <div class="brand"><b>WNP</b><span>Admin</span></div>
+      <div class="brand"><b>Luxora</b><span>Admin</span></div>
       <a class="btn btn-sm" href="/" target="_blank" rel="noopener">Website ↗</a>
     </div>
     <div id="view"><div class="loading"><span class="spinner"></span></div></div>
@@ -291,7 +291,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 /* =====================================================================
-   WNP Admin – one page that controls queries, products, offers, website
+   Luxora Admin – one page that controls queries, products, offers, website
    text and notifications. Keys are read from /api/config (Vercel env).
    ===================================================================== */
 var db, CFG, ME = null, SESSION = null;
@@ -422,7 +422,7 @@ async function loadQueries() {
 function updateBadge() {
   var n = S.queries.filter(function (q) { return q.status === 'new'; }).length;
   var b = $('#navBadge'); b.textContent = n; b.classList.toggle('hidden', !n);
-  document.title = n ? '(' + n + ') WNP Admin' : 'WNP Admin';
+  document.title = n ? '(' + n + ') Luxora Admin' : 'Luxora Admin';
   if (navigator.setAppBadge) { try { n ? navigator.setAppBadge(n) : navigator.clearAppBadge(); } catch (e) {} }
 }
 function clearBadge() { if (navigator.clearAppBadge && !S.queries.some(function (q) { return q.status === 'new'; })) try { navigator.clearAppBadge(); } catch (e) {} }
@@ -525,8 +525,8 @@ async function openQuery(id) {
   if (!q) { var r = await db.from('queries').select('*').eq('id', id).maybeSingle(); q = r.data; if (!q) return toast('Query not found', 'bad'); S.queries.unshift(q); }
   var wa = digits(q.phone);
   var first = (q.name || '').split(' ')[0];
-  var waMsg = 'Hi ' + first + ', this is WNP Enterprise. Thank you for your query' + (q.product ? ' about the ' + q.product : '') + (q.quantity ? ' (' + q.quantity + ' pcs)' : '') + '. ';
-  var mailSub = 'Re: your ' + typeLabel(q.request_type).toLowerCase() + (q.product ? ' – ' + q.product : '') + ' | WNP Enterprise';
+  var waMsg = 'Hi ' + first + ', this is Luxora Packaging. Thank you for your query' + (q.product ? ' about the ' + q.product : '') + (q.quantity ? ' (' + q.quantity + ' pcs)' : '') + '. ';
+  var mailSub = 'Re: your ' + typeLabel(q.request_type).toLowerCase() + (q.product ? ' – ' + q.product : '') + ' | Luxora Packaging';
   var kv = [
     ['Received', fullDate(q.created_at)], ['Type', typeLabel(q.request_type)], ['Box / design', q.product], ['Quantity', q.quantity ? q.quantity + ' pcs' : ''],
     ['Box size', q.box_size], ['Details', q.details], ['Name', q.name], ['Email', q.email], ['Phone', q.phone], ['Company', q.company], ['Country', q.country]
@@ -1018,7 +1018,7 @@ async function askReview(q) {
     .then(function (x) { return x.json(); }).catch(function () { return { error: 'Network error' }; });
   if (!r.ok) return toast(r.error || 'Could not create the review link', 'bad');
   var wa = digits(q.phone);
-  var msg = 'Hi ' + (q.name || '').split(' ')[0] + ', thank you for your order with WNP Enterprise! Could you leave us a quick review? ' + r.link;
+  var msg = 'Hi ' + (q.name || '').split(' ')[0] + ', thank you for your order with Luxora Packaging! Could you leave us a quick review? ' + r.link;
   openDrawer('Review link', function (body, foot) {
     body.innerHTML = '<div class="notice">' + (r.emailed ? '✅ Emailed to <b>' + esc(q.email) + '</b>.' : 'Email is not set up yet, so send the link yourself:') + '</div>' +
       '<div class="field"><label class="l">Review link (works once)</label><input class="in" id="rv_link" value="' + esc(r.link) + '" readonly></div>' +
@@ -1573,7 +1573,7 @@ async function renderSettings() {
 
   var alertBox;
   if (isIOS() && !isStandalone()) {
-    alertBox = '<div class="notice"><b>iPhone: add the panel to your Home Screen first.</b><br>1. Open this page in <b>Safari</b>.<br>2. Tap the <b>Share</b> button (square with arrow).<br>3. Tap <b>Add to Home Screen</b> → Add.<br>4. Open <b>WNP Admin</b> from your Home Screen, sign in, and come back here to switch on alerts.</div>';
+    alertBox = '<div class="notice"><b>iPhone: add the panel to your Home Screen first.</b><br>1. Open this page in <b>Safari</b>.<br>2. Tap the <b>Share</b> button (square with arrow).<br>3. Tap <b>Add to Home Screen</b> → Add.<br>4. Open <b>Luxora Admin</b> from your Home Screen, sign in, and come back here to switch on alerts.</div>';
   } else if (!supported || !CFG.vapidPublicKey) {
     alertBox = '<div class="notice">' + (!CFG.vapidPublicKey ? 'Push keys are not set yet (VAPID_PUBLIC_KEY in Vercel).' : 'This browser does not support notifications. Use Chrome on Android/laptop or Safari on iPhone (from the Home Screen).') + '</div>';
   } else if (perm === 'denied') {

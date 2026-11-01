@@ -1,7 +1,7 @@
 {
-  "name": "WNP Admin",
-  "short_name": "WNP Admin",
-  "description": "WNP Enterprise – queries, products and website control panel",
+  "name": "Luxora Admin",
+  "short_name": "Luxora Admin",
+  "description": "Luxora Packaging – queries, products and website control panel",
   "start_url": "/admin/",
   "scope": "/admin/",
   "display": "standalone",
