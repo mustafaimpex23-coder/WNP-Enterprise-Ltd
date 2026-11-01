@@ -121,7 +121,31 @@ const SEO = {
   '/privacy': { t: `Privacy Policy – Data Protection | ${BRAND}` },
   '/terms': { t: `Terms of Sale – Custom Packaging | ${BRAND}` },
   '/returns': { t: `Returns Policy – Custom Boxes | ${BRAND}` },
+  '/magnetic-flip-top-perfume-box': { t: `Magnetic Flip-Top Perfume Boxes Wholesale | ${BRAND}` },
+  '/double-door-perfume-box': { t: `Custom Double-Door Perfume Boxes | ${BRAND}` },
+  '/drawer-box': { t: `Custom Drawer Boxes Wholesale – Sleeve & Tray | ${BRAND}` },
+  '/lid-and-base-box': { t: `Custom Rigid Boxes with Lids – Lid & Base | ${BRAND}` },
+  '/book-style-box': { t: `Book-Style & Hinged Lid Rigid Boxes | ${BRAND}` },
+  '/display-box': { t: `Custom Display Boxes Wholesale | ${BRAND}` },
+  '/magnetic-closure-boxes': { t: `Custom Magnetic Closure Boxes Wholesale | ${BRAND}` },
+  '/rigid-gift-boxes': { t: `Custom Rigid Gift Boxes Wholesale | ${BRAND}` },
+  '/presentation-boxes': { t: `Custom Presentation Boxes Wholesale | ${BRAND}` },
+  '/jewellery-boxes': { t: `Custom Jewellery Boxes & Jewelry Packaging | ${BRAND}` },
+  '/candle-boxes': { t: `Custom Luxury Candle Boxes Wholesale | ${BRAND}` },
+  '/watch-boxes': { t: `Custom Rigid Watch Boxes in Bulk | ${BRAND}` },
+  '/chocolate-boxes': { t: `Wholesale Rigid Chocolate Boxes | ${BRAND}` },
+  '/apparel-boxes': { t: `Apparel Gift Boxes Wholesale | ${BRAND}` },
+  '/rigid-boxes-with-inserts': { t: `Custom Rigid Boxes with Foam Inserts | ${BRAND}` },
+  '/shoulder-neck-rigid-boxes': { t: `Custom Shoulder Neck Rigid Boxes | ${BRAND}` },
+  '/low-moq-rigid-boxes': { t: `Low MOQ Rigid Boxes – From 50 Pieces | ${BRAND}` },
 };
+
+// Landing pages: one page per buyer need. Shown in the menu and footer once published.
+const LANDING_USE = [['rigid-gift-boxes', 'Gift boxes'], ['presentation-boxes', 'Presentation boxes'], ['jewellery-boxes', 'Jewellery boxes'],
+  ['candle-boxes', 'Candle boxes'], ['watch-boxes', 'Watch boxes'], ['chocolate-boxes', 'Chocolate boxes'], ['apparel-boxes', 'Apparel boxes']];
+const LANDING_FEATURE = [['magnetic-closure-boxes', 'Magnetic closure boxes'], ['rigid-boxes-with-inserts', 'Boxes with inserts'],
+  ['shoulder-neck-rigid-boxes', 'Shoulder-neck boxes'], ['low-moq-rigid-boxes', 'Low minimum order (50)']];
+const LANDING = LANDING_USE.concat(LANDING_FEATURE).map((x) => x[0]);
 
 // Country versions of the site, so Google shows each buyer their own page
 const REGIONS = [['uk', ['en-gb']], ['usa', ['en-us']], ['canada', ['en-ca']], ['europe', ['en-ie', 'en-de', 'en-fr', 'en-nl', 'en-es', 'en-it']]];
@@ -139,6 +163,10 @@ function pageTitle(t) {
   return full.length <= 60 ? full : t;
 }
 
+function landingLinks(d, list, tag) {
+  return list.filter(([slug]) => d.pages[slug]).map(([slug, label]) => tag === 'li' ? `<li><a href="/${slug}">${esc(label)}</a></li>` : `<a href="/${slug}">${esc(label)}</a>`).join('');
+}
+
 function navHtml(ctx) {
   const d = ctx.data, p = ctx.path;
   const on = (x) => (p === x || p.startsWith(x + '/') ? ' class="on" aria-current="page"' : '');
@@ -146,7 +174,7 @@ function navHtml(ctx) {
   return `<ul id="menu">
     <li><a href="/"${p === '/' ? ' class="on" aria-current="page"' : ''}>Home</a></li>
     <li class="dd"><button type="button" aria-expanded="false">Box Styles</button>
-      <div class="dd-menu">${d.pages['rigid-boxes'] ? '<a href="/rigid-boxes">All rigid boxes</a>' : ''}${d.pages['perfume-boxes'] ? '<a href="/perfume-boxes">Perfume boxes</a>' : ''}<hr>${styles}</div></li>
+      <div class="dd-menu">${d.pages['rigid-boxes'] ? '<a href="/rigid-boxes">All rigid boxes</a>' : ''}${d.pages['perfume-boxes'] ? '<a href="/perfume-boxes">Perfume boxes</a>' : ''}<hr>${styles}${landingLinks(d, LANDING_USE, 'a') ? `<hr><span class="dd-label">Packaging for</span>${landingLinks(d, LANDING_USE, 'a')}` : ''}</div></li>
     <li><a href="/portfolio"${on('/portfolio')}>Portfolio</a></li>
     ${d.pages.samples ? `<li><a href="/samples"${on('/samples')}>Samples</a></li>` : ''}
     ${d.pages.about ? `<li><a href="/about"${on('/about')}>About</a></li>` : ''}
@@ -165,7 +193,8 @@ function footerHtml(ctx) {
   return `<footer><div class="wrap"><div class="foot">
     <div><a href="/" class="logo"><b>Pack Nest</b><span>Luxury Boxes</span></a>
       <p style="margin-top:16px;max-width:320px">${esc(s.footer_text)}</p></div>
-    <div><h4>Box Styles</h4><ul>${d.products.map((x) => `<li><a href="/${esc(x.slug)}">${esc(x.name)}</a></li>`).join('')}</ul></div>
+    <div><h4>Box Styles</h4><ul>${d.products.map((x) => `<li><a href="/${esc(x.slug)}">${esc(x.name)}</a></li>`).join('')}${landingLinks(d, LANDING_FEATURE, 'li')}</ul>
+      ${landingLinks(d, LANDING_USE, 'li') ? `<h4 style="margin-top:22px">Packaging for</h4><ul>${landingLinks(d, LANDING_USE, 'li')}</ul>` : ''}</div>
     <div><h4>Company</h4><ul><li><a href="/portfolio">Portfolio</a></li>${pg('about', 'About us')}${pg('samples', 'Paid samples')}${pg('shipping', 'Shipping & delivery')}
       <li><a href="/faq">FAQ</a></li>${d.posts.length ? '<li><a href="/blog">Blog</a></li>' : ''}${d.reviews.length ? '<li><a href="/reviews">Reviews</a></li>' : ''}
       ${pg('uk', 'UK')}${pg('usa', 'USA')}${pg('canada', 'Canada')}${pg('europe', 'Europe')}<li><a href="/quote">Get a quote</a></li></ul></div>
@@ -752,8 +781,7 @@ function notFound(ctx) {
 function sitemap(ctx) {
   const d = ctx.data;
   const urls = [['/', null], ['/portfolio', null], ['/quote', null], ['/faq', null]];
-  ['rigid-boxes', 'perfume-boxes', 'samples', 'about', 'shipping', 'uk', 'usa', 'canada', 'europe', 'privacy', 'terms', 'returns']
-    .forEach((s) => { if (d.pages[s]) urls.push(['/' + s, d.pages[s].updated_at]); });
+  Object.keys(d.pages).forEach((s) => urls.push(['/' + s, d.pages[s].updated_at]));
   d.products.forEach((p) => urls.push(['/' + p.slug, p.updated_at]));
   if (d.posts.length) { urls.push(['/blog', d.posts[0].updated_at]); d.posts.forEach((b) => urls.push(['/blog/' + b.slug, b.updated_at || b.published_at])); }
   if (d.reviews.length) urls.push(['/reviews', null]);
@@ -771,5 +799,6 @@ function robots(ctx) {
 module.exports = {
   home, product, genericPage, category, quotePage, samplesPage, countryPage, faqPage,
   blogList, post, reviewsPage, reviewForm, notFound, sitemap, robots, ourWork,
+  LANDING,
   _test: { sizesTable, postal, localName, pageTitle },
 };

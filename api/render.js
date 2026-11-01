@@ -3,11 +3,29 @@
 const { loadAll } = require('./_lib/data.js');
 const V = require('./_lib/views.js');
 
-const VERSION = '8';  // bump to refresh cached CSS/JS after a change
+const VERSION = '9';  // bump to refresh cached CSS/JS after a change
 const CANONICAL = (process.env.SITE_URL || 'https://wnpenterprise.vercel.app').trim().replace(/\/$/, '');
 
 const COUNTRY = ['uk', 'usa', 'canada', 'europe'];
-const CATEGORY = ['rigid-boxes', 'perfume-boxes'];
+const CATEGORY = ['rigid-boxes', 'perfume-boxes'].concat(V.LANDING);
+
+// Old or alternative addresses for the same buyer search, sent to the one page that covers it
+const REDIRECTS = {
+  'custom-rigid-boxes': 'rigid-boxes', 'wholesale': 'rigid-boxes', 'wholesale-rigid-boxes': 'rigid-boxes', 'luxury-rigid-boxes': 'rigid-boxes',
+  'custom-rigid-boxes-wholesale': 'rigid-boxes', 'luxury-rigid-boxes-wholesale': 'rigid-boxes', 'bespoke-rigid-boxes': 'rigid-boxes',
+  'custom-branded-rigid-boxes': 'rigid-boxes', 'custom-logo-rigid-boxes': 'rigid-boxes',
+  'custom-perfume-boxes': 'perfume-boxes', 'perfume-boxes-uk': 'perfume-boxes',
+  'custom-display-boxes': 'display-box', 'display-boxes': 'display-box',
+  'drawer-boxes': 'drawer-box', 'custom-drawer-boxes': 'drawer-box',
+  'lid-and-base-rigid-boxes': 'lid-and-base-box', 'hinged-lid-rigid-boxes': 'book-style-box',
+  'custom-magnetic-closure-boxes': 'magnetic-closure-boxes', 'magnetic-gift-boxes-uk': 'magnetic-closure-boxes',
+  'custom-rigid-gift-boxes': 'rigid-gift-boxes', 'rigid-gift-boxes-wholesale': 'rigid-gift-boxes', 'rigid-gift-boxes-uk': 'rigid-gift-boxes',
+  'custom-presentation-boxes': 'presentation-boxes', 'presentation-boxes-uk': 'presentation-boxes',
+  'custom-jewelry-boxes': 'jewellery-boxes', 'custom-candle-boxes': 'candle-boxes', 'custom-apparel-boxes': 'apparel-boxes',
+  'custom-rigid-boxes-with-inserts': 'rigid-boxes-with-inserts', 'custom-box-inserts': 'rigid-boxes-with-inserts',
+  'custom-rigid-boxes-canada': 'canada', 'custom-rigid-boxes-uk': 'uk', 'luxury-rigid-boxes-uk': 'uk', 'rigid-boxes-europe': 'europe',
+  'custom-packaging-usa': 'usa', 'rigid-box-quote': 'quote',
+};
 const RESERVED = ['portfolio', 'our-work', 'quote', 'faq', 'blog', 'reviews', 'review', 'sitemap.xml', 'robots.txt'];
 
 function send(res, status, body, type, cache) {
@@ -46,6 +64,7 @@ module.exports = async (req, res) => {
     if (a === 'sitemap.xml') return send(res, 200, V.sitemap(ctx), 'application/xml; charset=utf-8');
     if (a === 'robots.txt') return send(res, 200, V.robots(ctx), 'text/plain; charset=utf-8');
     if (a === 'index.html') { res.statusCode = 301; res.setHeader('Location', '/'); return res.end(); }
+    if (!b && REDIRECTS[a] && !data.pages[a]) { res.statusCode = 301; res.setHeader('Location', '/' + REDIRECTS[a]); return res.end(); }
 
     if (a === 'quote' && !b) {
       return send(res, 200, V.quotePage(ctx, { product: url.searchParams.get('product') || '', type: url.searchParams.get('type') || '' }));
