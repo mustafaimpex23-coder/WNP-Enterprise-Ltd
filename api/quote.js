@@ -26,7 +26,7 @@ let _sb;
 const sb = () =>
   (_sb ||= createClient(cleanSupabaseUrl(env('SUPABASE_URL')), cleanKey(env('SUPABASE_SERVICE_ROLE_KEY')), { auth: { persistSession: false } }));
 
-const BRAND = env('BRAND_NAME', 'Velvaro Boxes');
+const BRAND = env('BRAND_NAME', 'Box and Bloom');
 const SITE_URL = env('SITE_URL', 'https://wnpenterprise.vercel.app').replace(/\/$/, '');
 
 const kind = (t) => (t === 'order' ? 'quote request' : t === 'sample' ? 'paid sample request' : 'enquiry');

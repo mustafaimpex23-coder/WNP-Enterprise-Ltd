@@ -40,7 +40,7 @@ const DEFAULT_SETTINGS = {
   products_subtitle: 'Pick a style to see its designs, then get a quote or talk to our team on WhatsApp.',
   offers_title: 'Current offers',
   why_title: 'Luxury quality, fair prices',
-  why_text: 'Velvaro Boxes is the packaging brand of WNP Enterprise Ltd, a UK-registered company supplying custom rigid boxes to perfume, beauty, gift and retail brands.',
+  why_text: 'Box and Bloom is the packaging brand of WNP Enterprise Ltd, a UK-registered company supplying custom rigid boxes to perfume, beauty, gift and retail brands.',
   contact_title: 'Have a custom idea?',
   contact_text: 'Tell us about your boxes and we will reply within 24 hours.',
   footer_text: 'Custom luxury rigid boxes and perfume packaging from 50 pieces, for brands in the UK, USA, Canada and Europe.',
