@@ -105,19 +105,19 @@ function crumbs(items) {
 /* --------------------------------------------------------------- layout */
 // Search titles (30–60 characters) and, for pages built in code, search descriptions
 const SEO = {
-  '/': { t: `Custom Rigid Boxes & Luxury Packaging | ${BRAND}`, d: 'Custom luxury rigid boxes, perfume packaging and display boxes from 50 pieces. Premium finishes, delivered to the UK, USA, Canada and Europe.' },
-  '/portfolio': { t: `Custom Box Portfolio – Real Rigid Boxes | ${BRAND}`, d: 'Real photos and videos of custom rigid boxes we have made: magnetic closures, double-door boxes, drawer boxes, kraft boxes and display trays.' },
-  '/quote': { t: `Request a Custom Packaging Quote | ${BRAND}`, d: 'Get a quote for custom luxury rigid boxes, perfume boxes and display packaging from 50 pieces. We reply within 24 hours, for UK, US, Canadian and EU orders.' },
-  '/faq': { t: `Packaging FAQs – Custom Rigid Boxes | ${BRAND}`, d: 'Answers about custom rigid boxes: the 50-piece minimum, sizes in mm and inches, inserts, paid samples, artwork files, finishes and international delivery.' },
-  '/rigid-boxes': { t: `Custom Rigid Boxes Wholesale | ${BRAND}` },
-  '/perfume-boxes': { t: `Custom Perfume Boxes & Fragrance Packaging | ${BRAND}` },
+  '/': { t: `Custom Rigid Boxes Wholesale & Luxury Packaging | ${BRAND}`, d: 'Custom luxury rigid boxes, magnetic gift boxes and perfume packaging from 50 pieces. Bespoke finishes, serving the UK, USA, Canada and Europe.' },
+  '/portfolio': { t: `Custom Luxury Packaging Portfolio | ${BRAND}`, d: 'Browse real production photos and unboxing videos of our custom rigid boxes, magnetic closures, drawer boxes and custom inserts.' },
+  '/quote': { t: `Request a Wholesale Packaging Quote | ${BRAND}`, d: 'Get a quote for custom luxury rigid boxes, perfume boxes and display packaging from 50 pieces. We reply within 24 hours, for UK, US, Canadian and EU orders.' },
+  '/faq': { t: `Rigid Box Packaging FAQs | ${BRAND} Wholesale`, d: 'Answers on rigid box dimensions, the 50-piece MOQ, paid production samples, custom logo finishes, sizes in mm and inches, and international shipping.' },
+  '/rigid-boxes': { t: `Custom Rigid Boxes Wholesale & Manufacturer | ${BRAND}` },
+  '/perfume-boxes': { t: `Custom Perfume Boxes Wholesale | ${BRAND}` },
   '/samples': { t: `Order Paid Custom Packaging Samples | ${BRAND}` },
   '/about': { t: `About ${BRAND} – UK & US Packaging Supplier` },
-  '/shipping': { t: `Shipping & Delivery – UK, USA, Canada, EU | ${BRAND}` },
-  '/uk': { t: `Custom Rigid Boxes UK | ${BRAND}` },
-  '/usa': { t: `Custom Rigid Boxes USA | ${BRAND}` },
-  '/canada': { t: `Custom Rigid Boxes Canada | ${BRAND}` },
-  '/europe': { t: `Custom Rigid Boxes Europe | ${BRAND}` },
+  '/shipping': { t: `Wholesale Box Shipping & Delivery Terms | ${BRAND}` },
+  '/uk': { t: `Custom Rigid Boxes UK | Luxury Packaging | ${BRAND}` },
+  '/usa': { t: `Custom Rigid Boxes USA | Luxury Packaging | ${BRAND}` },
+  '/canada': { t: `Custom Rigid Boxes Canada | Luxury Packaging | ${BRAND}` },
+  '/europe': { t: `Custom Rigid Boxes Europe | Luxury Packaging | ${BRAND}` },
   '/privacy': { t: `Privacy Policy – Data Protection | ${BRAND}` },
   '/terms': { t: `Terms of Sale – Custom Packaging | ${BRAND}` },
   '/returns': { t: `Returns Policy – Custom Boxes | ${BRAND}` },
@@ -657,16 +657,27 @@ function category(ctx, page) {
     const first = list.filter(isPerfume), rest = list.filter((p) => !isPerfume(p));
     grid = productGrid(ctx, first.length ? first : list) + (first.length && rest.length ? `<div class="section-head" style="margin-top:56px"><h2>Also used for perfume</h2></div>${productGrid(ctx, rest)}` : '');
   } else grid = productGrid(ctx, list);
-  return genericPage(ctx, page, { grid, eyebrow: 'From ' + ctx.min + ' pieces', ctaTitle: 'Tell us about your boxes' });
+  const schema = [{
+    '@context': 'https://schema.org', '@type': 'Service', name: page.title, serviceType: 'Custom rigid box manufacturing',
+    description: page.meta_description || plain(page.body, 200), provider: { '@id': ctx.site + '/#org' },
+    areaServed: ['GB', 'US', 'CA', 'EU'], url: ctx.site + '/' + page.slug,
+    offers: { '@type': 'Offer', eligibleQuantity: { '@type': 'QuantitativeValue', minValue: ctx.min, unitText: 'pieces' } },
+  }, {
+    '@context': 'https://schema.org', '@type': 'ItemList', name: page.title,
+    itemListElement: list.map((p, i) => ({ '@type': 'ListItem', position: i + 1, name: p.name, url: ctx.site + '/' + p.slug })),
+  }];
+  return genericPage(ctx, page, { grid, schema, eyebrow: 'From ' + ctx.min + ' pieces', ctaTitle: 'Tell us about your boxes' });
 }
 
 function quotePage(ctx, q) {
   const s = ctx.settings;
   const type = q.type === 'sample' ? 'sample' : 'order';
   const items = [['Home', '/'], ['Get a quote', '/quote']];
-  const body = `${pageHero(ctx, 'Request a quote', 'Fill in your details and we will send you the price and next steps within 24 hours.', items, 'Get a Quote')}
+  const body = `${pageHero(ctx, 'Request a Custom Packaging Quote', 'Fill in your details and we will send you the price and next steps within 24 hours.', items, 'Get a Quote')}
 <section><div class="wrap form-wrap">
-  ${quoteForm(ctx, { type, toggle: true, product: q.product || '' })}
+  <div><h2 class="form-h">Select your packaging specifications</h2>
+  <p class="form-lead">Choose a box style, your size in mm, cm or inches, and your quantity. Not sure yet? Leave it blank and we will suggest the right fit.</p>
+  ${quoteForm(ctx, { type, toggle: true, product: q.product || '' })}</div>
   <aside>
     <div class="side-card"><h3>Good to know</h3><ul>
       <li>✦ Minimum order: <b>${ctx.min} pieces</b> per design</li>
@@ -677,7 +688,24 @@ function quotePage(ctx, q) {
       ${s.booking_url ? `<p style="margin-top:10px"><a class="btn btn-dark btn-sm" href="${esc(s.booking_url)}" target="_blank" rel="noopener">Book a call</a></p>` : ''}</div>
     <div class="side-card"><h3>Artwork</h3><p>A vector logo (AI, EPS, SVG or PDF) is best. You can send it by email or WhatsApp after you submit.</p></div>
   </aside>
-</div></section>`;
+</div></section>
+<section style="background:var(--paper-2)"><div class="wrap"><div class="prose">
+  <h2>Packaging delivery details</h2>
+  <p>Every bulk quote includes delivery to your door and states the delivery terms, so you know the full cost before you order.</p>
+  <ul>
+    <li><b>United Kingdom:</b> quotes in GBP (£), delivered by courier or palletised freight. See our <a href="/uk">UK page</a>.</li>
+    <li><b>United States:</b> quotes in USD ($) through our US company, The Providers LLC, with sizes in inches. See our <a href="/usa">USA page</a>.</li>
+    <li><b>Canada:</b> quotes in CAD ($), with CBSA customs explained. See our <a href="/canada">Canada page</a>.</li>
+    <li><b>European Union:</b> quotes in EUR (€). Your quote states whether import VAT and duties are paid before delivery (DDP) or by you on arrival (DAP); for DAP you will need an EORI number. See our <a href="/europe">Europe page</a>.</li>
+  </ul>
+  <h2>What happens after you send your request</h2>
+  <ol>
+    <li>We reply within 24 hours with a price, or questions if we need more detail.</li>
+    <li>We send a digital dieline and design proof for your approval.</li>
+    <li>You can order a <a href="/samples">paid sample</a> to check the dieline, foil and insert fit before bulk production.</li>
+    <li>Production starts after approval, then a quality check and door-to-door delivery.</li>
+  </ol>
+</div></div></section>`;
   return layout(ctx, { title: 'Get a Quote for Custom Rigid Boxes', description: `Request a quote for custom rigid boxes and perfume boxes, from ${ctx.min} pieces. We reply within 24 hours.`, path: '/quote', body, schema: [crumbSchema(ctx, items)] });
 }
 
