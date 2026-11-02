@@ -123,8 +123,8 @@ const SEO = {
   '/privacy': { t: `Privacy Policy – Data Protection | ${BRAND}` },
   '/terms': { t: `Terms of Sale – Custom Packaging | ${BRAND}` },
   '/returns': { t: `Returns Policy – Custom Boxes | ${BRAND}` },
-  '/magnetic-flip-top-perfume-box': { t: `Magnetic Flip-Top Perfume Boxes Wholesale | ${BRAND}` },
-  '/double-door-perfume-box': { t: `Custom Double-Door Perfume Boxes | ${BRAND}` },
+  '/magnetic-flip-top-perfume-box': { t: `Custom Magnetic Flip-Top Gift Boxes | ${BRAND}` },
+  '/double-door-perfume-box': { t: `Custom Double-Door Rigid Boxes | ${BRAND}` },
   '/drawer-box': { t: `Custom Drawer Boxes Wholesale – Sleeve & Tray | ${BRAND}` },
   '/lid-and-base-box': { t: `Custom Rigid Boxes with Lids – Lid & Base | ${BRAND}` },
   '/book-style-box': { t: `Book-Style & Hinged Lid Rigid Boxes | ${BRAND}` },
@@ -433,7 +433,7 @@ function quoteForm(ctx, o = {}) {
         <input name="size_w" type="number" step="0.1" min="0" inputmode="decimal" placeholder="Width" aria-label="Width">
         <input name="size_h" type="number" step="0.1" min="0" inputmode="decimal" placeholder="Height" aria-label="Height">
         <select name="size_unit" aria-label="Unit"><option value="mm"${unit === 'mm' ? ' selected' : ''}>mm</option><option value="cm"${unit === 'cm' ? ' selected' : ''}>cm</option><option value="in"${unit === 'in' ? ' selected' : ''}>inches</option></select>
-      </div><div class="hint">Or give your bottle size. Leave this blank if you are not sure yet.</div></div>
+      </div><div class="hint">Or give your product size. Leave this blank if you are not sure yet.</div></div>
     <div class="field"><label for="f_msg">${o.us ? 'Colors' : 'Colours'}, finishes &amp; other details</label><textarea id="f_msg" name="details" placeholder="${o.us ? 'Color' : 'Colour'}, logo finish (foil / emboss), insert type, deadline…"></textarea></div>
     <div class="form-actions">
       <button type="submit" class="btn btn-gold">${type === 'sample' ? 'Request sample price' : isEnq ? 'Send enquiry' : 'Send quote request'}</button>
@@ -512,7 +512,7 @@ ${homeWork(ctx)}
   <div class="section-head"><span class="eyebrow">Why Luxora Packaging</span><h2>${rich(s.why_title)}</h2><p>${esc(s.why_text)}</p></div>
   <div class="why-grid">
     <div class="why-item"><div class="ico">◈</div><h3>One point of contact</h3><p>One team from your first message to delivery.</p></div>
-    <div class="why-item"><div class="ico">✎</div><h3>Made to your size</h3><p>Every box is built around your bottle or product.</p></div>
+    <div class="why-item"><div class="ico">✎</div><h3>Made to your size</h3><p>Every box is built around your product.</p></div>
     <div class="why-item"><div class="ico">✦</div><h3>Premium finishes</h3><p>Foil, embossing, spot UV, soft-touch, velvet and foam inserts.</p></div>
     <div class="why-item"><div class="ico">✈</div><h3>Delivered to you</h3><p>Safely export-packed for the UK, USA, Canada and Europe.</p></div>
   </div></div></section>

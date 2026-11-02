@@ -3,7 +3,7 @@
 const { loadAll } = require('./_lib/data.js');
 const V = require('./_lib/views.js');
 
-const VERSION = '13';  // bump to refresh cached CSS/JS after a change
+const VERSION = '14';  // bump to refresh cached CSS/JS after a change
 const CANONICAL = (process.env.SITE_URL || 'https://luxorapackaging.vercel.app').trim().replace(/\/$/, '');
 
 const COUNTRY = ['uk', 'usa', 'canada', 'europe'];
