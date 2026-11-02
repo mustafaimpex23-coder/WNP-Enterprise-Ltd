@@ -27,7 +27,7 @@ const sb = () =>
   (_sb ||= createClient(cleanSupabaseUrl(env('SUPABASE_URL')), cleanKey(env('SUPABASE_SERVICE_ROLE_KEY')), { auth: { persistSession: false } }));
 
 const BRAND = env('BRAND_NAME', 'Luxora Packaging');
-const SITE_URL = env('SITE_URL', 'https://luxorapackaging.vercel.app').replace(/\/$/, '');
+const SITE_URL = env('SITE_URL', 'https://luxorapackaging.com').replace(/\/$/, '');
 
 const kind = (t) => (t === 'order' ? 'quote request' : t === 'sample' ? 'paid sample request' : 'enquiry');
 const clip = (v, n = 500) => (v == null ? '' : String(v).trim().slice(0, n));

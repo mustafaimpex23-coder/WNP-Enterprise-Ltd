@@ -3,8 +3,8 @@
 const { loadAll } = require('./_lib/data.js');
 const V = require('./_lib/views.js');
 
-const VERSION = '14';  // bump to refresh cached CSS/JS after a change
-const CANONICAL = (process.env.SITE_URL || 'https://luxorapackaging.vercel.app').trim().replace(/\/$/, '');
+const VERSION = '15';  // bump to refresh cached CSS/JS after a change
+const CANONICAL = (process.env.SITE_URL || 'https://luxorapackaging.com').trim().replace(/\/$/, '');
 
 const COUNTRY = ['uk', 'usa', 'canada', 'europe'];
 const CATEGORY = ['rigid-boxes', 'perfume-boxes'].concat(V.LANDING);
