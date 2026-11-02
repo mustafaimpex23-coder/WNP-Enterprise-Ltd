@@ -231,7 +231,7 @@ function layout(ctx, o) {
 <link rel="canonical" href="${esc(canonical)}">
 ${hreflangTags(ctx, o.path || ctx.path)}
 ${o.noindex || ctx.noindex ? '<meta name="robots" content="noindex, nofollow">' : ''}
-${s.gsc_verification ? `<meta name="google-site-verification" content="${esc(s.gsc_verification.replace(/.*content="([^"]+)".*/, '$1'))}">` : ''}
+${String(s.gsc_verification || '').split(/[\s,]+/).map((x) => x.replace(/.*content="([^"]+)".*/, '$1').trim()).filter((x) => /^[\w-]{20,}$/.test(x)).map((x) => `<meta name="google-site-verification" content="${esc(x)}">`).join('\n')}
 <meta name="theme-color" content="#141414">
 <meta property="og:type" content="${o.ogType || 'website'}">
 <meta property="og:site_name" content="${BRAND}">
