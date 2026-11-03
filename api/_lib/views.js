@@ -26,7 +26,8 @@ function localName(url) {
   const m = String(url || '').match(/^(?:https?:\/\/[^/]+)?\/(?:images\/|Images\/|img\/)?([A-Za-z0-9_-]+)\.(?:jpe?g|png|webp)$/i);
   return m && PHOTOS[m[1]] ? m[1] : null;
 }
-function photoSrc(url) { const n = localName(url); return n ? `/img/${n}-1200.jpg` : url; }
+const IMGV = '?v=2'; // change when a photo is replaced, so browsers load the new one
+function photoSrc(url) { const n = localName(url); return n ? `/img/${n}-1200.jpg${IMGV}` : url; }
 function absUrl(ctx, url) { if (!url) return ''; const u = photoSrc(url); return /^https?:/i.test(u) ? u : ctx.site + u; }
 
 function photo(url, alt, o = {}) {
@@ -36,8 +37,8 @@ function photo(url, alt, o = {}) {
   const sizes = o.sizes || '(max-width:760px) 100vw, 33vw';
   if (n) {
     const p = PHOTOS[n];
-    return `<picture><source type="image/webp" srcset="/img/${n}-600.webp 600w, /img/${n}-1200.webp 1200w" sizes="${sizes}">` +
-      `<img src="/img/${n}-1200.jpg" alt="${esc(alt)}" width="${p.w}" height="${p.h}" ${load} decoding="async"></picture>`;
+    return `<picture><source type="image/webp" srcset="/img/${n}-600.webp${IMGV} 600w, /img/${n}-1200.webp${IMGV} 1200w" sizes="${sizes}">` +
+      `<img src="/img/${n}-1200.jpg${IMGV}" alt="${esc(alt)}" width="${p.w}" height="${p.h}" ${load} decoding="async"></picture>`;
   }
   return `<img src="${esc(url)}" alt="${esc(alt)}" ${load} decoding="async">`;
 }
