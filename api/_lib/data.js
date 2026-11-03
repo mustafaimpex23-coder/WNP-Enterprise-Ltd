@@ -32,6 +32,7 @@ const DEFAULT_SETTINGS = {
   uk_company: 'WNP Enterprise Ltd',
   us_company: 'The Providers LLC',
   us_email: 'info.theprovidersllc@gmail.com',
+  global_email: 'LuxorapackagingGlobal@gmail.com',
   min_qty: '50',
   hero_eyebrow: 'Luxury Rigid Boxes · Made to Your Size',
   hero_title: 'Custom Luxury Rigid Boxes, *Perfume Boxes* and Display Boxes',

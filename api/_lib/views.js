@@ -76,7 +76,7 @@ function orgSchema(ctx) {
     '@context': 'https://schema.org', '@type': 'Organization', '@id': ctx.site + '/#org',
     name: BRAND, legalName: s.uk_company || LEGAL, url: ctx.site + '/',
     description: 'Custom luxury rigid boxes, perfume boxes and display boxes from 50 pieces, for brands in the UK, USA, Canada and Europe.',
-    email: s.email, telephone: '+' + digits(s.phone || s.whatsapp), address: addr,
+    email: s.global_email || s.email, telephone: '+' + digits(s.phone || s.whatsapp), address: addr,
     areaServed: ['GB', 'US', 'CA', 'EU'],
     contactPoint: [
       { '@type': 'ContactPoint', contactType: 'sales', telephone: '+' + digits(s.phone || s.whatsapp), email: s.email, areaServed: ['GB', 'EU'], availableLanguage: ['en'] },
@@ -202,11 +202,11 @@ function footerHtml(ctx) {
       <li><a href="/faq">FAQ</a></li>${d.posts.length ? '<li><a href="/blog">Blog</a></li>' : ''}${d.reviews.length ? '<li><a href="/reviews">Reviews</a></li>' : ''}
       ${pg('uk', 'UK')}${pg('usa', 'USA')}${pg('canada', 'Canada')}${pg('europe', 'Europe')}<li><a href="/quote">Get a quote</a></li></ul></div>
     <div><h4>Contact</h4>
-      <ul><li><a href="mailto:${esc(s.email)}">${esc(s.email)}</a></li>
+      <ul><li><a href="mailto:${esc(s.global_email || s.email)}">${esc(s.global_email || s.email)}</a></li>
         <li><a href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">WhatsApp ${esc(s.whatsapp)}</a></li>
         ${s.phone ? `<li><a href="tel:+${digits(phone)}">Call ${esc(phone)}</a></li>` : ''}
         ${s.booking_url ? `<li><a href="${esc(s.booking_url)}" target="_blank" rel="noopener">Book a call</a></li>` : ''}</ul>
-      <address style="margin-top:14px"><b>United Kingdom</b>In the UK we operate as <strong>${esc(s.uk_company)}</strong><br>${esc(s.address)}</address>
+      <address style="margin-top:14px"><b>United Kingdom</b>In the UK we operate as <strong>${esc(s.uk_company)}</strong><br>${esc(s.address)}${s.global_email && s.email ? `<br><a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : ''}</address>
       ${s.us_address ? `<address><b>United States</b>In the USA we operate as <strong>${esc(s.us_company)}</strong><br>Registered address: ${esc(s.us_address)}${s.us_email ? `<br><a href="mailto:${esc(s.us_email)}">${esc(s.us_email)}</a>` : ''}</address>` : ''}
     </div></div>
     <div class="legal"><span>© ${year()} ${BRAND}, a trading name of ${esc(ctx.settings.uk_company || LEGAL)}. All rights reserved. · <a href="/privacy">Privacy Policy</a>${d.pages.terms ? ' · <a href="/terms">Terms</a>' : ''}${d.pages.returns ? ' · <a href="/returns">Returns</a>' : ''}</span>
@@ -527,11 +527,11 @@ ${faqs.length ? `<section id="faq" style="background:var(--paper-2)"><div class=
 <section class="contact" id="contact"><div class="wrap">
   <div class="intro"><span class="eyebrow" style="color:var(--gold)">Contact Us</span><h2>${rich(s.contact_title)}</h2><p>${esc(s.contact_text)}</p>
     <ul class="contact-list">
-      <li><span class="i">✉</span><div><b>Email</b><a href="mailto:${esc(s.email)}">${esc(s.email)}</a></div></li>
+      <li><span class="i">✉</span><div><b>Email</b><a href="mailto:${esc(s.global_email || s.email)}">${esc(s.global_email || s.email)}</a></div></li>
       <li><span class="i">☎</span><div><b>WhatsApp</b><a href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">${esc(s.whatsapp)}</a></div></li>
       ${s.phone ? `<li><span class="i">✆</span><div><b>Phone</b><a href="tel:+${digits(s.phone)}">${esc(s.phone)}</a></div></li>` : ''}
       ${s.booking_url ? `<li><span class="i">◷</span><div><b>Book a call</b><a href="${esc(s.booking_url)}" target="_blank" rel="noopener">Pick a time that suits you</a></div></li>` : ''}
-      <li><span class="i">⌂</span><div><b>United Kingdom</b>In the UK we operate as <strong style="color:#fff">${esc(s.uk_company)}</strong><br>${esc(s.address)}</div></li>
+      <li><span class="i">⌂</span><div><b>United Kingdom</b>In the UK we operate as <strong style="color:#fff">${esc(s.uk_company)}</strong><br>${esc(s.address)}${s.global_email && s.email ? `<br><a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : ''}</div></li>
       ${s.us_address ? `<li><span class="i">⌂</span><div><b>United States</b>In the USA we operate as <strong style="color:#fff">${esc(s.us_company)}</strong><br>Registered address: ${esc(s.us_address)}${s.us_email ? `<br><a href="mailto:${esc(s.us_email)}">${esc(s.us_email)}</a>` : ''}</div></li>` : ''}
     </ul></div>
   ${quoteForm(ctx, { type: 'enquiry' })}
@@ -687,7 +687,7 @@ function quotePage(ctx, q) {
       <li>✦ The higher the quantity, the lower the price per box</li>
       <li>✦ Delivery is included in bulk quotes</li>
       <li>✦ Paid samples available before bulk</li></ul></div>
-    <div class="side-card"><h3>Prefer to talk?</h3><p>Message us on WhatsApp at <a style="text-decoration:underline" href="${waLink(ctx, 'Hi Luxora Packaging, I would like a quote for custom boxes.')}" target="_blank" rel="noopener">${esc(s.whatsapp)}</a> or email <a style="text-decoration:underline" href="mailto:${esc(s.email)}">${esc(s.email)}</a>.</p>
+    <div class="side-card"><h3>Prefer to talk?</h3><p>Message us on WhatsApp at <a style="text-decoration:underline" href="${waLink(ctx, 'Hi Luxora Packaging, I would like a quote for custom boxes.')}" target="_blank" rel="noopener">${esc(s.whatsapp)}</a> or email <a style="text-decoration:underline" href="mailto:${esc(s.global_email || s.email)}">${esc(s.global_email || s.email)}</a>.</p>
       ${s.us_email ? `<p style="margin-top:10px"><b>USA &amp; Canada:</b> ${esc(s.us_company)}, ${esc(s.us_address)} · <a style="text-decoration:underline" href="mailto:${esc(s.us_email)}">${esc(s.us_email)}</a>${s.us_phone ? ` · <a style="text-decoration:underline" href="tel:+${digits(s.us_phone)}">${esc(s.us_phone)}</a>` : ''}</p>` : ''}
       ${s.booking_url ? `<p style="margin-top:10px"><a class="btn btn-dark btn-sm" href="${esc(s.booking_url)}" target="_blank" rel="noopener">Book a call</a></p>` : ''}</div>
     <div class="side-card"><h3>Artwork</h3><p>A vector logo (AI, EPS, SVG or PDF) is best. You can send it by email or WhatsApp after you submit.</p></div>
