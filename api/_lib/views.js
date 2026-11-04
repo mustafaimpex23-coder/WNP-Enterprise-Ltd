@@ -221,7 +221,7 @@ function layout(ctx, o) {
   const desc = clip(seo.d || o.description || s.hero_subtitle, 158);
   const canonical = ctx.site + (o.path || ctx.path);
   const schemas = [orgSchema(ctx)].concat(o.schema || []);
-  const ogImg = o.image ? absUrl(ctx, o.image) : ctx.site + '/img/magnetic-flip-top-perfume-box-1200.jpg';
+  const ogImg = o.image ? absUrl(ctx, o.image) : ctx.site + '/img/double-door-perfume-box-1200.jpg';
   return `<!DOCTYPE html>
 <html lang="${o.lang || 'en-GB'}">
 <head>
