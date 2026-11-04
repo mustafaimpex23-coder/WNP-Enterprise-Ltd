@@ -141,13 +141,20 @@ const SEO = {
   '/rigid-boxes-with-inserts': { t: `Custom Rigid Boxes with Foam Inserts | ${BRAND}` },
   '/shoulder-neck-rigid-boxes': { t: `Custom Shoulder Neck Rigid Boxes | ${BRAND}` },
   '/low-moq-rigid-boxes': { t: `Low MOQ Rigid Boxes – From 50 Pieces | ${BRAND}` },
+  '/cosmetic-boxes': { t: `Custom Cosmetic & Skincare Boxes Wholesale | ${BRAND}` },
+  '/custom-logo-boxes': { t: `Custom Boxes with Logo – Branded Packaging | ${BRAND}` },
+  '/hamper-boxes': { t: `Luxury Hamper Boxes & Gift Hamper Packaging | ${BRAND}` },
+  '/bridesmaid-proposal-boxes': { t: `Custom Bridesmaid Proposal Boxes | ${BRAND}` },
+  '/hair-extension-boxes': { t: `Custom Hair Extension & Wig Boxes | ${BRAND}` },
 };
 
 // Landing pages: one page per buyer need. Shown in the menu and footer once published.
 const LANDING_USE = [['rigid-gift-boxes', 'Gift boxes'], ['presentation-boxes', 'Presentation boxes'], ['jewellery-boxes', 'Jewellery boxes'],
-  ['candle-boxes', 'Candle boxes'], ['watch-boxes', 'Watch boxes'], ['chocolate-boxes', 'Chocolate boxes'], ['apparel-boxes', 'Apparel boxes']];
+  ['candle-boxes', 'Candle boxes'], ['watch-boxes', 'Watch boxes'], ['chocolate-boxes', 'Chocolate boxes'], ['apparel-boxes', 'Apparel boxes'],
+  ['cosmetic-boxes', 'Cosmetic & skincare boxes'], ['hamper-boxes', 'Hamper boxes'], ['bridesmaid-proposal-boxes', 'Bridesmaid & wedding boxes'],
+  ['hair-extension-boxes', 'Hair extension & wig boxes']];
 const LANDING_FEATURE = [['magnetic-closure-boxes', 'Magnetic closure boxes'], ['rigid-boxes-with-inserts', 'Boxes with inserts'],
-  ['shoulder-neck-rigid-boxes', 'Shoulder-neck boxes'], ['low-moq-rigid-boxes', 'Low minimum order (50)']];
+  ['shoulder-neck-rigid-boxes', 'Shoulder-neck boxes'], ['low-moq-rigid-boxes', 'Low minimum order (50)'], ['custom-logo-boxes', 'Custom boxes with logo']];
 const LANDING = LANDING_USE.concat(LANDING_FEATURE).map((x) => x[0]);
 
 // Country versions of the site, so Google shows each buyer their own page
@@ -619,13 +626,16 @@ ${posts.length ? `<section><div class="wrap"><div class="section-head"><span cla
 ${ctaBand(ctx, `Get a quote for your ${p.name}`)}
 ${others.length ? `<section><div class="wrap"><div class="section-head"><span class="eyebrow">More styles</span><h2>Other box styles</h2></div>${productGrid(ctx, others)}</div></section>` : ''}`;
 
+  // Google treats a Product without price or reviews as an error, so until reviews exist the box style is described as a made-to-order service
   const prodSchema = {
-    '@context': 'https://schema.org', '@type': 'Product', name: p.name,
+    '@context': 'https://schema.org', '@type': reviews.length ? 'Product' : 'Service', name: p.name,
     description: plain(p.description, 300) || p.short_desc || p.name,
     image: photos.slice(0, 6).map((x) => absUrl(ctx, x.url)),
-    brand: { '@type': 'Brand', name: BRAND }, manufacturer: { '@id': ctx.site + '/#org' },
     url: ctx.site + '/' + p.slug,
   };
+  if (reviews.length) Object.assign(prodSchema, { brand: { '@type': 'Brand', name: BRAND }, manufacturer: { '@id': ctx.site + '/#org' } });
+  else Object.assign(prodSchema, { serviceType: 'Custom rigid box manufacturing', provider: { '@id': ctx.site + '/#org' }, areaServed: ['GB', 'US', 'CA', 'EU'],
+    offers: { '@type': 'Offer', eligibleQuantity: { '@type': 'QuantitativeValue', minValue: min, unitText: 'pieces' } } });
   if (reviews.length) {
     const avg = reviews.reduce((a, r) => a + (r.rating || 5), 0) / reviews.length;
     prodSchema.aggregateRating = { '@type': 'AggregateRating', ratingValue: +avg.toFixed(1), reviewCount: reviews.length, bestRating: 5 };

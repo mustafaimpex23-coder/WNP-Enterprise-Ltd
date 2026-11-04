@@ -27,6 +27,11 @@ const REDIRECTS = {
   'custom-packaging-usa': 'usa', 'rigid-box-quote': 'quote',
   'shoulder-neck-boxes': 'shoulder-neck-rigid-boxes', 'rigid-box-manufacturers': 'rigid-boxes', 'luxury-candle-packaging': 'candle-boxes',
   'lid-and-base-boxes': 'lid-and-base-box', 'book-style-boxes': 'book-style-box',
+  'cosmetic-packaging': 'cosmetic-boxes', 'skincare-boxes': 'cosmetic-boxes', 'skincare-packaging': 'cosmetic-boxes', 'makeup-boxes': 'cosmetic-boxes',
+  'custom-boxes-with-logo': 'custom-logo-boxes', 'logo-boxes': 'custom-logo-boxes', 'branded-boxes': 'custom-logo-boxes', 'custom-branded-boxes': 'custom-logo-boxes',
+  'gift-hamper-boxes': 'hamper-boxes', 'hamper-packaging': 'hamper-boxes', 'luxury-hamper-boxes': 'hamper-boxes',
+  'bridesmaid-boxes': 'bridesmaid-proposal-boxes', 'wedding-gift-boxes': 'bridesmaid-proposal-boxes', 'wedding-favour-boxes': 'bridesmaid-proposal-boxes',
+  'wig-boxes': 'hair-extension-boxes', 'hair-boxes': 'hair-extension-boxes', 'hair-extension-packaging': 'hair-extension-boxes', 'wig-packaging': 'hair-extension-boxes',
 };
 const BLOG_REDIRECTS = {
   'how-rigid-boxes-are-made': 'what-is-a-rigid-box', 'magnetic-closure-boxes-benefits': 'magnetic-box-vs-drawer-box',
