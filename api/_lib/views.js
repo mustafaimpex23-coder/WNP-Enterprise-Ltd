@@ -649,6 +649,22 @@ ${others.length ? `<section><div class="wrap"><div class="section-head"><span cl
   });
 }
 
+// Questions written in a page as "## Frequently asked questions" followed by "### Question" and its answer,
+// so Google can show them as FAQ answers in search
+function pageFaqs(body) {
+  const lines = String(body || '').replace(/\r\n?/g, '\n').split('\n');
+  const out = []; let on = false, q = null, a = [];
+  const push = () => { if (q && a.join(' ').trim()) out.push({ q, a: plain(a.join('\n'), 600) }); q = null; a = []; };
+  for (const l of lines) {
+    if (/^##\s+/.test(l) && !/^###/.test(l)) { push(); on = /^##\s+(frequently asked questions|faqs?)\b/i.test(l); continue; }
+    if (!on) continue;
+    if (/^###\s+/.test(l)) { push(); q = l.replace(/^###\s+/, '').trim(); continue; }
+    if (q) a.push(l);
+  }
+  push();
+  return out;
+}
+
 function genericPage(ctx, page, o = {}) {
   const items = [['Home', '/'], [page.title, '/' + page.slug]];
   const us = o.us;
@@ -659,8 +675,14 @@ ${o.noCta ? '' : ctaBand(ctx, o.ctaTitle, us ? `Send your size, colors and quant
   return layout(ctx, {
     title: page.title, description: page.meta_description || plain(page.body, 155), path: '/' + page.slug, body,
     lang: o.lang || (us ? 'en-US' : 'en-GB'),
-    schema: [crumbSchema(ctx, items)].concat(o.schema || []),
+    schema: [crumbSchema(ctx, items)].concat(o.schema || []).concat(faqSchema(pageFaqs(page.body))),
   });
+}
+
+function faqSchema(faqs) {
+  if (!faqs.length) return [];
+  return [{ '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }];
 }
 
 function category(ctx, page) {
@@ -779,7 +801,7 @@ ${ctaBand(ctx)}`;
       image: b.cover_image ? [absUrl(ctx, b.cover_image)] : undefined,
       author: { '@id': ctx.site + '/#org' }, publisher: { '@id': ctx.site + '/#org' },
       mainEntityOfPage: ctx.site + '/blog/' + b.slug,
-    }],
+    }].concat(faqSchema(pageFaqs(b.body))),
   });
 }
 
