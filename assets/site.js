@@ -229,3 +229,28 @@
     check(m);
   });
 })();
+
+// Visit counter for the admin panel's Analytics page (no cookies, nothing personal)
+(function () {
+  try {
+    if (location.hostname !== 'luxorapackaging.com' || localStorage.getItem('lx_admin') === '1' || navigator.webdriver) return;
+  } catch (e) { return; }
+  function uid() { return (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) { var r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16); })); }
+  var sid; try { sid = sessionStorage.getItem('lx_sid') || uid(); sessionStorage.setItem('lx_sid', sid); } catch (e) { sid = uid(); }
+  var id = uid(), shown = 0, since = document.hidden ? 0 : Date.now();
+  var p = new URLSearchParams(location.search), q = {};
+  ['utm_source', 'utm_campaign', 'fbclid', 'gclid'].forEach(function (k) { if (p.get(k)) q[k] = k.indexOf('clid') > 0 ? '1' : p.get(k).slice(0, 80); });
+  function send(o) {
+    var body = JSON.stringify(o);
+    if (navigator.sendBeacon && navigator.sendBeacon('/api/track', new Blob([body], { type: 'application/json' }))) return;
+    fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true }).catch(function () {});
+  }
+  function secs() { return Math.round((shown + (since ? Date.now() - since : 0)) / 1000); }
+  send({ id: id, sid: sid, path: location.pathname, ref: document.referrer, q: q });
+  var timer = setInterval(function () { if (!document.hidden && secs() < 1800) send({ t: 'ping', id: id, dur: secs() }); }, 20000);
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { if (since) { shown += Date.now() - since; since = 0; } send({ t: 'ping', id: id, dur: secs() }); }
+    else since = Date.now();
+  });
+  window.addEventListener('pagehide', function () { clearInterval(timer); send({ t: 'ping', id: id, dur: secs() }); });
+})();

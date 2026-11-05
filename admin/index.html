@@ -122,6 +122,17 @@
   .type-tag{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--gold-2)}
   .empty{padding:50px 20px;text-align:center;color:var(--muted)}
   .empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:4px}
+  .an-chart{display:flex;align-items:flex-end;gap:2px;height:120px;padding:8px 0 0}
+  .an-chart i{flex:1;background:var(--gold);opacity:.8;border-radius:3px 3px 0 0;min-height:2px;position:relative}
+  .an-chart i:hover{opacity:1}
+  .an-axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-top:6px}
+  .an-live{display:inline-block;width:9px;height:9px;border-radius:50%;background:#22a45d;margin-right:6px;animation:anp 1.6s infinite}
+  @keyframes anp{50%{opacity:.35}}
+  .an-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+  .an-tbl{width:100%;border-collapse:collapse;font-size:13px}
+  .an-tbl td{padding:7px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+  .an-tbl td:last-child{text-align:right;white-space:nowrap;color:var(--muted)}
+  @media (max-width:760px){.an-grid{grid-template-columns:minmax(0,1fr)}}
   .split{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px;align-items:start}
   .side-box{padding:16px}
   .side-box h3{font-size:20px;margin-bottom:10px}
@@ -261,6 +272,7 @@
     <div class="brand"><b>Luxora</b><span>Admin</span></div>
     <nav class="nav" id="nav">
       <a data-v="queries"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8M8 12h5"/></svg><span>Queries</span><span class="badge hidden" id="navBadge">0</span></a>
+      <a data-v="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Analytics</span></a>
       <a data-v="products"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg><span>Products</span></a>
       <a data-v="content"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12l4 4v12H4z"/><path d="M8 10h8M8 14h8M8 18h5"/></svg><span>Content</span><span class="badge hidden" id="navBadge2">0</span></a>
       <a data-v="website"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg><span>Website</span></a>
@@ -389,6 +401,7 @@ async function startApp() {
   }
   $('#login').classList.add('hidden'); $('#app').classList.remove('hidden');
   $('#meEmail').textContent = ME.email;
+  try { localStorage.setItem('lx_admin', '1'); } catch (e) {}  // your own visits to the website are not counted
 
   $$('#nav a').forEach(function (a) { a.onclick = function () { go(a.dataset.v); }; });
   await loadQueries();
@@ -397,7 +410,7 @@ async function startApp() {
   var p = new URLSearchParams(location.search);
   var startView = (location.hash || '').replace('#', '') || 'queries';
   if (startView === 'offers') { contentTab = 'offers'; startView = 'content'; }
-  go(['queries', 'products', 'content', 'website', 'settings'].indexOf(startView) > -1 ? startView : 'queries');
+  go(['queries', 'analytics', 'products', 'content', 'website', 'settings'].indexOf(startView) > -1 ? startView : 'queries');
   checkPendingReviews();
   if (p.get('q')) openQuery(p.get('q'));
   clearBadge();
@@ -408,7 +421,55 @@ function go(v) {
   $$('#nav a').forEach(function (a) { a.classList.toggle('on', a.dataset.v === v); });
   closeAllDrawers();
   window.scrollTo(0, 0);
-  ({ queries: renderQueries, products: renderProducts, content: renderContent, website: renderWebsite, settings: renderSettings })[v]();
+  if (anTimer) { clearInterval(anTimer); anTimer = null; }
+  ({ queries: renderQueries, analytics: renderAnalytics, products: renderProducts, content: renderContent, website: renderWebsite, settings: renderSettings })[v]();
+}
+
+/* =====================================================================
+   ANALYTICS – visits counted by the website itself (no cookies)
+   ===================================================================== */
+var anDays = 1, anTimer = null;
+function fmtDur(s) { s = Math.round(s || 0); if (s < 60) return s + 's'; var m = Math.floor(s / 60); return m + 'm ' + (s % 60) + 's'; }
+function anBars(rows, label, val) {
+  var max = Math.max.apply(null, rows.map(val).concat([1]));
+  return '<div class="an-chart">' + rows.map(function (r) { return '<i style="height:' + Math.max(2, val(r) / max * 100) + '%" title="' + esc(label(r)) + ': ' + val(r) + '"></i>'; }).join('') + '</div>' +
+    '<div class="an-axis"><span>' + esc(label(rows[0] || {})) + '</span><span>' + esc(label(rows[rows.length - 1] || {})) + '</span></div>';
+}
+function anList(title, rows, val, name) {
+  var max = rows.length ? val(rows[0]) : 1;
+  return '<div class="panel side-box"><h3>' + title + '</h3>' + (rows.length ? rows.map(function (r) {
+    return '<div class="bar"><span>' + name(r) + '</span><i style="width:' + Math.max(8, val(r) / max * 90) + 'px"></i><b>' + val(r) + '</b></div>'; }).join('') : '<p class="hint">No visits yet.</p>') + '</div>';
+}
+async function renderAnalytics() {
+  if (!$('#anWrap')) $('#view').innerHTML = '<div id="anWrap"><div class="loading"><span class="spinner"></span></div></div>';
+  var r = await db.rpc('analytics_summary', { p_days: anDays, p_tz: 'Asia/Karachi' });
+  if (view !== 'analytics') return;
+  if (r.error) { $('#anWrap').innerHTML = '<div class="panel empty"><b>Analytics is not ready</b>' + esc(r.error.message) + '</div>'; return; }
+  var a = r.data || {};
+  var rangeName = anDays === 1 ? 'Today' : 'Last ' + anDays + ' days';
+  $('#anWrap').innerHTML =
+    '<div class="top"><h1>Analytics</h1><div class="acts">' + [1, 7, 30].map(function (d) { return '<button class="chip' + (anDays === d ? ' on' : '') + '" data-d="' + d + '">' + (d === 1 ? 'Today' : d + ' days') + '</button>'; }).join('') +
+      '<button class="btn btn-sm" id="anRef">Refresh</button></div></div>' +
+    '<div class="stats">' +
+      '<div class="panel stat hl"><b><span class="an-live"></span>' + (a.live || 0) + '</b><span>On the website now</span></div>' +
+      '<div class="panel stat"><b>' + (a.today_visitors || 0) + '</b><span>Visitors today</span></div>' +
+      '<div class="panel stat"><b>' + (a.range_visitors || 0) + '</b><span>Visitors · ' + rangeName + '</span></div>' +
+      '<div class="panel stat"><b>' + fmtDur(a.avg_dur) + '</b><span>Average time on site</span></div>' +
+    '</div>' +
+    '<div class="panel side-box"><h3>Page views per minute · last 60 minutes</h3>' + anBars(a.per_minute || [], function (x) { return x.t; }, function (x) { return x.v; }) + '</div>' +
+    (anDays > 1 ? '<div class="panel side-box" style="margin-top:14px"><h3>Visitors per day</h3>' + anBars(a.per_day || [], function (x) { return x.d; }, function (x) { return x.visitors; }) + '</div>' : '') +
+    '<div class="an-grid">' +
+      anList('Where visitors come from', a.sources || [], function (x) { return x.visitors; }, function (x) { return esc(x.k); }) +
+      anList('Countries', a.countries || [], function (x) { return x.visitors; }, function (x) { return (flag(x.k) ? flag(x.k) + ' ' : '') + esc(x.k === '??' ? 'Unknown' : x.k); }) +
+      '<div class="panel side-box"><h3>Most viewed pages</h3>' + ((a.pages || []).length ? '<table class="an-tbl">' + a.pages.map(function (x) { return '<tr><td>' + esc(x.k) + '</td><td>' + x.views + ' views · ' + fmtDur(x.avg_dur) + '</td></tr>'; }).join('') + '</table>' : '<p class="hint">No visits yet.</p>') + '</div>' +
+      anList('Devices', a.devices || [], function (x) { return x.visitors; }, function (x) { return esc(x.k); }) +
+    '</div>' +
+    '<div class="panel side-box" style="margin-top:14px"><h3>Latest visits</h3>' + ((a.recent || []).length ? '<table class="an-tbl">' + a.recent.map(function (x) {
+      return '<tr><td>' + (flag(x.country) ? flag(x.country) + ' ' : '') + esc(x.path) + '<br><span class="hint">' + esc(x.source || 'Direct') + ' · ' + esc(x.device || '') + (x.dur ? ' · stayed ' + fmtDur(x.dur) : '') + '</span></td><td>' + ago(x.ts) + '</td></tr>'; }).join('') + '</table>' : '<p class="hint">Visits will appear here as soon as someone opens the website.</p>') + '</div>' +
+    '<p class="hint" style="margin-top:10px">Counted by the website itself without cookies, so every visitor is included. Your own visits from this device are not counted. Updates every 15 seconds.</p>';
+  $$('.chip[data-d]').forEach(function (c) { c.onclick = function () { anDays = +c.dataset.d; renderAnalytics(); }; });
+  $('#anRef').onclick = function () { renderAnalytics(); };
+  if (!anTimer) anTimer = setInterval(function () { if (view === 'analytics' && !document.hidden) renderAnalytics(); }, 15000);
 }
 
 /* =====================================================================

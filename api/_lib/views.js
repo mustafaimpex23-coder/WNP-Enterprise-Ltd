@@ -69,6 +69,12 @@ function postal(str, country) {
   if (uk) return { '@type': 'PostalAddress', streetAddress: uk[1], addressLocality: uk[2].trim(), postalCode: uk[3].toUpperCase(), addressCountry: 'GB' };
   return { '@type': 'PostalAddress', streetAddress: s, addressCountry: country };
 }
+// Social media pages entered in the admin panel (Website settings)
+function socialLinks(s) {
+  return [['Facebook', s.social_facebook], ['Instagram', s.social_instagram], ['Pinterest', s.social_pinterest], ['LinkedIn', s.social_linkedin]]
+    .filter((x) => /^https:\/\//.test(String(x[1] || '').trim())).map((x) => [x[0], String(x[1]).trim()]);
+}
+
 function orgSchema(ctx) {
   const s = ctx.settings;
   const addr = postal(s.address, 'GB');
@@ -84,6 +90,8 @@ function orgSchema(ctx) {
         ...(s.us_phone ? { telephone: '+' + digits(s.us_phone) } : {}) },
     ],
   };
+  const social = socialLinks(s).map((x) => x[1]);
+  if (social.length) org.sameAs = social;
   if (s.us_address) {
     // The US business is its own company with its own address
     org.department = {
@@ -216,6 +224,7 @@ function footerHtml(ctx) {
       <address style="margin-top:14px"><b>United Kingdom</b>In the UK we operate as <strong>${esc(s.uk_company)}</strong><br>${esc(s.address)}${s.global_email && s.email ? `<br><a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : ''}</address>
       ${s.us_address ? `<address><b>United States</b>In the USA we operate as <strong>${esc(s.us_company)}</strong><br>Registered address: ${esc(s.us_address)}${s.us_email ? `<br><a href="mailto:${esc(s.us_email)}">${esc(s.us_email)}</a>` : ''}</address>` : ''}
     </div></div>
+    ${socialLinks(s).length ? `<div class="social" style="margin:18px 0 4px;display:flex;gap:16px;flex-wrap:wrap;font-size:14px"><b style="font-weight:600">Follow us:</b>${socialLinks(s).map((x) => `<a href="${esc(x[1])}" target="_blank" rel="noopener">${x[0]}</a>`).join('')}</div>` : ''}
     <div class="legal"><span>© ${year()} ${BRAND}, a trading name of ${esc(ctx.settings.uk_company || LEGAL)}. All rights reserved. · <a href="/privacy">Privacy Policy</a>${d.pages.terms ? ' · <a href="/terms">Terms</a>' : ''}${d.pages.returns ? ' · <a href="/returns">Returns</a>' : ''}</span>
       <span>Registered in England &amp; Wales · Company No. ${COMPANY_NO}</span></div>
   </div></footer>`;
