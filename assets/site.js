@@ -212,3 +212,20 @@
     });
   }
 })();
+
+// Show "Scroll for more" only while there is more of the menu to see
+(function () {
+  function check(m) {
+    var hint = m.querySelector('.dd-more');
+    if (!hint) return;
+    var more = m.scrollHeight - m.clientHeight - m.scrollTop > 24;
+    hint.style.visibility = more ? 'visible' : 'hidden';
+  }
+  document.querySelectorAll('nav .dd-menu').forEach(function (m) {
+    m.addEventListener('scroll', function () { check(m); }, { passive: true });
+    var dd = m.closest('.dd');
+    if (dd) new MutationObserver(function () { check(m); }).observe(dd, { attributes: true, attributeFilter: ['class'] });
+    window.addEventListener('resize', function () { check(m); });
+    check(m);
+  });
+})();

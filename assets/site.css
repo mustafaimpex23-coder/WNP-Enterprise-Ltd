@@ -449,3 +449,17 @@ footer address b{color:#d8d1c4;font-weight:600;display:block;font-size:12px;lett
   nav .dd-menu .dd-label{display:block;padding:8px 12px 2px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-dark)}
   .form-h{font-size:30px;margin-bottom:8px}
   .form-lead{color:var(--muted);margin-bottom:18px;max-width:640px}
+
+/* Long menus scroll inside themselves, with a visible scrollbar */
+nav .dd-menu{max-height:calc(100vh - 110px);max-height:calc(100dvh - 110px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--gold-dark) var(--paper-2)}
+nav .dd-menu::-webkit-scrollbar{width:8px}
+nav .dd-menu::-webkit-scrollbar-track{background:var(--paper-2);border-radius:8px}
+nav .dd-menu::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:8px}
+nav .dd-menu .dd-more{position:sticky;bottom:-8px;margin:0 -8px -8px;padding:14px 0 8px;text-align:center;font-size:12px;letter-spacing:.08em;color:var(--gold-dark);background:linear-gradient(rgba(255,255,255,0),#fff 55%);pointer-events:none}
+@media (max-width:760px){
+  nav ul{max-height:calc(100vh - 72px);max-height:calc(100dvh - 72px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--gold-dark) var(--paper-2)}
+  nav ul::-webkit-scrollbar{width:6px}
+  nav ul::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:6px}
+  nav .dd-menu{max-height:55vh;max-height:55dvh;padding-right:8px;border-left:2px solid var(--line)}
+  nav .dd-menu .dd-more{margin:0;bottom:0}
+}

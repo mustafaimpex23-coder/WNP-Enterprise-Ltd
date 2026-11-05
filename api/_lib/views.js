@@ -184,7 +184,7 @@ function navHtml(ctx) {
   return `<ul id="menu">
     <li><a href="/"${p === '/' ? ' class="on" aria-current="page"' : ''}>Home</a></li>
     <li class="dd"><button type="button" aria-expanded="false">Box Styles</button>
-      <div class="dd-menu">${d.pages['rigid-boxes'] ? '<a href="/rigid-boxes">All rigid boxes</a>' : ''}${d.pages['perfume-boxes'] ? '<a href="/perfume-boxes">Perfume boxes</a>' : ''}<hr>${styles}${landingLinks(d, LANDING_USE, 'a') ? `<hr><span class="dd-label">Packaging for</span>${landingLinks(d, LANDING_USE, 'a')}` : ''}</div></li>
+      <div class="dd-menu">${d.pages['rigid-boxes'] ? '<a href="/rigid-boxes">All rigid boxes</a>' : ''}${d.pages['perfume-boxes'] ? '<a href="/perfume-boxes">Perfume boxes</a>' : ''}<hr>${styles}${landingLinks(d, LANDING_USE, 'a') ? `<hr><span class="dd-label">Packaging for</span>${landingLinks(d, LANDING_USE, 'a')}` : ''}<span class="dd-more" aria-hidden="true">Scroll for more ↓</span></div></li>
     <li><a href="/portfolio"${on('/portfolio')}>Portfolio</a></li>
     ${d.pages.samples ? `<li><a href="/samples"${on('/samples')}>Samples</a></li>` : ''}
     ${d.pages.about ? `<li><a href="/about"${on('/about')}>About</a></li>` : ''}
