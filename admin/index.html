@@ -447,6 +447,7 @@ async function renderAnalytics() {
   if (r.error) { $('#anWrap').innerHTML = '<div class="panel empty"><b>Analytics is not ready</b>' + esc(r.error.message) + '</div>'; return; }
   var a = r.data || {};
   var rangeName = anDays === 1 ? 'Today' : 'Last ' + anDays + ' days';
+  var pm = a.per_minute || [], pmHit = pm.filter(function (x) { return x.v > 0; }).reverse();
   $('#anWrap').innerHTML =
     '<div class="top"><h1>Analytics</h1><div class="acts">' + [1, 7, 30].map(function (d) { return '<button class="chip' + (anDays === d ? ' on' : '') + '" data-d="' + d + '">' + (d === 1 ? 'Today' : d + ' days') + '</button>'; }).join('') +
       '<button class="btn btn-sm" id="anRef">Refresh</button></div></div>' +
@@ -456,7 +457,16 @@ async function renderAnalytics() {
       '<div class="panel stat"><b>' + (a.range_visitors || 0) + '</b><span>Visitors · ' + rangeName + '</span></div>' +
       '<div class="panel stat"><b>' + fmtDur(a.avg_dur) + '</b><span>Average time on site</span></div>' +
     '</div>' +
-    '<div class="panel side-box"><h3>Page views per minute · last 60 minutes</h3>' + anBars(a.per_minute || [], function (x) { return x.t; }, function (x) { return x.v; }) + '</div>' +
+    '<div class="panel side-box"><h3>Views every minute</h3>' +
+      '<div class="stats" style="margin:6px 0 10px">' +
+        '<div class="panel stat hl"><b>' + (pm.length ? pm[pm.length - 1].v : 0) + '</b><span>This minute (' + esc(pm.length ? pm[pm.length - 1].t : '') + ')</span></div>' +
+        '<div class="panel stat"><b>' + (pm.length > 1 ? pm[pm.length - 2].v : 0) + '</b><span>Last minute (' + esc(pm.length > 1 ? pm[pm.length - 2].t : '') + ')</span></div>' +
+        '<div class="panel stat"><b>' + pm.slice(-5).reduce(function (t, x) { return t + x.v; }, 0) + '</b><span>Last 5 minutes</span></div>' +
+        '<div class="panel stat"><b>' + pm.reduce(function (t, x) { return t + x.v; }, 0) + '</b><span>Last 60 minutes</span></div>' +
+      '</div>' +
+      anBars(pm, function (x) { return x.t; }, function (x) { return x.v; }) +
+      '<table class="an-tbl" style="margin-top:12px">' + (pmHit.length ? pmHit.map(function (x) { return '<tr><td><b>' + esc(x.t) + '</b></td><td><b style="color:var(--ink)">' + x.v + '</b> view' + (x.v === 1 ? '' : 's') + '</td></tr>'; }).join('') : '<tr><td class="hint">No views in the last 60 minutes.</td><td></td></tr>') + '</table>' +
+    '</div>' +
     (anDays > 1 ? '<div class="panel side-box" style="margin-top:14px"><h3>Visitors per day</h3>' + anBars(a.per_day || [], function (x) { return x.d; }, function (x) { return x.visitors; }) + '</div>' : '') +
     '<div class="an-grid">' +
       anList('Where visitors come from', a.sources || [], function (x) { return x.visitors; }, function (x) { return esc(x.k); }) +
