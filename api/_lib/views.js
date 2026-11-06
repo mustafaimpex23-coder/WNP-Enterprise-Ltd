@@ -116,7 +116,7 @@ function crumbs(items) {
 /* --------------------------------------------------------------- layout */
 // Search titles (30–60 characters) and, for pages built in code, search descriptions
 const SEO = {
-  '/': { t: `Custom Rigid Boxes Wholesale & Luxury Packaging | ${BRAND}`, d: 'Custom luxury rigid boxes, magnetic gift boxes and perfume packaging from 50 pieces. Bespoke finishes, serving the UK, USA, Canada and Europe.' },
+  '/': { t: `Custom Luxury Boxes with Logo UK & USA | ${BRAND}`, d: 'Custom luxury boxes with your logo from 50 pieces: rigid gift boxes, magnetic boxes, perfume, cosmetic and candle packaging. Free quote in 24 hours. UK, USA, Canada & EU.' },
   '/portfolio': { t: `Custom Luxury Packaging Portfolio | ${BRAND}`, d: 'Browse real production photos and unboxing videos of our custom rigid boxes, magnetic closures, drawer boxes and custom inserts.' },
   '/quote': { t: `Request a Wholesale Packaging Quote | ${BRAND}`, d: 'Get a quote for custom luxury rigid boxes, perfume boxes and display packaging from 50 pieces. We reply within 24 hours, for UK, US, Canadian and EU orders.' },
   '/faq': { t: `Rigid Box Packaging FAQs | ${BRAND} Wholesale`, d: 'Answers on rigid box dimensions, the 50-piece MOQ, paid production samples, custom logo finishes, sizes in mm and inches, and international shipping.' },
@@ -467,6 +467,23 @@ function quoteForm(ctx, o = {}) {
 
 /* ================================================================ PAGES */
 
+// Popular searches block: what UK and US buyers type into Google, each linked to the page that answers it
+const POPULAR = [
+  ['Custom boxes with logo', '/custom-logo-boxes'], ['Luxury packaging boxes', '/rigid-boxes'], ['Custom rigid boxes', '/rigid-boxes'],
+  ['Magnetic gift boxes wholesale', '/magnetic-closure-boxes'], ['Custom perfume boxes', '/perfume-boxes'], ['Luxury gift boxes with lids', '/lid-and-base-box'],
+  ['Custom cosmetic packaging', '/cosmetic-boxes'], ['Skincare boxes', '/cosmetic-boxes'], ['Luxury candle boxes', '/candle-boxes'],
+  ['Custom jewelry boxes', '/jewellery-boxes'], ['Hamper boxes', '/hamper-boxes'], ['Christmas gift boxes for brands', '/blog/christmas-gift-boxes-for-brands'],
+  ['PR boxes & influencer packaging', '/blog/pr-boxes-influencer-packaging-guide'], ['Bridesmaid proposal boxes', '/bridesmaid-proposal-boxes'],
+  ['Hair extension & wig boxes', '/hair-extension-boxes'], ['Drawer boxes', '/drawer-box'], ['Book-style magnetic boxes', '/book-style-box'],
+  ['Counter display boxes', '/display-box'], ['Presentation boxes', '/presentation-boxes'], ['Custom chocolate boxes', '/chocolate-boxes'],
+  ['Low minimum order packaging (50 pcs)', '/low-moq-rigid-boxes'], ['Eco-friendly luxury packaging', '/blog/eco-friendly-rigid-boxes'],
+  ['Packaging supplier UK', '/uk'], ['Custom packaging USA', '/usa'], ['Custom boxes Canada', '/canada'], ['Luxury packaging Europe', '/europe'],
+];
+function popularSearches() {
+  return `<section style="background:var(--paper-2)"><div class="wrap"><div class="section-head"><span class="eyebrow">Popular Searches</span><h2>Custom packaging brands ask us for</h2><p>Made to your size, colour and logo, from 50 pieces, for the UK, USA, Canada and Europe.</p></div>
+  <ul style="list-style:none;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:0;margin:0">${POPULAR.map(([k, u]) => `<li><a href="${u}" style="display:inline-block;padding:9px 16px;border:1px solid var(--line);border-radius:30px;background:#fff;font-size:14px">${esc(k)}</a></li>`).join('')}</ul></div></section>`;
+}
+
 function home(ctx) {
   const s = ctx.settings, d = ctx.data;
   const now = Date.now();
@@ -536,6 +553,7 @@ ${homeWork(ctx)}
   </div></div></section>
 ${reviews.length ? `<section style="background:var(--paper-2)"><div class="wrap"><div class="section-head"><span class="eyebrow">Reviews</span><h2>What our customers say</h2></div>
   <div class="reviews">${reviews.map((r) => reviewCard(ctx, r)).join('')}</div><p class="more-link"><a class="btn btn-dark" href="/reviews">All reviews</a></p></div></section>` : ''}
+${popularSearches()}
 ${posts.length ? `<section><div class="wrap"><div class="section-head"><span class="eyebrow">Guides</span><h2>From the blog</h2></div>
   <div class="posts">${posts.map((b) => postCard(ctx, b)).join('')}</div><p class="more-link"><a class="btn btn-dark" href="/blog">All articles</a></p></div></section>` : ''}
 ${faqs.length ? `<section id="faq" style="background:var(--paper-2)"><div class="wrap"><div class="section-head"><span class="eyebrow">FAQ</span><h2>Quick answers</h2></div>
