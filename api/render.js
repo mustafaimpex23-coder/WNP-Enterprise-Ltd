@@ -3,7 +3,7 @@
 const { loadAll } = require('./_lib/data.js');
 const V = require('./_lib/views.js');
 
-const VERSION = '23';  // bump to refresh cached CSS/JS after a change
+const VERSION = '24';  // bump to refresh cached CSS/JS after a change
 const CANONICAL = (process.env.SITE_URL || 'https://luxorapackaging.com').trim().replace(/\/$/, '');
 
 const COUNTRY = ['uk', 'usa', 'canada', 'europe'];
@@ -51,6 +51,14 @@ module.exports = async (req, res) => {
   const url = new URL(req.url, 'http://x');
   let path = (url.searchParams.get('path') || url.pathname || '/').replace(/^\/+|\/+$/g, '').toLowerCase();
   if (path.startsWith('api/render')) path = '';
+  // One address per page: /Perfume-Boxes/ and /perfume-boxes/ send a permanent redirect to /perfume-boxes
+  const raw = (url.searchParams.get('path') ?? url.pathname ?? '').replace(/^\/+/, '');
+  if (raw && !raw.startsWith('api/') && raw !== path && /^[\w\-\/]+$/.test(raw)) {
+    const q = new URLSearchParams(url.search); q.delete('path');
+    const qs = q.toString();
+    res.statusCode = 301; res.setHeader('Location', '/' + path + (qs ? '?' + qs : '')); res.setHeader('Cache-Control', 'public, max-age=3600');
+    return res.end();
+  }
   const parts = path ? path.split('/') : [];
 
   // Only the real website address is indexed by Google; preview links are hidden

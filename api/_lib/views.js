@@ -120,12 +120,12 @@ const SEO = {
   '/portfolio': { t: `Custom Luxury Packaging Portfolio | ${BRAND}`, d: 'Browse real production photos and unboxing videos of our custom rigid boxes, magnetic closures, drawer boxes and custom inserts.' },
   '/quote': { t: `Request a Wholesale Packaging Quote | ${BRAND}`, d: 'Get a quote for custom luxury rigid boxes, perfume boxes and display packaging from 50 pieces. We reply within 24 hours, for UK, US, Canadian and EU orders.' },
   '/faq': { t: `Rigid Box Packaging FAQs | ${BRAND} Wholesale`, d: 'Answers on rigid box dimensions, the 50-piece MOQ, paid production samples, custom logo finishes, sizes in mm and inches, and international shipping.' },
-  '/rigid-boxes': { t: `Custom Rigid Boxes Wholesale & Manufacturer | ${BRAND}` },
+  '/rigid-boxes': { t: `Custom Rigid Boxes & Luxury Packaging Supplies | ${BRAND}` },
   '/perfume-boxes': { t: `Custom Perfume Boxes Wholesale | ${BRAND}` },
   '/samples': { t: `Order Paid Custom Packaging Samples | ${BRAND}` },
   '/about': { t: `About ${BRAND} – UK & US Packaging Supplier` },
   '/shipping': { t: `Wholesale Box Shipping & Delivery Terms | ${BRAND}` },
-  '/uk': { t: `Custom Rigid Boxes UK | Luxury Packaging | ${BRAND}`, d: 'Bespoke rigid boxes, magnetic gift boxes, presentation and perfume boxes for UK brands from 50 pieces. Quoted in GBP, delivered across the UK.' },
+  '/uk': { t: `Luxury Packaging UK – Custom Rigid Boxes | ${BRAND}`, d: 'Bespoke rigid boxes, magnetic gift boxes, presentation and perfume boxes for UK brands from 50 pieces. Quoted in GBP, delivered across the UK.' },
   '/usa': { t: `Custom Rigid Boxes USA | Luxury Packaging | ${BRAND}`, d: 'Custom setup boxes, magnetic gift boxes and luxury perfume packaging for US brands from 50 pieces. Sizes in inches, quoted in USD, shipped to all 50 states.' },
   '/canada': { t: `Custom Rigid Boxes Canada | Luxury Packaging | ${BRAND}`, d: 'Custom rigid gift boxes, magnetic boxes and perfume packaging for Canadian brands from 50 pieces. Bilingual printing, quoted in CAD, DDP available.' },
   '/europe': { t: `Custom Rigid Boxes Europe | Luxury Packaging | ${BRAND}`, d: 'Luxury rigid boxes, magnetic gift boxes and perfume packaging for EU brands from 50 pieces. Quoted in EUR, delivered to Ireland, Germany, France and more.' },
@@ -140,13 +140,13 @@ const SEO = {
   '/display-box': { t: `Custom Display Boxes Wholesale | ${BRAND}` },
   '/magnetic-closure-boxes': { t: `Custom Magnetic Closure Boxes Wholesale | ${BRAND}` },
   '/rigid-gift-boxes': { t: `Custom Rigid Gift Boxes Wholesale | ${BRAND}` },
-  '/presentation-boxes': { t: `Custom Presentation Boxes Wholesale | ${BRAND}` },
+  '/presentation-boxes': { t: `Presentation Box Supplier – Custom Wholesale | ${BRAND}` },
   '/jewellery-boxes': { t: `Custom Jewellery Boxes & Jewelry Packaging | ${BRAND}` },
   '/candle-boxes': { t: `Custom Luxury Candle Boxes Wholesale | ${BRAND}` },
   '/watch-boxes': { t: `Custom Rigid Watch Boxes in Bulk | ${BRAND}` },
-  '/chocolate-boxes': { t: `Wholesale Rigid Chocolate Boxes | ${BRAND}` },
+  '/chocolate-boxes': { t: `Wholesale Chocolate Boxes for Gourmet Shops | ${BRAND}` },
   '/apparel-boxes': { t: `Apparel Gift Boxes Wholesale | ${BRAND}` },
-  '/rigid-boxes-with-inserts': { t: `Custom Rigid Boxes with Foam Inserts | ${BRAND}` },
+  '/rigid-boxes-with-inserts': { t: `Rigid Boxes with Foam Inserts – Custom EVA | ${BRAND}` },
   '/shoulder-neck-rigid-boxes': { t: `Custom Shoulder Neck Rigid Boxes | ${BRAND}` },
   '/low-moq-rigid-boxes': { t: `Low MOQ Rigid Boxes – From 50 Pieces | ${BRAND}` },
   '/cosmetic-boxes': { t: `Custom Cosmetic & Skincare Boxes Wholesale | ${BRAND}` },
@@ -393,6 +393,8 @@ function ourWork(ctx) {
 <section><div class="wrap work-factory">
   <div><span class="eyebrow">Production</span><h2>From our production floor</h2>
     <p>Every box is cut, wrapped and finished by our own team, then export-packed for delivery to the UK, USA, Canada and Europe.</p>
+    <p>Each order starts with your product size. We cut the grey board to fit, wrap it in the paper you choose (art paper, textured, kraft or soft-touch), then add your logo in foil, embossing or spot UV. Inserts in EVA foam, card or velvet are cut to hold your bottle, jar or gift set, and every box is checked before it is packed.</p>
+    <p>The styles you see here include <a href="/magnetic-flip-top-perfume-box">magnetic flip-top boxes</a>, <a href="/double-door-perfume-box">double-door boxes</a>, <a href="/drawer-box">drawer boxes</a>, <a href="/lid-and-base-box">lid and base boxes</a> and <a href="/rigid-boxes-with-inserts">rigid boxes with foam inserts</a>, all available from ${ctx.min} pieces per design.</p>
     <p>Want to check the quality yourself first? <a href="/samples" style="text-decoration:underline">Order a paid sample</a> before your bulk order.</p></div>
   <div class="work-vids two">${FACTORY_VIDEOS.map(videoCard).join('')}</div>
 </div></section>
