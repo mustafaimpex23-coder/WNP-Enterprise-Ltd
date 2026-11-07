@@ -44,7 +44,7 @@
   header .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
   .logo{display:flex;flex-direction:column;line-height:1}
   .logo b{font-family:'Cormorant Garamond',serif;font-size:28px;letter-spacing:.06em;color:var(--ink)}
-  .logo span{font-size:10px;letter-spacing:.3em;color:var(--gold-dark);text-transform:uppercase;margin-top:4px}
+  .logo span{font-size:10px;letter-spacing:.3em;color:#7a5c2e;font-weight:600;text-transform:uppercase;margin-top:4px}
   nav ul{display:flex;gap:28px;list-style:none;align-items:center}
   nav a{font-size:15px;font-weight:500}
   nav a:hover{color:var(--gold-dark)}
