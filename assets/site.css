@@ -229,7 +229,7 @@
   .offer-body h3{font-size:26px;margin-bottom:8px}
   .offer-body p{color:var(--muted);font-size:15px;margin-bottom:18px;flex:1;white-space:pre-line}
   .offer-body .btn{align-self:flex-start}
-  .card .badge-tag{position:absolute;top:14px;right:14px;background:var(--gold);color:#fff;font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;z-index:2}
+  .card .badge-tag{position:absolute;top:14px;right:14px;background:var(--gold);color:var(--ink);font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;z-index:2}
   .hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
 
   /* Responsive */
