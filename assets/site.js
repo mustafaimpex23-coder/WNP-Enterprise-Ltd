@@ -189,13 +189,10 @@
 
   /* ---------- cookies + Google Analytics (only after "Accept") ---------- */
   var GA = body.getAttribute('data-ga');
+  // The Google tag is in the page head with cookies switched off (Consent Mode); "Accept" switches them on
   function loadGA() {
-    if (!GA || window.gtag) return;
-    var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA);
-    document.head.appendChild(s);
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { window.dataLayer.push(arguments); };
-    window.gtag('js', new Date()); window.gtag('config', GA, { anonymize_ip: true });
+    if (!GA || !window.gtag) return;
+    window.gtag('consent', 'update', { analytics_storage: 'granted' });
   }
   if (GA) {
     var choice = null; try { choice = localStorage.getItem('wnp_cookies'); } catch (e) {}

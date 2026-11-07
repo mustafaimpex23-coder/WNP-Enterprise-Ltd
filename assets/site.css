@@ -463,3 +463,5 @@ nav .dd-menu .dd-more{position:sticky;bottom:-8px;margin:0 -8px -8px;padding:14p
   nav .dd-menu{max-height:55vh;max-height:55dvh;padding-right:8px;border-left:2px solid var(--line)}
   nav .dd-menu .dd-more{margin:0;bottom:0}
 }
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}

@@ -38,9 +38,9 @@ function photo(url, alt, o = {}) {
   if (n) {
     const p = PHOTOS[n];
     return `<picture><source type="image/webp" srcset="/img/${n}-600.webp${IMGV} 600w, /img/${n}-1200.webp${IMGV} 1200w" sizes="${sizes}">` +
-      `<img src="/img/${n}-1200.jpg${IMGV}" alt="${esc(alt)}" width="${p.w}" height="${p.h}" ${load} decoding="async"></picture>`;
+      `<img src="/img/${n}-1200.jpg${IMGV}" alt="${esc(alt)}" title="${esc(alt)}" width="${p.w}" height="${p.h}" ${load} decoding="async"></picture>`;
   }
-  return `<img src="${esc(url)}" alt="${esc(alt)}" ${load} decoding="async">`;
+  return `<img src="${esc(url)}" alt="${esc(alt)}" title="${esc(alt)}" ${load} decoding="async">`;
 }
 
 // Photos for a product card / a design, falling back to the photo files in the website folder
@@ -264,6 +264,8 @@ ${String(s.gsc_verification || '').split(/[\s,]+/).map((x) => x.replace(/.*conte
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
 <link rel="stylesheet" href="/assets/site.css?v=${ctx.v}">
+${s.ga_id ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(s.ga_id)}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('js',new Date());gtag('config','${esc(s.ga_id)}',{anonymize_ip:true});</script>` : ''}
 ${schemas.map((x) => `<script type="application/ld+json">${JSON.stringify(x).replace(/</g, '\\u003c')}</script>`).join('\n')}
 </head>
 <body data-wa="${ctx.wa}" data-min="${ctx.min}"${s.ga_id ? ` data-ga="${esc(s.ga_id)}"` : ''}>
@@ -278,7 +280,7 @@ ${s.announcement ? `<div class="announce">${esc(s.announcement)}</div>` : ''}
 ${o.body}
 </main>
 ${footerHtml(ctx)}
-<a class="wa-float" href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">${WA_ICON.replace('fill="currentColor"', 'fill="#fff"')}</a>
+<a class="wa-float" href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp" title="Chat on WhatsApp">${WA_ICON.replace('fill="currentColor"', 'fill="#fff"')}<span class="sr-only">Chat with Luxora Packaging on WhatsApp</span></a>
 ${s.ga_id ? `<div class="cookie" id="cookie" role="dialog" aria-label="Cookies"><span>We use Google Analytics cookies to understand which pages are most useful. <a href="/privacy">Privacy policy</a></span><div class="btns"><button class="btn btn-ghost" data-cookie="no">No thanks</button><button class="btn btn-gold" data-cookie="yes">Accept</button></div></div>` : ''}
 <script src="/assets/site.js?v=${ctx.v}" defer></script>
 </body>
@@ -356,14 +358,14 @@ const FACTORY_VIDEOS = [
 ];
 
 function videoCard(v) {
-  return `<figure class="vid"><div class="vid-box"><video data-auto muted loop playsinline preload="none" poster="/img/work/${v[0]}.jpg" aria-label="${esc(v[1])}">
+  return `<figure class="vid"><div class="vid-box"><video data-auto muted loop playsinline preload="none" poster="/img/work/${v[0]}-poster.webp" aria-label="${esc(v[1])}">
     <source src="/img/work/${v[0]}.mp4" type="video/mp4"></video><span class="real-tag">Real video</span></div><figcaption>${esc(v[1])}</figcaption></figure>`;
 }
 function workPhotoCard(ctx, w) {
   const prod = ctx.data.products.find((p) => p.slug === w[2]);
   const href = prod ? '/' + prod.slug : '/quote?product=' + encodeURIComponent(w[1]);
   return `<a class="work-ph" href="${esc(href)}"><div class="work-img"><picture><source type="image/webp" srcset="/img/work/${w[0]}-600.webp 600w, /img/work/${w[0]}-1200.webp 1200w" sizes="(max-width:760px) 50vw, 25vw">
-    <img src="/img/work/${w[0]}-600.jpg" alt="${esc(w[1])} made by ${BRAND}" width="600" height="600" loading="lazy" decoding="async"></picture><span class="real-tag">Real photo</span></div>
+    <img src="/img/work/${w[0]}-600.jpg" alt="${esc(w[1])} made by ${BRAND}" title="${esc(w[1])}" width="600" height="600" loading="lazy" decoding="async"></picture><span class="real-tag">Real photo</span></div>
     <span class="cap">${esc(w[1])}${prod ? `<small>${esc(prod.name)} →</small>` : '<small>Get a quote →</small>'}</span></a>`;
 }
 function homeWork(ctx) {
