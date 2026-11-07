@@ -203,7 +203,7 @@
   footer{background:#0d0d0d;color:#9b9488;padding:52px 0 26px;font-size:14px}
   .foot{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;margin-bottom:36px}
   footer .logo b{color:#fff}
-  footer h4{color:#fff;font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+  footer h3,footer h4{font-family:inherit;font-weight:600;color:#fff;font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
   footer ul{list-style:none}
   footer li{margin-bottom:8px}
   footer a:hover{color:#fff}
@@ -465,3 +465,14 @@ nav .dd-menu .dd-more{position:sticky;bottom:-8px;margin:0 -8px -8px;padding:14p
 }
 
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* tap without delay on phones */
+a,button,input,select,textarea,label,summary{touch-action:manipulation}
+/* share links on guides */
+.share{margin-top:34px;padding-top:20px;border-top:1px solid var(--line)}
+.share h3{font-size:16px;margin-bottom:10px}
+.share div{display:flex;flex-wrap:wrap;gap:8px}
+.share a{padding:7px 14px;border:1px solid var(--line);border-radius:30px;font-size:13.5px;background:#fff}
+.share a:hover{border-color:var(--gold-dark)}
+/* compact cookie notice on phones so it does not cover the page */
+@media (max-width:760px){.cookie{left:10px;right:10px;bottom:10px;padding:10px 12px;gap:10px;font-size:12.5px;line-height:1.35;flex-direction:row}.cookie .btn{padding:7px 11px;font-size:12.5px}.cookie span{flex:1}}

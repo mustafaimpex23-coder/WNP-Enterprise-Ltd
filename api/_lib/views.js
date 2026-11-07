@@ -211,12 +211,12 @@ function footerHtml(ctx) {
   return `<footer><div class="wrap"><div class="foot">
     <div><a href="/" class="logo"><b>Luxora</b><span>Packaging</span></a>
       <p style="margin-top:16px;max-width:320px">${esc(s.footer_text)}</p></div>
-    <div><h4>Box Styles</h4><ul>${d.products.map((x) => `<li><a href="/${esc(x.slug)}">${esc(x.name)}</a></li>`).join('')}${landingLinks(d, LANDING_FEATURE, 'li')}</ul>
-      ${landingLinks(d, LANDING_USE, 'li') ? `<h4 style="margin-top:22px">Packaging for</h4><ul>${landingLinks(d, LANDING_USE, 'li')}</ul>` : ''}</div>
-    <div><h4>Company</h4><ul><li><a href="/portfolio">Portfolio</a></li>${pg('about', 'About us')}${pg('samples', 'Paid samples')}${pg('shipping', 'Shipping & delivery')}
+    <div><h3>Box Styles</h3><ul>${d.products.map((x) => `<li><a href="/${esc(x.slug)}">${esc(x.name)}</a></li>`).join('')}${landingLinks(d, LANDING_FEATURE, 'li')}</ul>
+      ${landingLinks(d, LANDING_USE, 'li') ? `<h3 style="margin-top:22px">Packaging for</h3><ul>${landingLinks(d, LANDING_USE, 'li')}</ul>` : ''}</div>
+    <div><h3>Company</h3><ul><li><a href="/portfolio">Portfolio</a></li>${pg('about', 'About us')}${pg('samples', 'Paid samples')}${pg('shipping', 'Shipping & delivery')}
       <li><a href="/faq">FAQ</a></li>${d.posts.length ? '<li><a href="/blog">Blog</a></li>' : ''}${d.reviews.length ? '<li><a href="/reviews">Reviews</a></li>' : ''}
       ${pg('uk', 'UK')}${pg('usa', 'USA')}${pg('canada', 'Canada')}${pg('europe', 'Europe')}<li><a href="/quote">Get a quote</a></li></ul></div>
-    <div><h4>Contact</h4>
+    <div><h3>Contact</h3>
       <ul><li><a href="mailto:${esc(s.global_email || s.email)}">${esc(s.global_email || s.email)}</a></li>
         <li><a href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">WhatsApp ${esc(s.whatsapp)}</a></li>
         ${s.phone ? `<li><a href="tel:+${digits(phone)}">Call ${esc(phone)}</a></li>` : ''}
@@ -263,7 +263,7 @@ ${String(s.gsc_verification || '').split(/[\s,]+/).map((x) => x.replace(/.*conte
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="/assets/site.css?v=${ctx.v}">
+<link rel="stylesheet" href="/assets/site.min.css?v=${ctx.v}">
 ${s.ga_id ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(s.ga_id)}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('js',new Date());gtag('config','${esc(s.ga_id)}',{anonymize_ip:true});</script>` : ''}
 ${schemas.map((x) => `<script type="application/ld+json">${JSON.stringify(x).replace(/</g, '\\u003c')}</script>`).join('\n')}
@@ -282,7 +282,7 @@ ${o.body}
 ${footerHtml(ctx)}
 <a class="wa-float" href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp" title="Chat on WhatsApp">${WA_ICON.replace('fill="currentColor"', 'fill="#fff"')}<span class="sr-only">Chat with Luxora Packaging on WhatsApp</span></a>
 ${s.ga_id ? `<div class="cookie" id="cookie" role="dialog" aria-label="Cookies"><span>We use Google Analytics cookies to understand which pages are most useful. <a href="/privacy">Privacy policy</a></span><div class="btns"><button class="btn btn-ghost" data-cookie="no">No thanks</button><button class="btn btn-gold" data-cookie="yes">Accept</button></div></div>` : ''}
-<script src="/assets/site.js?v=${ctx.v}" defer></script>
+<script src="/assets/site.min.js?v=${ctx.v}" defer></script>
 </body>
 </html>`;
 }
@@ -812,6 +812,14 @@ ${ctaBand(ctx)}`;
   return layout(ctx, { title: 'Packaging Guides & Blog', description: 'Guides on custom rigid boxes and perfume packaging: box styles, finishes, sizing your bottle and planning a small launch.', path: '/blog', body, schema: [crumbSchema(ctx, items)] });
 }
 
+// Share buttons: plain links (no scripts), so they cost nothing in page speed
+function shareLinks(ctx, path, title) {
+  const u = encodeURIComponent(ctx.site + path), t = encodeURIComponent(title);
+  const links = [['Facebook', `https://www.facebook.com/sharer/sharer.php?u=${u}`], ['LinkedIn', `https://www.linkedin.com/sharing/share-offsite/?url=${u}`],
+    ['WhatsApp', `https://wa.me/?text=${t}%20${u}`], ['X', `https://twitter.com/intent/tweet?url=${u}&text=${t}`], ['Pinterest', `https://pinterest.com/pin/create/button/?url=${u}&description=${t}`], ['Email', `mailto:?subject=${t}&body=${u}`]];
+  return `<div class="share"><h3>Share this guide</h3><div>${links.map(([n, h]) => `<a href="${h}" target="_blank" rel="noopener" title="Share on ${n}">${n}</a>`).join('')}</div></div>`;
+}
+
 function post(ctx, b) {
   const items = [['Home', '/'], ['Blog', '/blog'], [b.title, '/blog/' + b.slug]];
   const related = ctx.data.products.filter((p) => (b.product_slugs || []).includes(p.slug));
@@ -819,6 +827,7 @@ function post(ctx, b) {
 <section><div class="wrap"><article class="prose" style="margin:0 auto">
   ${b.cover_image ? `<div class="post-cover">${photo(b.cover_image, b.cover_alt || b.title, { eager: true, sizes: '(max-width:760px) 100vw, 760px' })}</div>` : ''}
   ${md(b.body)}
+  ${shareLinks(ctx, '/blog/' + b.slug, b.title)}
 </article></div></section>
 ${related.length ? `<section style="background:var(--paper-2)"><div class="wrap"><div class="section-head"><span class="eyebrow">Box styles in this article</span><h2>See the boxes</h2></div>${productGrid(ctx, related)}</div></section>` : ''}
 ${ctaBand(ctx)}`;
@@ -887,12 +896,32 @@ function robots(ctx) {
   const bots = ['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'PerplexityBot', 'Google-Extended', 'Applebot-Extended', 'Bingbot', 'Googlebot'];
   const rules = 'Allow: /\nDisallow: /admin/\nDisallow: /api/\nDisallow: /review/\n';
   if (ctx.noindex) return 'User-agent: *\nDisallow: /\n';
-  return bots.map((b) => `User-agent: ${b}\n${rules}`).join('\n') + `\nUser-agent: *\n${rules}\nSitemap: ${ctx.site}/sitemap.xml\n`;
+  return bots.map((b) => `User-agent: ${b}\n${rules}`).join('\n') + `\nUser-agent: *\n${rules}\nSitemap: ${ctx.site}/sitemap.xml\n# AI summary: ${ctx.site}/llms.txt\n`;
+}
+
+// llms.txt: a plain summary of the business and its key pages for AI assistants (ChatGPT, Gemini, Claude, Perplexity)
+function llms(ctx) {
+  const s = ctx.settings, d = ctx.data, site = ctx.site;
+  const pg = (slug) => d.pages[slug];
+  const line = (title, path, desc) => `- [${title}](${site}${path})${desc ? ': ' + plain(desc, 150) : ''}`;
+  const out = [
+    `# ${BRAND}`, '',
+    `> ${BRAND} makes custom luxury rigid boxes for brands in the UK, USA, Canada and Europe: perfume boxes, magnetic gift boxes, drawer, lid-and-base, book-style and display boxes, plus cosmetic, candle, hamper and gift packaging. Made to the customer's size, colour and logo, from ${ctx.min} pieces per design, with paid samples available.`, '',
+    `- Company: ${BRAND} is a trading name of ${s.legal_name || 'WNP Enterprise Ltd'} (UK)${s.company_no ? ', Company No. ' + s.company_no : ''}`,
+    `- Minimum order: ${ctx.min} pieces per design`, '- Sizes: millimetres or inches', '- Quotes: reply within 24 hours',
+    `- Contact: ${s.global_email || s.email || ''}${s.whatsapp ? ' · WhatsApp +' + String(s.whatsapp).replace(/\D/g, '') : ''}`, '',
+    '## Box styles', ...d.products.map((p) => line(p.name, '/' + p.slug, p.short_desc || p.meta_description)), '',
+    '## Packaging by use', ...LANDING.filter((k) => pg(k)).map((k) => line(pg(k).title, '/' + k, pg(k).meta_description)), '',
+    '## Markets', ...['uk', 'usa', 'canada', 'europe'].filter(pg).map((k) => line(pg(k).title, '/' + k, pg(k).meta_description)), '',
+    '## Guides', ...d.posts.map((b) => line(b.title, '/blog/' + b.slug, b.meta_description || b.excerpt)), '',
+    '## Ordering', line('Get a quote', '/quote', 'Send box size, quantity and finishes; reply within 24 hours'), line('Paid samples', '/samples', ''), line('FAQ', '/faq', ''),
+  ];
+  return out.join('\n') + '\n';
 }
 
 module.exports = {
   home, product, genericPage, category, quotePage, samplesPage, countryPage, faqPage,
-  blogList, post, reviewsPage, reviewForm, notFound, sitemap, robots, ourWork,
+  blogList, post, reviewsPage, reviewForm, notFound, sitemap, robots, ourWork, llms,
   LANDING,
   _test: { sizesTable, postal, localName, pageTitle },
 };

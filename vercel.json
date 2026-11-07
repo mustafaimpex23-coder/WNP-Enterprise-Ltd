@@ -13,6 +13,10 @@
       "destination": "/api/render?path=robots.txt"
     },
     {
+      "source": "/llms.txt",
+      "destination": "/api/render?path=llms.txt"
+    },
+    {
       "source": "/:path((?!api/|api$|admin/|admin$|assets/|img/)[^.]*)",
       "destination": "/api/render?path=:path"
     }

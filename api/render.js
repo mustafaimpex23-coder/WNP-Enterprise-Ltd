@@ -3,7 +3,7 @@
 const { loadAll } = require('./_lib/data.js');
 const V = require('./_lib/views.js');
 
-const VERSION = '18';  // bump to refresh cached CSS/JS after a change
+const VERSION = '19';  // bump to refresh cached CSS/JS after a change
 const CANONICAL = (process.env.SITE_URL || 'https://luxorapackaging.com').trim().replace(/\/$/, '');
 
 const COUNTRY = ['uk', 'usa', 'canada', 'europe'];
@@ -38,7 +38,7 @@ const BLOG_REDIRECTS = {
   'how-much-do-custom-boxes-cost': 'custom-rigid-box-cost-factors', 'custom-rigid-box-pricing-guide': 'custom-rigid-box-cost-factors',
   'custom-box-finishes-guide': 'foil-vs-embossing-vs-spot-uv', 'choosing-packaging-inserts': 'rigid-box-inserts-guide',
 };
-const RESERVED = ['portfolio', 'our-work', 'quote', 'faq', 'blog', 'reviews', 'review', 'sitemap.xml', 'robots.txt'];
+const RESERVED = ['portfolio', 'our-work', 'quote', 'faq', 'blog', 'reviews', 'review', 'sitemap.xml', 'robots.txt', 'llms.txt'];
 
 function send(res, status, body, type, cache) {
   res.statusCode = status;
@@ -75,6 +75,7 @@ module.exports = async (req, res) => {
 
     if (a === 'sitemap.xml') return send(res, 200, V.sitemap(ctx), 'application/xml; charset=utf-8');
     if (a === 'robots.txt') return send(res, 200, V.robots(ctx), 'text/plain; charset=utf-8');
+    if (a === 'llms.txt') return send(res, 200, V.llms(ctx), 'text/plain; charset=utf-8');
     if (a === 'index.html') { res.statusCode = 301; res.setHeader('Location', '/'); return res.end(); }
     if (!b && REDIRECTS[a] && !data.pages[a]) { res.statusCode = 301; res.setHeader('Location', '/' + REDIRECTS[a]); return res.end(); }
 

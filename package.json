@@ -3,10 +3,15 @@
   "private": true,
   "version": "1.0.0",
   "description": "WNP Enterprise website + admin backend",
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",
     "nodemailer": "^6.9.14",
     "web-push": "^3.6.7"
+  },
+  "scripts": {
+    "build:assets": "npx esbuild@0.24.0 assets/site.css --minify --outfile=assets/site.min.css && npx esbuild@0.24.0 assets/site.js --minify --outfile=assets/site.min.js"
   }
 }
