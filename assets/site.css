@@ -8,8 +8,8 @@
     --muted:#6b665d;
     --gold:#b8935a;
     --gold-dark:#9a7843;
-    --wa:#1fa855;
-    --wa-dark:#178a45;
+    --wa:#14803f;
+    --wa-dark:#0f6a33;
     --radius:14px;
     --max:1180px;
   }
@@ -22,14 +22,14 @@
   h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;line-height:1.15;color:var(--ink)}
   .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
   section{padding:80px 0}
-  .eyebrow{display:inline-block;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-dark);font-weight:600;margin-bottom:12px}
+  .eyebrow{display:inline-block;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#7a5c2e;font-weight:600;margin-bottom:12px}
   .section-head{text-align:center;max-width:640px;margin:0 auto 44px}
   .section-head h2{font-size:clamp(30px,4.5vw,44px);margin-bottom:12px}
   .section-head p{color:var(--muted)}
 
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 26px;border-radius:999px;font-weight:600;font-size:15px;transition:.2s;cursor:pointer;border:1px solid transparent;font-family:inherit;line-height:1.2}
-  .btn-gold{background:var(--gold);color:#fff}
-  .btn-gold:hover{background:var(--gold-dark)}
+  .btn-gold{background:var(--gold);color:var(--ink)}
+  .btn-gold:hover{background:var(--ink);color:#fff}
   .btn-dark{background:var(--ink);color:#fff}
   .btn-dark:hover{background:#000}
   .btn-outline{border-color:rgba(255,255,255,.4);color:#fff}
@@ -214,7 +214,7 @@
   .wa-float svg{width:30px;height:30px}
 
   /* Announcement bar */
-  .announce{background:var(--gold);color:#fff;text-align:center;font-size:14px;font-weight:500;padding:9px 16px}
+  .announce{background:var(--gold);color:var(--ink);text-align:center;font-size:14px;font-weight:500;padding:9px 16px}
   .announce[hidden]{display:none}
 
   /* Offers (managed from the admin panel) */
