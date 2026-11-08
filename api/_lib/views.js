@@ -261,8 +261,8 @@ ${String(s.gsc_verification || '').split(/[\s,]+/).map((x) => x.replace(/.*conte
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141414'/%3E%3Crect x='4' y='4' width='56' height='56' rx='11' fill='none' stroke='%23b8935a' stroke-width='2'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='36' font-weight='700' fill='%23b8935a'%3EL%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..700&family=Schibsted+Grotesk:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..700&family=Schibsted+Grotesk:wght@400;500;600&display=swap"></noscript>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
 <link rel="stylesheet" href="/assets/site.min.css?v=${ctx.v}">
 ${s.ga_id ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(s.ga_id)}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('js',new Date());gtag('config','${esc(s.ga_id)}',{anonymize_ip:true});</script>` : ''}

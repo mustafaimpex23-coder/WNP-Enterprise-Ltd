@@ -625,3 +625,37 @@ footer address b,.contact-list li b{text-transform:none;letter-spacing:0;font-si
 .wa-float{transition:opacity .2s,transform .2s}
 .wa-float.away{opacity:0;pointer-events:none;transform:scale(.8)}
 @media (max-width:760px){.wa-float{width:50px;height:50px;right:12px;bottom:14px}.wa-float svg{width:26px;height:26px}.hero-panel{margin-right:0}}
+
+/* ===== Clean, bright type + colours (Nov 2026, v3) ===== */
+:root{--ink:#111111;--text:#2b2b2b;--muted:#5c5c5c;--paper:#ffffff;--paper-2:#f6f4ef;--line:#e7e3da;
+  --green:#0f1a17;--green-2:#1b2824;--gold:#d4a446;--gold-dark:#a87a1f;--brass-soft:#e6bf6a}
+body{font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;font-size:16.5px;line-height:1.65;color:var(--text);background:var(--paper);-webkit-font-smoothing:antialiased}
+h1,h2,h3,.logo b,.note .sign,.steps.five .step::before{font-family:'Plus Jakarta Sans',system-ui,sans-serif!important;font-style:normal}
+h1,h2,h3{font-weight:800;letter-spacing:-.025em;line-height:1.12;color:var(--ink)}
+h3{font-weight:700;letter-spacing:-.015em}
+.hero h1{font-size:clamp(38px,5.4vw,66px);font-weight:800;letter-spacing:-.035em;color:#fff;max-width:14ch}
+.hero p{color:#d9d9d9}
+.hero-note{color:#a9a9a9!important}
+.page-hero h1{color:#fff;font-weight:800;letter-spacing:-.03em}
+.page-hero p{color:#d9d9d9}
+.section-head h2,.note h2{font-size:clamp(28px,3.8vw,42px)}
+.section-head p,.card-body p{color:var(--muted)}
+.card-body h3{font-size:22px}
+.logo b{font-weight:800;letter-spacing:-.02em;font-size:26px}
+.logo span{color:var(--gold-dark);font-weight:600}
+.btn{font-weight:700;border-radius:8px}
+.btn-gold{background:var(--gold);color:#111}
+.btn-gold:hover{background:var(--brass-soft);color:#111}
+.hero-panel{border-radius:14px;border-top:0}
+.hero-panel h2{font-size:24px}
+.hero-panel select{border-radius:8px;background:#fafafa}
+.card .ph-box{border-radius:12px}
+.card-body .btn{border-radius:0}
+.note .sign{font-weight:700;font-size:18px}
+.steps.five .step::before{font-weight:800;font-size:26px;color:var(--gold-dark)}
+.contact .intro p,.contact-list li{color:#d9d9d9}
+footer{background:#0b0f0e;color:#b5b5b5}
+.sample-points{border-radius:12px}
+header{background:rgba(255,255,255,.95)}
+.card .count,.real-tag{background:rgba(17,17,17,.85)}
+.note .sign span{font-family:'Plus Jakarta Sans',sans-serif;font-weight:500}
