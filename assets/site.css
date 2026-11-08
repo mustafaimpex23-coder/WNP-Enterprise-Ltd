@@ -660,3 +660,17 @@ header{background:rgba(255,255,255,.95)}
 .card .count,.real-tag{background:rgba(17,17,17,.85)}
 .note .sign span{font-family:'Plus Jakarta Sans',sans-serif;font-weight:500}
 .hero h1{max-width:20ch;font-size:clamp(34px,4.6vw,58px)}
+
+/* ===== Back to the original black + gold colours (Nov 2026) ===== */
+:root{--ink:#141414;--text:#2a2a2a;--muted:#6b665d;--paper:#faf8f4;--paper-2:#f1ede5;--line:#e3ddd1;
+  --green:#141414;--green-2:#222;--gold:#b8935a;--gold-dark:#9a7843;--brass-soft:#cfae78}
+body{background:var(--paper)}
+header{background:rgba(250,248,244,.96)}
+.logo span{color:#7a5c2e}
+.btn-gold{background:var(--gold);color:#141414}
+.btn-gold:hover{background:var(--ink);color:#fff}
+.hero p,.page-hero p,.contact .intro p,.contact-list li{color:#cfc8bb}
+.hero-note{color:#9d968a!important}
+footer{background:#0d0d0d;color:#9b9488}
+.card .count,.real-tag{background:rgba(20,20,20,.85)}
+.dieline path,.dieline rect{stroke:var(--gold)}
