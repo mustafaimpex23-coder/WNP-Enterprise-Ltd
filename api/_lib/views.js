@@ -261,8 +261,8 @@ ${String(s.gsc_verification || '').split(/[\s,]+/).map((x) => x.replace(/.*conte
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141414'/%3E%3Crect x='4' y='4' width='56' height='56' rx='11' fill='none' stroke='%23b8935a' stroke-width='2'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='36' font-weight='700' fill='%23b8935a'%3EL%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap"></noscript>
 <link rel="stylesheet" href="/assets/site.min.css?v=${ctx.v}">
 ${s.ga_id ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(s.ga_id)}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('js',new Date());gtag('config','${esc(s.ga_id)}',{anonymize_ip:true});</script>` : ''}
@@ -314,7 +314,7 @@ function postCover(ctx, b) {
 function postCard(ctx, b) {
   const c = postCover(ctx, b);
   return `<a class="post-card" href="/blog/${esc(b.slug)}"><div class="ph-box">${c ? photo(c.url, c.alt) : PH}</div>
-    <div class="body"><span class="meta">${esc(b.category || 'Guide')}${b.published_at ? ' · ' + fmtDate(b.published_at) : ''}</span><h3>${esc(b.title)}</h3><p>${esc(b.excerpt || plain(b.body, 150))}</p></div></a>`;
+    <div class="body"><span class="meta">${Math.max(3, Math.round(String(b.body || '').split(/\s+/).length / 220))} min read</span><h3>${esc(b.title)}</h3><p>${esc(b.excerpt || plain(b.body, 150))}</p></div></a>`;
 }
 function fmtDate(d) { try { return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); } catch { return ''; } }
 
@@ -370,7 +370,7 @@ function workPhotoCard(ctx, w) {
 }
 function homeWork(ctx) {
   return `<section id="our-work"><div class="wrap">
-  <div class="section-head"><span class="eyebrow">Portfolio</span><h2>Real boxes we have <em>made</em></h2><p>No 3D renders. These are real boxes from our team, filmed as they open.</p></div>
+  <div class="section-head"><h2>A few boxes off our table</h2><p>Quick clips we filmed on a phone while checking finished boxes. Nothing here is a 3D render.</p></div>
   <div class="work-vids four">${WORK_VIDEOS.slice(0, 4).map(videoCard).join('')}</div>
   <p class="more-link"><a class="btn btn-dark" href="/portfolio">See our full portfolio</a></p></div></section>`;
 }
@@ -507,39 +507,36 @@ function home(ctx) {
   const faqs = d.faqs.slice(0, 5);
 
   const body = `
-<section class="hero" id="home"><div class="wrap">
-  <span class="eyebrow" style="color:var(--gold)">${esc(s.hero_eyebrow)}</span>
+<section class="hero" id="home"><div class="wrap hero-split">
+  <div class="hero-text">
   <h1>${rich(s.hero_title)}</h1>
   <p>${esc(s.hero_subtitle)}</p>
-  <div class="hero-actions"><a href="/quote" class="btn btn-gold">Get a Quote</a>
-    <a class="btn btn-outline" href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">Talk to a Representative</a></div>
+  <div class="hero-actions"><a href="/quote" class="btn btn-gold">Get a quote</a>
+    <a class="btn btn-outline" href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">WhatsApp us</a></div>
+  <p class="hero-note">UK company no. ${COMPANY_NO} &middot; from ${ctx.min} boxes &middot; usually a reply the same day</p>
+  </div>
+  <figure class="hero-photo"><picture><source type="image/webp" srcset="/img/work/kraft-box-logo-band-600.webp 600w, /img/work/kraft-box-logo-band-1200.webp 1200w" sizes="(max-width:900px) 90vw, 40vw"><img src="/img/work/kraft-box-logo-band-1200.jpg" alt="Kraft lid-and-base box with a printed logo band, photographed in our workshop" width="1200" height="1200" fetchpriority="high"></picture>
+  <figcaption>Kraft lid-and-base box with a printed band. Photo from our workshop, not a render.</figcaption></figure>
 </div></section>
-<div class="trust"><div class="wrap">
-  <div><b>UK Registered</b>Company No. ${COMPANY_NO}</div>
-  <div><b>Minimum Quantity</b>${ctx.min} pieces</div>
-  <div><b>100% Custom</b>Any size, any colour</div>
-  <div><b>Premium Finishes</b>Foil, emboss, soft-touch</div>
-  <div><b>UK &amp; US companies</b>Delivered to the UK, USA, Canada &amp; Europe</div>
-</div></div>
 ${offerHtml}
 <section id="products"><div class="wrap">
-  <div class="section-head"><span class="eyebrow">Our Box Styles</span><h2>${rich(s.products_title)}</h2><p>${esc(s.products_subtitle)}</p></div>
+  <div class="section-head"><h2>${rich(s.products_title)}</h2><p>${esc(s.products_subtitle)}</p></div>
   ${productGrid(ctx, d.products)}
 </div></section>
 ${homeWork(ctx)}
 <section id="how" style="background:var(--paper-2)"><div class="wrap">
-  <div class="section-head"><span class="eyebrow">How It Works</span><h2>From idea to your door</h2><p>Five clear stages, with one point of contact from start to finish.</p></div>
+  <div class="section-head"><h2>How an order usually goes</h2><p>You deal with the same person the whole way through.</p></div>
   <div class="steps five">
-    <div class="step"><h3>Quote &amp; dieline proof</h3><p>Send your size, finishes and quantity. We reply within 24 hours, then send a digital dieline and design proof to approve.</p></div>
-    <div class="step"><h3>Paid sample</h3><p>Optional: check the size, board strength and finish in your hands before bulk production.</p></div>
-    <div class="step"><h3>Production</h3><p>Your boxes are cut, wrapped and finished to your approved size, colours and logo.</p></div>
-    <div class="step"><h3>Quality check</h3><p>Every order is checked against your approved proof before it is packed.</p></div>
-    <div class="step"><h3>Door-to-door delivery</h3><p>Export-packed and delivered to the UK, USA, Canada or Europe.</p></div>
+    <div class="step"><h3>You send the details</h3><p>Box size (or your product size), quantity and the finish you like. We come back with a price, usually within a day, then a dieline and proof for you to sign off.</p></div>
+    <div class="step"><h3>Sample, if you want one</h3><p>Not required, but a lot of people like to hold one first. It's paid, as it's made one-off.</p></div>
+    <div class="step"><h3>We make the boxes</h3><p>Board cut to size, wrapped, foiled or embossed, inserts fitted. Exactly as on the proof you approved.</p></div>
+    <div class="step"><h3>We check them</h3><p>Each order is checked against your proof before it goes in the carton.</p></div>
+    <div class="step"><h3>They arrive at your door</h3><p>Packed in strong export cartons and delivered to the UK, USA, Canada or Europe.</p></div>
   </div></div></section>
 <section class="sample" id="samples"><div class="wrap">
-  <div><span class="eyebrow" style="color:var(--gold)">Paid Samples</span><h2>See it in your hands before you order in bulk</h2>
-    <p>Want to check the quality, size and finish before placing a full order? Order a paid sample of any box style.</p>
-    <div class="sample-actions"><a class="btn btn-gold" href="/samples">Order a Paid Sample</a>
+  <div><h2>Want to hold one before ordering?</h2>
+    <p>Fair enough, most people do. We can make a single sample of any style so you can check the board, the fit and the finish yourself.</p>
+    <div class="sample-actions"><a class="btn btn-gold" href="/samples">Order a sample</a>
       <a class="btn btn-wa" href="${waLink(ctx, 'Hi Luxora Packaging, I would like to order a paid sample. Please share the sample price and details.')}" target="_blank" rel="noopener">Ask on WhatsApp</a></div></div>
   <ul class="sample-points">
     <li><span><b>Sample price depends on size, style and finishes.</b> We confirm the exact cost before you pay.</span></li>
@@ -547,31 +544,27 @@ ${homeWork(ctx)}
     <li><span><b>Minimum bulk order is ${ctx.min} pieces.</b> The higher your quantity, the lower the price per box.</span></li>
     <li><span>Sample shipping is charged separately, based on your country.</span></li>
   </ul></div></section>
-<section id="why"><div class="wrap">
-  <div class="section-head"><span class="eyebrow">Why Luxora Packaging</span><h2>${rich(s.why_title)}</h2><p>${esc(s.why_text)}</p></div>
-  <div class="why-grid">
-    <div class="why-item"><div class="ico">◈</div><h3>One point of contact</h3><p>One team from your first message to delivery.</p></div>
-    <div class="why-item"><div class="ico">✎</div><h3>Made to your size</h3><p>Every box is built around your product.</p></div>
-    <div class="why-item"><div class="ico">✦</div><h3>Premium finishes</h3><p>Foil, embossing, spot UV, soft-touch, velvet and foam inserts.</p></div>
-    <div class="why-item"><div class="ico">✈</div><h3>Delivered to you</h3><p>Safely export-packed for the UK, USA, Canada and Europe.</p></div>
-  </div></div></section>
+<section id="why"><div class="wrap note">
+  <h2>${rich(s.why_title)}</h2>
+  ${String(s.why_text || '').split(/\n\s*\n/).map((x) => `<p>${esc(x)}</p>`).join('')}
+  <p class="sign">Mustafa Khalid<br><span>Luxora Packaging &middot; WNP Enterprise Ltd</span></p>
+</div></section>
 ${reviews.length ? `<section style="background:var(--paper-2)"><div class="wrap"><div class="section-head"><span class="eyebrow">Reviews</span><h2>What our customers say</h2></div>
   <div class="reviews">${reviews.map((r) => reviewCard(ctx, r)).join('')}</div><p class="more-link"><a class="btn btn-dark" href="/reviews">All reviews</a></p></div></section>` : ''}
-${popularSearches()}
-${posts.length ? `<section><div class="wrap"><div class="section-head"><span class="eyebrow">Guides</span><h2>From the blog</h2></div>
+${posts.length ? `<section><div class="wrap"><div class="section-head"><h2>Things buyers often ask us about</h2><p>Longer answers on sizing, finishes and costs.</p></div>
   <div class="posts">${posts.map((b) => postCard(ctx, b)).join('')}</div><p class="more-link"><a class="btn btn-dark" href="/blog">All articles</a></p></div></section>` : ''}
-${faqs.length ? `<section id="faq" style="background:var(--paper-2)"><div class="wrap"><div class="section-head"><span class="eyebrow">FAQ</span><h2>Quick answers</h2></div>
+${faqs.length ? `<section id="faq" style="background:var(--paper-2)"><div class="wrap"><div class="section-head"><h2>Common questions</h2></div>
   <div class="faq">${faqs.map((f) => `<details><summary>${esc(f.question)}</summary><p>${esc(f.answer || '')}</p></details>`).join('')}</div>
   <p class="more-link"><a class="btn btn-dark" href="/faq">All questions</a></p></div></section>` : ''}
 <section class="contact" id="contact"><div class="wrap">
-  <div class="intro"><span class="eyebrow" style="color:var(--gold)">Contact Us</span><h2>${rich(s.contact_title)}</h2><p>${esc(s.contact_text)}</p>
+  <div class="intro"><h2>${rich(s.contact_title)}</h2><p>${esc(s.contact_text)}</p>
     <ul class="contact-list">
-      <li><span class="i">✉</span><div><b>Email</b><a href="mailto:${esc(s.global_email || s.email)}">${esc(s.global_email || s.email)}</a></div></li>
-      <li><span class="i">☎</span><div><b>WhatsApp</b><a href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">${esc(s.whatsapp)}</a></div></li>
-      ${s.phone ? `<li><span class="i">✆</span><div><b>Phone</b><a href="tel:+${digits(s.phone)}">${esc(s.phone)}</a></div></li>` : ''}
-      ${s.booking_url ? `<li><span class="i">◷</span><div><b>Book a call</b><a href="${esc(s.booking_url)}" target="_blank" rel="noopener">Pick a time that suits you</a></div></li>` : ''}
-      <li><span class="i">⌂</span><div><b>United Kingdom</b>In the UK we operate as <strong style="color:#fff">${esc(s.uk_company)}</strong><br>${esc(s.address)}${s.global_email && s.email ? `<br><a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : ''}</div></li>
-      ${s.us_address ? `<li><span class="i">⌂</span><div><b>United States</b>In the USA we operate as <strong style="color:#fff">${esc(s.us_company)}</strong><br>Registered address: ${esc(s.us_address)}${s.us_email ? `<br><a href="mailto:${esc(s.us_email)}">${esc(s.us_email)}</a>` : ''}</div></li>` : ''}
+      <li><div><b>Email</b><a href="mailto:${esc(s.global_email || s.email)}">${esc(s.global_email || s.email)}</a></div></li>
+      <li><div><b>WhatsApp</b><a href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">${esc(s.whatsapp)}</a></div></li>
+      ${s.phone ? `<li><div><b>Phone</b><a href="tel:+${digits(s.phone)}">${esc(s.phone)}</a></div></li>` : ''}
+      ${s.booking_url ? `<li><div><b>Book a call</b><a href="${esc(s.booking_url)}" target="_blank" rel="noopener">Pick a time that suits you</a></div></li>` : ''}
+      <li><div><b>United Kingdom</b>In the UK we operate as <strong style="color:#fff">${esc(s.uk_company)}</strong><br>${esc(s.address)}${s.global_email && s.email ? `<br><a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : ''}</div></li>
+      ${s.us_address ? `<li><div><b>United States</b>In the USA we operate as <strong style="color:#fff">${esc(s.us_company)}</strong><br>Registered address: ${esc(s.us_address)}${s.us_email ? `<br><a href="mailto:${esc(s.us_email)}">${esc(s.us_email)}</a>` : ''}</div></li>` : ''}
     </ul></div>
   ${quoteForm(ctx, { type: 'enquiry' })}
 </div></section>`;
@@ -629,7 +622,7 @@ function product(ctx, p) {
       <div class="design-body"><h3>${esc(dz.name)}</h3><p>${esc(dz.description || '')}</p>
         ${dz.tags.length ? `<div class="tags">${dz.tags.map((t) => `<span>${esc(t)}</span>`).join('')}</div>` : ''}
         <div class="design-actions"><a class="btn btn-dark btn-sm" href="/quote?product=${encodeURIComponent(full)}">Get a quote for this design</a>
-          <a class="btn btn-wa btn-sm" href="${waLink(ctx, `Hi Luxora Packaging, I am interested in the "${full}". Please share price and details. (Minimum ${min} pieces)`)}" target="_blank" rel="noopener">${WA_ICON} Talk to a representative</a></div></div></article>`;
+          <a class="btn btn-wa btn-sm" href="${waLink(ctx, `Hi Luxora Packaging, I am interested in the "${full}". Please share price and details. (Minimum ${min} pieces)`)}" target="_blank" rel="noopener">${WA_ICON} Ask on WhatsApp</a></div></div></article>`;
   }).join('');
 
   const body = `
