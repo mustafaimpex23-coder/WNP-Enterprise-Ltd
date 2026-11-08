@@ -659,3 +659,4 @@ footer{background:#0b0f0e;color:#b5b5b5}
 header{background:rgba(255,255,255,.95)}
 .card .count,.real-tag{background:rgba(17,17,17,.85)}
 .note .sign span{font-family:'Plus Jakarta Sans',sans-serif;font-weight:500}
+.hero h1{max-width:20ch;font-size:clamp(34px,4.6vw,58px)}
