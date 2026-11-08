@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Luxora Admin</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#1d1b18">
+<meta name="theme-color" content="#c98b6b">
 <link rel="manifest" href="/admin/manifest.json">
 <link rel="icon" href="/admin/icon-192.png">
 <link rel="apple-touch-icon" href="/admin/apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Luxora Admin">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
   :root{
     --ink:#1d1b18; --ink-2:#2b2824; --paper:#f7f4ee; --card:#fff; --line:#e6e0d5; --line-2:#efeae1;
@@ -242,6 +242,104 @@
     .pcard h3{font-size:17px}
     .pcard p{display:none}
     #toasts{bottom:auto;top:calc(12px + var(--safe-t))}
+  }
+
+  /* ================= Glass theme (Nov 2026) ================= */
+  :root{--glass:rgba(255,255,255,.58);--glass-2:rgba(255,255,255,.38);--glass-line:rgba(255,255,255,.7);
+    --coral:#e8604c;--coral-2:#d24a3a;--ink:#2a1d18;--text:#3a2c26;--muted:#8a7469;--line:rgba(120,80,60,.14);--line-2:rgba(120,80,60,.10);
+    --gold:#e8604c;--gold-2:#c9473a;--r:22px;--shadow:0 10px 30px rgba(90,40,20,.12)}
+  html,body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--text)}
+  body{background:#c98b6b}
+  body:before{content:"";position:fixed;inset:-40px;z-index:-1;filter:blur(30px);
+    background:radial-gradient(1200px 700px at 12% 8%,#f6d9c4 0%,transparent 60%),radial-gradient(900px 700px at 90% 20%,#e9a383 0%,transparent 55%),
+    radial-gradient(800px 600px at 70% 95%,#8c4a33 0%,transparent 60%),radial-gradient(700px 600px at 5% 90%,#b9674a 0%,transparent 60%),linear-gradient(135deg,#f3c9ae,#c77a5a 55%,#7a3e2b)}
+  h1,h2,h3{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+  .panel,.login-box{background:var(--glass);border:1px solid var(--glass-line);border-radius:var(--r);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(22px) saturate(1.3);backdrop-filter:blur(22px) saturate(1.3)}
+  #login{background:transparent}
+  .brand b{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;letter-spacing:-.02em;font-size:22px}
+  .brand span{letter-spacing:0;text-transform:none;font-weight:700;color:#a8402f}
+  #app{grid-template-columns:250px minmax(0,1fr);gap:0}
+  aside{margin:14px;height:calc(100vh - 28px);top:14px;border-radius:26px;background:var(--glass);border:1px solid var(--glass-line);color:var(--text);
+    -webkit-backdrop-filter:blur(24px) saturate(1.3);backdrop-filter:blur(24px) saturate(1.3);box-shadow:var(--shadow)}
+  aside .brand b{color:var(--ink)}
+  .nav a{color:#5b4339;border-radius:14px}
+  .nav a:hover{background:rgba(255,255,255,.45);color:var(--ink)}
+  .nav a.on{background:#fff;color:var(--ink);box-shadow:0 4px 14px rgba(90,40,20,.12)}
+  .nav a.on:before{display:none}
+  .nav .badge{background:var(--coral)}
+  aside .foot,aside .foot a{color:#7a6156}
+  main{padding:26px 26px 60px 12px}
+  .btn{border-radius:999px;background:rgba(255,255,255,.7);border-color:var(--glass-line)}
+  .btn-dark,.btn-gold{background:var(--ink);border-color:var(--ink);color:#fff}
+  .btn-dark:hover,.btn-gold:hover{background:#000}
+  .in,select.in,textarea.in{background:rgba(255,255,255,.75);border-color:rgba(120,80,60,.18);border-radius:14px}
+  .in:focus{border-color:var(--coral);box-shadow:0 0 0 3px rgba(232,96,76,.18)}
+  .chip{background:rgba(255,255,255,.6);border-color:var(--glass-line);color:#6b5247}
+  .chip.on{background:var(--ink);border-color:var(--ink)}
+  .stat b{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;letter-spacing:-.03em}
+  .stat.hl{background:linear-gradient(140deg,#ef7a63,#d9493a);border-color:rgba(255,255,255,.35)}
+  .q:hover{background:rgba(255,255,255,.4)}
+  .q.new .dot{background:var(--coral)}
+  .an-chart i{background:var(--coral)}
+  .drawer{background:rgba(255,248,244,.86);-webkit-backdrop-filter:blur(26px);backdrop-filter:blur(26px)}
+  /* dashboard hero */
+  .hello h1{font-size:34px;line-height:1.1}
+  .hello p{color:#6b5247;font-size:14px;margin-top:4px}
+  .dash{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:16px;margin:18px 0 16px}
+  .hero-card{position:relative;overflow:hidden;border-radius:26px;padding:24px 26px;color:#fff;background:linear-gradient(140deg,#f0806a 0%,#e05a45 55%,#c8402f 100%);box-shadow:0 18px 40px rgba(200,64,47,.35);border:1px solid rgba(255,255,255,.35)}
+  .hero-card .tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.22);border-radius:999px;padding:4px 11px;font-size:12px;font-weight:600}
+  .hero-card .tag i{width:7px;height:7px;border-radius:50%;background:#fff;opacity:.9}
+  .hero-card h2{color:#fff;font-size:30px;line-height:1.15;margin:14px 0 8px;max-width:15ch}
+  .hero-card p{color:rgba(255,255,255,.85);font-size:13.5px;max-width:36ch}
+  .hero-card .mini{display:flex;gap:22px;margin:18px 0}
+  .hero-card .mini div{border-left:1px solid rgba(255,255,255,.35);padding-left:12px}
+  .hero-card .mini div:first-child{border:0;padding:0}
+  .hero-card .mini b{display:block;font-size:22px;font-weight:800}
+  .hero-card .mini span{font-size:11.5px;opacity:.85}
+  .hero-card .acts{display:flex;gap:8px;flex-wrap:wrap}
+  .hero-card .acts .btn{background:#fff;color:var(--ink);border-color:#fff}
+  .hero-card .acts .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.6)}
+  .ring{position:absolute;right:30px;top:50%;transform:translateY(-50%);width:150px;height:150px}
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring b{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:30px;font-weight:800}
+  .ring b small{font-size:11.5px;font-weight:600;opacity:.85}
+  .cal{padding:20px}
+  .cal .day{display:flex;align-items:center;gap:12px}
+  .cal .day b{font-size:44px;font-weight:800;color:var(--coral);letter-spacing:-.04em;line-height:1}
+  .cal .day span{font-size:13px;color:var(--muted)} .cal .day strong{display:block;color:var(--ink);font-size:15px}
+  .week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:14px 0;text-align:center;font-size:11px;color:var(--muted)}
+  .week div{padding:6px 0;border-radius:12px}
+  .week div b{display:block;font-size:14px;color:var(--ink)}
+  .week div.on{background:var(--coral);color:#fff} .week div.on b{color:#fff}
+  .ev{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.6);border-radius:14px;padding:9px 12px;margin-top:8px;cursor:pointer}
+  .ev time{font-size:12px;color:var(--muted);font-weight:600;min-width:42px}
+  .ev div{border-left:2px solid var(--coral);padding-left:10px;min-width:0}
+  .ev b{display:block;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ev span{font-size:11.5px;color:var(--muted)}
+  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+  .kpi{padding:16px 18px;position:relative}
+  .kpi .ic{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center}
+  .kpi .ic svg{width:17px;height:17px}
+  .kpi .delta{position:absolute;top:16px;right:16px;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;background:rgba(34,164,93,.15);color:#178048}
+  .kpi b{display:block;font-size:30px;font-weight:800;color:var(--ink);letter-spacing:-.03em;margin-top:12px;line-height:1.1}
+  .kpi span{font-size:12.5px;color:#6b5247;font-weight:600}
+  .kpi svg.sp{position:absolute;right:14px;bottom:14px;width:90px;height:30px}
+  .kpi.hot{background:linear-gradient(140deg,#ef7a63,#d9493a);border-color:rgba(255,255,255,.35)}
+  .kpi.hot b,.kpi.hot span{color:#fff} .kpi.hot .ic{background:rgba(255,255,255,.25);color:#fff}
+  @media (max-width:860px){
+    #app{grid-template-columns:minmax(0,1fr)}
+    aside{margin:0;height:auto;border-radius:22px 22px 0 0;top:auto}
+    .hello h1{font-size:28px}
+    main{padding:14px 14px calc(90px + var(--safe-b))}
+    .nav a.on{background:transparent;box-shadow:none;color:var(--coral)}
+    .dash{grid-template-columns:minmax(0,1fr)}
+    .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .ring{right:16px;top:16px;transform:none;width:84px;height:84px}
+    .ring b{font-size:19px}
+    .ring b small{font-size:9.5px}
+    .hero-card h2{max-width:11ch}
+    .hero-card h2{font-size:25px}
+    .kpi svg.sp{display:none}
   }
 </style>
 </head>
@@ -525,6 +623,66 @@ function beep() {
   } catch (e) {}
 }
 
+
+// ----- glass dashboard header on the Queries page -----
+function spark(series, color) {
+  var max = Math.max.apply(null, series.concat([1])), n = series.length;
+  var pts = series.map(function (v, i) { return (i / (n - 1) * 88 + 1).toFixed(1) + ',' + (28 - v / max * 24).toFixed(1); }).join(' ');
+  return '<svg class="sp" viewBox="0 0 90 30" fill="none"><polyline points="' + pts + '" stroke="' + color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+function daily(list, days) {
+  var out = [], d0 = new Date(); d0.setHours(0, 0, 0, 0);
+  for (var i = days - 1; i >= 0; i--) {
+    var a = d0.getTime() - i * 864e5, b = a + 864e5;
+    out.push(list.filter(function (q) { var t = new Date(q.created_at).getTime(); return t >= a && t < b; }).length);
+  }
+  return out;
+}
+var IC = {
+  inbox: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H7l-3 3z"/></svg>',
+  sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2"/></svg>',
+  week: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  won: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>'
+};
+function dashHero(all, cNew, cToday, cWeek, counts) {
+  var h = new Date().getHours();
+  var hi = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  var who = (typeof ME !== 'undefined' && ME && ME.email ? ME.email.split('@')[0].replace(/[._\d]+/g, ' ').trim().split(' ')[0] : '') || 'there';
+  if (/^mustafa/i.test(who)) who = 'Mustafa';
+  who = who.charAt(0).toUpperCase() + who.slice(1);
+  var now = new Date();
+  var real = all.filter(function (q) { return q.status !== 'spam'; });
+  var answered = real.filter(function (q) { return q.status !== 'new'; }).length;
+  var pct = real.length ? Math.round(answered / real.length * 100) : 100;
+  var C = 2 * Math.PI * 54, off = C * (1 - pct / 100);
+  var dateStr = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+  var wk = [], mon = new Date(now); mon.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  for (var i = 0; i < 7; i++) { var d = new Date(mon); d.setDate(mon.getDate() + i); wk.push('<div class="' + (d.toDateString() === now.toDateString() ? 'on' : '') + '">' + 'MTWTFSS'[i] + '<b>' + d.getDate() + '</b></div>'); }
+  var latest = real.slice().sort(function (a, b) { return new Date(b.created_at) - new Date(a.created_at); }).slice(0, 2);
+  var evs = latest.length ? latest.map(function (q) {
+    var t = new Date(q.created_at);
+    return '<div class="ev" data-open="' + esc(String(q.id)) + '"><time>' + t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) + '</time><div><b>' + esc(q.name || q.email || 'New enquiry') + '</b><span>' + esc((q.product || 'Enquiry') + (q.country ? ' · ' + q.country : '')) + '</span></div></div>';
+  }).join('') : '<div class="ev"><div><b>No enquiries yet</b><span>New ones show up here first</span></div></div>';
+  var newS = daily(real.filter(function (q) { return q.status === 'new'; }), 14), allS = daily(real, 14), wonS = daily(real.filter(function (q) { return q.status === 'won'; }), 14);
+  var prev7 = allS.slice(0, 7).reduce(function (a, b) { return a + b; }, 0), last7 = allS.slice(7).reduce(function (a, b) { return a + b; }, 0);
+  var delta = prev7 ? Math.round((last7 - prev7) / prev7 * 100) : (last7 ? 100 : 0);
+  return '<div class="hello"><h1>' + hi + ', ' + esc(who) + '</h1><p>' + dateStr + ' · ' + (cNew ? cNew + ' ' + (cNew === 1 ? 'enquiry needs' : 'enquiries need') + ' a reply' : 'Every enquiry has been answered') + '</p></div>' +
+    '<div class="dash"><div class="hero-card"><span class="tag"><i></i>' + cToday + ' new today</span>' +
+      '<h2>' + (cNew ? 'You have ' + cNew + ' ' + (cNew === 1 ? 'buyer' : 'buyers') + ' waiting' : 'Your inbox is clear') + '</h2>' +
+      '<p>' + pct + '% of enquiries have been answered. Quick replies win more orders.</p>' +
+      '<div class="mini"><div><b>' + cWeek + '</b><span>last 7 days</span></div><div><b>' + (counts.quoted || 0) + '</b><span>quoted</span></div><div><b>' + (counts.won || 0) + '</b><span>won</span></div></div>' +
+      '<div class="acts"><button class="btn btn-sm" data-f2="new">Reply to new</button><a class="btn btn-sm ghost" href="/" target="_blank" rel="noopener">Open website</a></div>' +
+      '<div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,.25)" stroke-width="9" fill="none"/><circle cx="60" cy="60" r="54" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"/></svg><b>' + pct + '%<small>answered</small></b></div></div>' +
+      '<div class="panel cal"><div class="day"><b>' + String(now.getDate()).padStart(2, '0') + '</b><div><strong>' + now.toLocaleDateString('en-GB', { weekday: 'long' }) + '</strong><span>' + now.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }) + '</span></div></div>' +
+      '<div class="week">' + wk.join('') + '</div><div style="font-size:12px;font-weight:700;color:var(--muted);margin-top:4px">Latest enquiries</div>' + evs + '</div></div>' +
+    '<div class="kpis">' +
+      '<div class="panel kpi hot"><div class="ic">' + IC.inbox + '</div><b>' + cNew + '</b><span>New, not answered</span>' + spark(newS, '#fff') + '</div>' +
+      '<div class="panel kpi"><div class="ic">' + IC.sun + '</div><b>' + cToday + '</b><span>Today</span>' + spark(allS.slice(7), '#e8604c') + '</div>' +
+      '<div class="panel kpi"><div class="ic">' + IC.week + '</div>' + (delta ? '<span class="delta"' + (delta < 0 ? ' style="background:rgba(200,64,47,.14);color:#b23a2c"' : '') + '>' + (delta > 0 ? '+' : '') + delta + '%</span>' : '') + '<b>' + cWeek + '</b><span>Last 7 days</span>' + spark(allS, '#e8604c') + '</div>' +
+      '<div class="panel kpi"><div class="ic">' + IC.won + '</div><b>' + (counts.won || 0) + '</b><span>Won orders</span>' + spark(wonS, '#22a45d') + '</div>' +
+    '</div>';
+}
+
 function renderQueries(keepScroll) {
   var all = S.queries, now = Date.now();
   var today = new Date(); today.setHours(0, 0, 0, 0);
@@ -553,13 +711,8 @@ function renderQueries(keepScroll) {
 
   var sy = window.scrollY;
   $('#view').innerHTML =
-    '<div class="top"><h1>Queries</h1><div class="acts"><button class="btn btn-sm" id="qCsv">Export CSV</button><button class="btn btn-sm" id="qRef">Refresh</button></div></div>' +
-    '<div class="stats">' +
-      '<div class="panel stat hl"><b>' + cNew + '</b><span>New – not answered</span></div>' +
-      '<div class="panel stat"><b>' + cToday + '</b><span>Today</span></div>' +
-      '<div class="panel stat"><b>' + cWeek + '</b><span>Last 7 days</span></div>' +
-      '<div class="panel stat"><b>' + (counts.won || 0) + '</b><span>Won orders</span></div>' +
-    '</div>' +
+    dashHero(all, cNew, cToday, cWeek, counts) +
+    '<div class="top" style="margin-top:6px"><h1 style="font-size:24px">Queries</h1><div class="acts"><button class="btn btn-sm" id="qCsv">Export CSV</button><button class="btn btn-sm" id="qRef">Refresh</button></div></div>' +
     '<div class="split"><div>' +
       '<div class="toolbar"><input class="in" id="qSearch" placeholder="Search name, email, country, box…" value="' + esc(qSearch) + '"></div>' +
       '<div class="chips" style="margin-bottom:12px">' +
@@ -578,6 +731,8 @@ function renderQueries(keepScroll) {
   si.oninput = function () { qSearch = si.value; var pos = si.selectionStart; renderQueries(true); var n = $('#qSearch'); n.focus(); n.setSelectionRange(pos, pos); };
   $$('.chip[data-f]').forEach(function (c) { c.onclick = function () { qFilter = c.dataset.f; renderQueries(); }; });
   $$('.q').forEach(function (r) { r.onclick = function () { openQuery(r.dataset.id); }; });
+  $$('.ev[data-open]').forEach(function (r) { r.onclick = function () { openQuery(r.dataset.open); }; });
+  $$('[data-f2]').forEach(function (b) { b.onclick = function () { qFilter = b.dataset.f2; renderQueries(); var l = $('.qlist'); if (l) l.scrollIntoView({ behavior: 'smooth' }); }; });
   $('#qCsv').onclick = exportCsv;
   $('#qRef').onclick = function () { loadQueries().then(function () { renderQueries(); toast('Updated'); }); };
 }
