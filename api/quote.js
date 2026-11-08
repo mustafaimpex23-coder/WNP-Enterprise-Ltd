@@ -26,6 +26,13 @@ let _sb;
 const sb = () =>
   (_sb ||= createClient(cleanSupabaseUrl(env('SUPABASE_URL')), cleanKey(env('SUPABASE_SERVICE_ROLE_KEY')), { auth: { persistSession: false } }));
 
+// Backup way to save a query when the service key is missing or wrong:
+// a locked-down database function that only inserts one row.
+let _anon;
+const anonDb = () =>
+  (_anon ||= createClient(cleanSupabaseUrl(env('SUPABASE_URL')), cleanKey(env('SUPABASE_ANON_KEY')), { auth: { persistSession: false } }));
+const hasService = () => !!cleanKey(env('SUPABASE_SERVICE_ROLE_KEY'));
+
 const BRAND = env('BRAND_NAME', 'Luxora Packaging');
 const SITE_URL = env('SITE_URL', 'https://luxorapackaging.com').replace(/\/$/, '');
 
@@ -82,7 +89,7 @@ module.exports = async (req, res) => {
   }
 
   // Simple flood protection: max 8 queries from one IP in 10 minutes
-  if (q.ip) {
+  if (q.ip && hasService()) {
     const since = new Date(Date.now() - 10 * 60 * 1000).toISOString();
     const { count } = await sb()
       .from('queries').select('id', { count: 'exact', head: true })
@@ -93,8 +100,22 @@ module.exports = async (req, res) => {
   }
 
   // 1) Save
-  const { data: row, error: dbErr } = await sb().from('queries').insert(q).select().single();
-  if (dbErr) console.error('DB insert failed:', dbErr.message);
+  let row = null, dbErr = null;
+  if (hasService()) {
+    const r = await sb().from('queries').insert(q).select().single();
+    row = r.data; dbErr = r.error;
+  }
+  if (!row) {
+    if (dbErr) console.error('DB insert failed, trying backup:', dbErr.message);
+    try {
+      const { data: id, error } = await anonDb().rpc('submit_query', { p: q });
+      if (error) throw error;
+      if (id) row = { ...q, id, created_at: new Date().toISOString() };
+    } catch (e) {
+      if (/too many/i.test(e.message || '')) return res.status(429).json({ ok: false, error: 'Too many requests. Please try again in a few minutes.' });
+      console.error('Backup save failed:', e.message);
+    }
+  }
   const saved = row || { ...q, id: null, created_at: new Date().toISOString() };
 
   // 2) + 3) Push and email at the same time
@@ -105,7 +126,7 @@ module.exports = async (req, res) => {
   const emailOk = mailRes.status === 'fulfilled' && mailRes.value === true;
   const pushed = pushRes.status === 'fulfilled' ? pushRes.value : 0;
 
-  if (row) {
+  if (row && hasService()) {
     await sb().from('queries').update({ email_sent: emailOk, push_sent: pushed }).eq('id', row.id);
   }
 

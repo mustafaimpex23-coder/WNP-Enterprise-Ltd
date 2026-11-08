@@ -612,3 +612,16 @@ footer address b,.contact-list li b{text-transform:none;letter-spacing:0;font-si
 @media (prefers-reduced-motion:reduce){.dieline .cut{animation:none;stroke-dashoffset:0}}
 .dieline .cut{stroke-dasharray:1700;stroke-dashoffset:1700}
 @media (prefers-reduced-motion:reduce){.dieline .cut{animation:none;stroke-dashoffset:0}}
+/* photo viewer */
+.lb{position:fixed;inset:0;z-index:200;background:rgba(10,22,19,.92);display:none;align-items:center;justify-content:center;flex-direction:column;padding:56px 16px 24px;cursor:zoom-out}
+.lb.on{display:flex}
+.lb img{max-width:min(1100px,100%);max-height:calc(100vh - 140px);object-fit:contain;border-radius:2px;cursor:default;background:#fff}
+.lb-cap{color:#c8d1cb;font-size:14px;margin-top:12px;text-align:center;max-width:60ch}
+.lb-x{position:absolute;top:10px;right:12px;width:44px;height:44px;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:30px;line-height:1;border-radius:50%;cursor:pointer}
+.lb-x:hover{background:rgba(255,255,255,.22)}
+.pp-gallery .main{cursor:zoom-in}
+/* bigger tap targets in footer on phones */
+@media (max-width:760px){footer li{margin-bottom:2px}footer li a{display:inline-block;padding:7px 0;min-width:44px}}
+.wa-float{transition:opacity .2s,transform .2s}
+.wa-float.away{opacity:0;pointer-events:none;transform:scale(.8)}
+@media (max-width:760px){.wa-float{width:50px;height:50px;right:12px;bottom:14px}.wa-float svg{width:26px;height:26px}.hero-panel{margin-right:0}}

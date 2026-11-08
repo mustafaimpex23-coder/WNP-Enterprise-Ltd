@@ -50,6 +50,32 @@
       });
     });
   });
+  /* ---------- tap a box photo to see it full size ---------- */
+  function bigSrc(img) {
+    var pic = img.closest('picture'), best = img.currentSrc || img.src;
+    if (pic) { var ss = pic.querySelector('source'); if (ss && ss.srcset) { var parts = ss.srcset.split(',').map(function (x) { return x.trim().split(/\s+/); }); parts.sort(function (a, b) { return parseInt(b[1] || 0, 10) - parseInt(a[1] || 0, 10); }); best = parts[0][0]; } }
+    return best;
+  }
+  var lb = document.createElement('div');
+  lb.className = 'lb'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true'); lb.setAttribute('aria-label', 'Photo viewer');
+  lb.innerHTML = '<button class="lb-x" type="button" aria-label="Close photo">&times;</button><img alt=""><p class="lb-cap"></p>';
+  document.body.appendChild(lb);
+  var lastFocus = null;
+  function openLb(img) {
+    var big = lb.querySelector('img'); big.src = bigSrc(img); big.alt = img.alt || '';
+    lb.querySelector('.lb-cap').textContent = img.alt || '';
+    lastFocus = document.activeElement; lb.classList.add('on'); document.body.classList.add('lock'); lb.querySelector('.lb-x').focus();
+  }
+  function closeLb() { lb.classList.remove('on'); document.body.classList.remove('lock'); if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+  lb.addEventListener('click', function (e) { if (e.target !== lb.querySelector('img')) closeLb(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && lb.classList.contains('on')) closeLb(); });
+  $$('.design .ph-box, .pp-gallery .main').forEach(function (box) {
+    box.setAttribute('tabindex', '0'); box.setAttribute('role', 'button'); box.setAttribute('aria-label', 'View photo full size');
+    function go(e) { var img = box.querySelector('img'); if (!img || (e.target.closest && e.target.closest('a,button'))) return; openLb(img); }
+    box.addEventListener('click', go);
+    box.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(e); } });
+  });
+
   // Photos with a very different shape from their slot are shown whole, not cropped
   function fitCheck(img) {
     var box = img.closest('.ph-box'); if (!box || !img.naturalWidth) return;
@@ -250,4 +276,10 @@
     else since = Date.now();
   });
   window.addEventListener('pagehide', function () { clearInterval(timer); send({ t: 'ping', id: id, dur: secs() }); });
+})();
+/* Hide the floating WhatsApp button while someone is typing in a form, so it never covers a field */
+(function () {
+  var wa = document.querySelector('.wa-float'); if (!wa) return;
+  document.addEventListener('focusin', function (e) { if (e.target.matches('input,select,textarea')) wa.classList.add('away'); });
+  document.addEventListener('focusout', function () { setTimeout(function () { var a = document.activeElement; if (!a || !a.matches('input,select,textarea')) wa.classList.remove('away'); }, 150); });
 })();
