@@ -261,8 +261,8 @@ ${String(s.gsc_verification || '').split(/[\s,]+/).map((x) => x.replace(/.*conte
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141414'/%3E%3Crect x='4' y='4' width='56' height='56' rx='11' fill='none' stroke='%23b8935a' stroke-width='2'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='36' font-weight='700' fill='%23b8935a'%3EL%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap"></noscript>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..700&family=Schibsted+Grotesk:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..700&family=Schibsted+Grotesk:wght@400;500;600&display=swap"></noscript>
 <link rel="stylesheet" href="/assets/site.min.css?v=${ctx.v}">
 ${s.ga_id ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(s.ga_id)}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('js',new Date());gtag('config','${esc(s.ga_id)}',{anonymize_ip:true});</script>` : ''}
@@ -293,7 +293,7 @@ function productCard(ctx, p) {
   const n = p.designs.length;
   return `<a class="card" href="/${esc(p.slug)}">
     <div class="ph-box${c ? '' : ''}">${n ? `<span class="count">${n} design${n === 1 ? '' : 's'}</span>` : ''}${p.badge ? `<span class="badge-tag">${esc(p.badge)}</span>` : ''}${c ? photo(c.url, c.alt) : PH}</div>
-    <div class="card-body"><h3>${esc(p.name)}</h3><p>${esc(p.short_desc || '')}</p><span class="btn btn-dark">View designs →</span></div></a>`;
+    <div class="card-body"><h3>${esc(p.name)}</h3><p>${esc(p.short_desc || '')}</p><span class="btn btn-dark">View designs</span></div></a>`;
 }
 const productGrid = (ctx, list) => `<div class="grid">${list.map((p) => productCard(ctx, p)).join('')}</div>`;
 
@@ -366,7 +366,7 @@ function workPhotoCard(ctx, w) {
   const href = prod ? '/' + prod.slug : '/quote?product=' + encodeURIComponent(w[1]);
   return `<a class="work-ph" href="${esc(href)}"><div class="work-img"><picture><source type="image/webp" srcset="/img/work/${w[0]}-600.webp 600w, /img/work/${w[0]}-1200.webp 1200w" sizes="(max-width:760px) 50vw, 25vw">
     <img src="/img/work/${w[0]}-600.jpg" alt="${esc(w[1])} made by ${BRAND}" title="${esc(w[1])}" width="600" height="600" loading="lazy" decoding="async"></picture><span class="real-tag">Real photo</span></div>
-    <span class="cap">${esc(w[1])}${prod ? `<small>${esc(prod.name)} →</small>` : '<small>Get a quote →</small>'}</span></a>`;
+    <span class="cap">${esc(w[1])}${prod ? `<small>${esc(prod.name)}</small>` : '<small>Get a quote</small>'}</span></a>`;
 }
 function homeWork(ctx) {
   return `<section id="our-work"><div class="wrap">
@@ -507,13 +507,19 @@ function home(ctx) {
   const faqs = d.faqs.slice(0, 5);
 
   const body = `
-<section class="hero" id="home"><div class="wrap hero-split">
+<section class="hero" id="home"><svg class="dieline" viewBox="0 0 640 640" aria-hidden="true" focusable="false">
+  <path class="cut" d="M200 200 L200 110 L440 110 L440 200 L530 200 L530 440 L440 440 L440 530 L200 530 L200 440 L110 440 L110 200 Z"/>
+  <path class="cut" d="M200 110 L178 128 L178 182 L200 200 M440 110 L462 128 L462 182 L440 200 M200 530 L178 512 L178 458 L200 440 M440 530 L462 512 L462 458 L440 440"/>
+  <path class="cut" d="M200 110 L215 70 L425 70 L440 110"/>
+  <rect class="fold" x="200" y="200" width="240" height="240"/>
+  <path class="fold" d="M200 110 L440 110 M200 530 L440 530 M110 200 L110 440 M530 200 L530 440"/>
+</svg><div class="wrap hero-split">
   <div class="hero-text">
   <h1>${rich(s.hero_title)}</h1>
   <p>${esc(s.hero_subtitle)}</p>
   <div class="hero-actions"><a href="/quote" class="btn btn-gold">Get a quote</a>
     <a class="btn btn-outline" href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">WhatsApp us</a></div>
-  <p class="hero-note">UK company no. ${COMPANY_NO} &middot; from ${ctx.min} boxes &middot; usually a reply the same day</p>
+  <p class="hero-note">Registered in England, company no. ${COMPANY_NO}. Orders from ${ctx.min} boxes.</p>
   </div>
   <form class="hero-panel" action="/quote" method="get">
     <h2>Get a price for your boxes</h2>

@@ -517,3 +517,98 @@ a,button,input,select,textarea,label,summary{touch-action:manipulation}
 .hero-panel ul{list-style:none;display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:16px;padding:0;font-size:13.5px;color:var(--muted)}
 .hero-panel li::before{content:"✓ ";color:var(--gold-dark)}
 @media (max-width:900px){.hero-panel{padding:22px 20px 18px}}
+
+/* ============ Premium redesign (Nov 2026): bottle green, brass foil, Bodoni ============ */
+:root{
+  --ink:#1b1e1d;--text:#2b302e;--muted:#5f6661;
+  --paper:#f4f4f0;--paper-2:#e9ebe5;--line:#d9dcd6;
+  --green:#16332c;--green-2:#1d4038;
+  --gold:#b48a4e;--gold-dark:#8f6a35;--brass-soft:#d9bf8f;
+}
+body{font-family:'Schibsted Grotesk',system-ui,sans-serif;font-size:17px;line-height:1.62;color:var(--text);background:var(--paper)}
+h1,h2,h3{font-family:'Bodoni Moda',Didot,'Bodoni 72',Georgia,serif;font-weight:500;letter-spacing:-.005em;line-height:1.12;font-optical-sizing:auto}
+.section-head h2,.note h2{font-size:clamp(30px,4.2vw,46px)}
+.section-head p{font-size:17.5px;max-width:60ch}
+section{padding:96px 0}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* buttons */
+.btn{border-radius:2px;letter-spacing:.01em;padding:14px 26px}
+.btn-gold{background:var(--gold);color:#16130d}
+.btn-gold:hover{background:var(--brass-soft);color:#16130d}
+.btn-dark{background:var(--green)}
+.btn-dark:hover{background:var(--green-2)}
+
+/* header + logo */
+header{background:rgba(244,244,240,.94)}
+.logo b{font-family:'Bodoni Moda',Didot,Georgia,serif;font-weight:600;font-size:30px;letter-spacing:.02em}
+.logo span{text-transform:none;letter-spacing:.04em;font-size:12.5px;font-weight:500;color:var(--gold-dark);margin-top:2px}
+nav a{font-weight:500}
+nav a:hover{color:var(--gold-dark)}
+
+/* hero */
+.hero{background:var(--green);padding:104px 0 96px}
+.hero::before{display:none}
+.hero h1{font-size:clamp(42px,6.4vw,82px);line-height:1.02;letter-spacing:-.015em;font-weight:500;color:#f4f1e8;max-width:12ch}
+.hero p{color:#c8d1cb;font-size:19px;max-width:46ch}
+.hero-note{color:#93a49b!important}
+.btn-outline{border-color:rgba(244,241,232,.45)}
+.dieline{position:absolute;right:-60px;top:50%;width:min(720px,62vw);transform:translateY(-50%);pointer-events:none;opacity:.55}
+.dieline path,.dieline rect,.dieline polyline{fill:none;stroke:var(--gold);stroke-width:1.1;vector-effect:non-scaling-stroke}
+.dieline .fold{stroke-dasharray:6 6;opacity:.7}
+.dieline .cut{stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 2.4s .2s cubic-bezier(.6,.1,.2,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.dieline .cut{animation:none;stroke-dashoffset:0}}
+.hero .wrap{position:relative;z-index:1}
+.hero-panel{border-radius:3px;box-shadow:0 30px 60px rgba(5,20,16,.45);border-top:3px solid var(--gold)}
+.hero-panel h2{font-size:28px}
+.hero-panel select{background:var(--paper);border-radius:2px}
+.hero-panel select:focus{outline:2px solid var(--gold);outline-offset:1px}
+
+/* page heroes on inner pages */
+.page-hero{background:var(--green)}
+.page-hero::before{display:none}
+.page-hero h1{color:#f4f1e8;font-size:clamp(38px,5.4vw,64px);line-height:1.05}
+.page-hero p{color:#c8d1cb}
+
+/* product cards: the box is the hero, no card chrome */
+.grid{gap:40px 28px}
+.card{background:transparent;border:0;border-radius:0;overflow:visible}
+.card:hover{transform:none;box-shadow:none}
+.card .ph-box{border-radius:2px;background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+.card .ph-box img{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.card:hover .ph-box img{transform:scale(1.035)}
+.card .count{border-radius:2px;background:rgba(22,51,44,.9)}
+.card-body{padding:18px 0 0}
+.card-body h3{font-size:28px}
+.card-body .btn{background:none;color:var(--ink);padding:0;border:0;border-bottom:1px solid var(--gold);border-radius:0}
+.card-body .btn:hover{color:var(--gold-dark)}
+
+/* sections */
+.steps.five .step::before{color:var(--gold-dark);font-family:'Bodoni Moda',Georgia,serif;font-size:30px}
+.steps.five .step h3{font-size:22px}
+.sample,.contact{background:var(--green)}
+.sample-points{border-color:rgba(180,138,78,.45);border-radius:3px}
+.note h2{margin-bottom:20px}
+.note .sign{font-family:'Bodoni Moda',Georgia,serif;font-size:22px}
+.post-card{border-radius:2px}
+.faq-item,.faq details{border-radius:3px}
+.cta-band{background:var(--paper-2)}
+footer{background:#10241f;color:#9fb0a7}
+footer h3,footer h4{text-transform:none;letter-spacing:0;font-size:15px}
+footer address b,.contact-list li b{text-transform:none;letter-spacing:0;font-size:13.5px}
+.contact .intro p,.contact-list li{color:#c8d1cb}
+.contact-list li{border-color:rgba(255,255,255,.1)}
+::selection{background:var(--brass-soft);color:#16130d}
+@media (max-width:900px){.dieline{right:-180px;width:560px;opacity:.28}.hero h1{max-width:none}section{padding:72px 0}}
+.dieline{right:calc(max(20px,(100vw - var(--max))/2 + 20px) + 245px);width:1080px;transform:translate(50%,-50%);opacity:.7}
+.real-tag,table.sizes th,nav .dd-menu .dd-label{text-transform:none;letter-spacing:.02em}
+.real-tag{border-radius:2px;background:rgba(22,51,44,.85)}
+@media (max-width:900px){.dieline{right:-40px;width:640px;transform:translate(30%,-60%);opacity:.22}}
+.dieline{width:800px;opacity:.75}
+@media (max-width:900px){.dieline{display:none}}
+.dieline .cut{stroke-dasharray:3200;stroke-dashoffset:3200}
+.dieline .cut{stroke-dasharray:1;stroke-dashoffset:1;vector-effect:none;stroke-width:1.3}
+@media (prefers-reduced-motion:reduce){.dieline .cut{animation:none;stroke-dashoffset:0}}
+.dieline .cut{stroke-dasharray:1700;stroke-dashoffset:1700}
+@media (prefers-reduced-motion:reduce){.dieline .cut{animation:none;stroke-dashoffset:0}}
