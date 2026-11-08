@@ -446,7 +446,7 @@ function quoteForm(ctx, o = {}) {
     </div>
     <div class="row">
       <div class="field"><label for="f_country">Country${isEnq ? '' : ' *'}</label><input id="f_country" name="country" autocomplete="country-name" ${isEnq ? '' : 'required '}placeholder="e.g. United Kingdom" value="${esc(o.country || '')}"></div>
-      <div class="field"><label for="f_qty" class="js-qty-label">${qtyLabel}</label><input id="f_qty" name="quantity" type="number" step="1" inputmode="numeric" required>
+      <div class="field"><label for="f_qty" class="js-qty-label">${qtyLabel}</label><input id="f_qty" name="quantity" type="number" step="1" inputmode="numeric" required${/^\d+$/.test(String(o.qty || '')) ? ` value="${o.qty}"` : ''}>
         <div class="hint js-qty-hint"></div><div class="err js-qty-err"></div></div>
     </div>
     <div class="field"><label>Box size (length × width × height)</label>
@@ -515,8 +515,16 @@ function home(ctx) {
     <a class="btn btn-outline" href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">WhatsApp us</a></div>
   <p class="hero-note">UK company no. ${COMPANY_NO} &middot; from ${ctx.min} boxes &middot; usually a reply the same day</p>
   </div>
-  <figure class="hero-photo"><picture><source type="image/webp" srcset="/img/work/kraft-box-logo-band-600.webp 600w, /img/work/kraft-box-logo-band-1200.webp 1200w" sizes="(max-width:900px) 90vw, 40vw"><img src="/img/work/kraft-box-logo-band-1200.jpg" alt="Kraft lid-and-base box with a printed logo band, photographed in our workshop" width="1200" height="1200" fetchpriority="high"></picture>
-  <figcaption>Kraft lid-and-base box with a printed band. Photo from our workshop, not a render.</figcaption></figure>
+  <form class="hero-panel" action="/quote" method="get">
+    <h2>Get a price for your boxes</h2>
+    <p>Pick a style and a rough quantity. You can add the size and finish on the next page.</p>
+    <label for="hp_style">Box style</label>
+    <select id="hp_style" name="product">${d.products.map((p) => `<option>${esc(p.name)}</option>`).join('')}<option>Not sure yet</option></select>
+    <label for="hp_qty">How many boxes?</label>
+    <select id="hp_qty" name="qty"><option value="50">50 to 100</option><option value="250">100 to 500</option><option value="750">500 to 1,000</option><option value="1000">More than 1,000</option></select>
+    <button class="btn btn-gold" type="submit">Continue</button>
+    <ul><li>Sizes in mm or inches</li><li>Gold foil, embossing or print</li><li>Paid samples available</li></ul>
+  </form>
 </div></section>
 ${offerHtml}
 <section id="products"><div class="wrap">
@@ -737,7 +745,7 @@ function quotePage(ctx, q) {
 <section><div class="wrap form-wrap">
   <div><h2 class="form-h">Select your packaging specifications</h2>
   <p class="form-lead">Choose a box style, your size in mm, cm or inches, and your quantity. Not sure yet? Leave it blank and we will suggest the right fit.</p>
-  ${quoteForm(ctx, { type, toggle: true, product: q.product || '' })}</div>
+  ${quoteForm(ctx, { type, toggle: true, product: q.product || '', qty: q.qty || '' })}</div>
   <aside>
     <div class="side-card"><h3>Good to know</h3><ul>
       <li>✦ Minimum order: <b>${ctx.min} pieces</b> per design</li>

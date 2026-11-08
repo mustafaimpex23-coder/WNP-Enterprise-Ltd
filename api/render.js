@@ -3,7 +3,7 @@
 const { loadAll } = require('./_lib/data.js');
 const V = require('./_lib/views.js');
 
-const VERSION = '25';  // bump to refresh cached CSS/JS after a change
+const VERSION = '26';  // bump to refresh cached CSS/JS after a change
 const CANONICAL = (process.env.SITE_URL || 'https://luxorapackaging.com').trim().replace(/\/$/, '');
 
 const COUNTRY = ['uk', 'usa', 'canada', 'europe'];
@@ -88,7 +88,7 @@ module.exports = async (req, res) => {
     if (!b && REDIRECTS[a] && !data.pages[a]) { res.statusCode = 301; res.setHeader('Location', '/' + REDIRECTS[a]); return res.end(); }
 
     if (a === 'quote' && !b) {
-      return send(res, 200, V.quotePage(ctx, { product: url.searchParams.get('product') || '', type: url.searchParams.get('type') || '' }));
+      return send(res, 200, V.quotePage(ctx, { product: url.searchParams.get('product') || '', type: url.searchParams.get('type') || '', qty: url.searchParams.get('qty') || '' }));
     }
     if (a === 'portfolio' && !b) return send(res, 200, V.ourWork(ctx));
     if (a === 'our-work' && !b) { res.statusCode = 301; res.setHeader('Location', '/portfolio'); return res.end(); }

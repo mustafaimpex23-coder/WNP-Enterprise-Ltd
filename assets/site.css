@@ -508,3 +508,12 @@ a,button,input,select,textarea,label,summary{touch-action:manipulation}
 .wrap.note>*{max-width:720px}
 .faq{margin-left:0!important}
 .more-link{text-align:left!important}
+.hero-panel{background:#fff;color:var(--text);border-radius:6px;padding:28px 28px 22px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.hero-panel h2{font-size:26px;margin-bottom:6px;color:var(--ink)}
+.hero-panel p{color:var(--muted)!important;font-size:15px!important;margin:0 0 18px!important}
+.hero-panel label{display:block;font-size:14px;font-weight:600;color:var(--ink);margin:12px 0 6px}
+.hero-panel select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:4px;background:var(--paper);font:inherit;font-size:16px;color:var(--ink)}
+.hero-panel .btn{width:100%;margin-top:18px}
+.hero-panel ul{list-style:none;display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:16px;padding:0;font-size:13.5px;color:var(--muted)}
+.hero-panel li::before{content:"✓ ";color:var(--gold-dark)}
+@media (max-width:900px){.hero-panel{padding:22px 20px 18px}}
