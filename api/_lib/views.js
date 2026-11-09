@@ -513,7 +513,7 @@ function home(ctx) {
   <p>${esc(s.hero_subtitle)}</p>
   <div class="hero-actions"><a href="/quote" class="btn btn-gold">Get a free quote</a>
     <a class="btn btn-outline" href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">WhatsApp us</a></div>
-  <ul class="hero-ticks"><li>From ${ctx.min} boxes</li><li>Your size and logo</li><li>Free quote in 24 hours</li></ul>
+  <ul class="hero-ticks"><li>From ${ctx.min} boxes</li><li>Your size and logo</li><li>Free quote in 24 hours</li><li><a href="/samples">Paid samples available</a></li></ul>
   </div>
   <form class="hero-panel" action="/quote" method="get">
     <h2>Get a price for your boxes</h2>
