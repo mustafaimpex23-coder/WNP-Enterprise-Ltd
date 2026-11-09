@@ -532,6 +532,7 @@ function home(ctx) {
   <div><b>${d.products.length}+</b><span>box styles</span></div>
   <div><b>UK &amp; US</b><span>registered companies</span></div>
   <div><b>4</b><span>regions delivered: UK, USA, Canada, Europe</span></div>
+  <a class="st-link" href="/samples"><b>Paid</b><span>samples available</span></a>
 </div></section>
 ${offerHtml}
 <section id="products"><div class="wrap">
