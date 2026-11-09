@@ -185,6 +185,14 @@ function landingLinks(d, list, tag) {
   return list.filter(([slug]) => d.pages[slug]).map(([slug, label]) => tag === 'li' ? `<li><a href="/${slug}">${esc(label)}</a></li>` : `<a href="/${slug}">${esc(label)}</a>`).join('');
 }
 
+// Thin contact bar at the very top of every page.
+function topbarHtml(s, ctx) {
+  const mail = s.global_email || s.email;
+  const soc = socialLinks(s).map(([n, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener" aria-label="${n}">${n[0]}</a>`).join('');
+  return `<div class="topbar"><div class="wrap"><span>Start your project today! <a href="${waLink(ctx, 'Hi Luxora Packaging, I would like a quote for custom boxes.')}" target="_blank" rel="noopener">WhatsApp ${esc(s.whatsapp || '')}</a></span>
+  <span class="tb-r">${mail ? `<a href="mailto:${esc(mail)}">${esc(mail)}</a>` : ''}${soc ? `<span class="tb-soc">${soc}</span>` : ''}</span></div></div>`;
+}
+
 // Scrolling headline bar above the header (like a luxury-brand announcement bar).
 function tickerHtml(s, ctx) {
   const items = [
@@ -276,8 +284,8 @@ ${String(s.gsc_verification || '').split(/[\s,]+/).map((x) => x.replace(/.*conte
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141414'/%3E%3Crect x='4' y='4' width='56' height='56' rx='11' fill='none' stroke='%23b8935a' stroke-width='2'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='36' font-weight='700' fill='%23b8935a'%3EL%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
 <link rel="stylesheet" href="/assets/site.min.css?v=${ctx.v}">
 ${s.ga_id ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(s.ga_id)}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('js',new Date());gtag('config','${esc(s.ga_id)}',{anonymize_ip:true});</script>` : ''}
@@ -285,12 +293,13 @@ ${schemas.map((x) => `<script type="application/ld+json">${JSON.stringify(x).rep
 </head>
 <body data-wa="${ctx.wa}" data-min="${ctx.min}"${s.ga_id ? ` data-ga="${esc(s.ga_id)}"` : ''}>
 <a class="skip" href="#main">Skip to content</a>
-${tickerHtml(s, ctx)}
+${topbarHtml(s, ctx)}
 <header><div class="wrap">
   <a href="/" class="logo" aria-label="Luxora Packaging home"><b>Luxora</b><span>Packaging</span></a>
   <nav aria-label="Main"><button class="menu-btn" aria-label="Open menu" aria-controls="menu" aria-expanded="false"><span></span><span></span><span></span></button>
   ${navHtml(ctx)}</nav>
 </div></header>
+${tickerHtml(s, ctx)}
 <main id="main">
 ${o.body}
 </main>
@@ -385,7 +394,7 @@ function workPhotoCard(ctx, w) {
 }
 function homeWork(ctx) {
   return `<section id="our-work"><div class="wrap">
-  <div class="section-head"><h2>A few boxes off our table</h2><p>Quick clips we filmed on a phone while checking finished boxes. Nothing here is a 3D render.</p></div>
+  <div class="section-head"><span class="eyebrow">Our work</span><h2>A few boxes off our table</h2><p>Quick clips we filmed on a phone while checking finished boxes. Nothing here is a 3D render.</p></div>
   <div class="work-vids four">${WORK_VIDEOS.slice(0, 4).map(videoCard).join('')}</div>
   <p class="more-link"><a class="btn btn-dark" href="/portfolio">See our full portfolio</a></p></div></section>`;
 }
@@ -522,25 +531,30 @@ function home(ctx) {
   const faqs = d.faqs.slice(0, 5);
 
   const body = `
-<section class="hero hero-rich" id="home"><div class="wrap hero-split">
+<section class="hero hx" id="home"><div class="wrap hx-grid">
   <div class="hero-text">
+  <a class="hx-badge" href="/quote"><b>New</b> Luxury packaging for UK, USA &amp; Canada brands <span aria-hidden="true">›</span></a>
   <h1>${rich(s.hero_title)}</h1>
   <p>${esc(s.hero_subtitle)}</p>
   <div class="hero-actions"><a href="/quote" class="btn btn-gold">Get a free quote</a>
     <a class="btn btn-outline" href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">WhatsApp us</a></div>
   <ul class="hero-ticks"><li>From ${ctx.min} boxes</li><li>Your size and logo</li><li>Free quote in 24 hours</li><li><a href="/samples">Paid samples available</a></li></ul>
   </div>
-  <form class="hero-panel" action="/quote" method="get">
-    <h2>Get a price for your boxes</h2>
-    <p>Pick a style and a rough quantity. You can add the size and finish on the next page.</p>
-    <label for="hp_style">Box style</label>
-    <select id="hp_style" name="product">${d.products.map((p) => `<option>${esc(p.name)}</option>`).join('')}<option>Not sure yet</option></select>
-    <label for="hp_qty">How many boxes?</label>
-    <select id="hp_qty" name="qty"><option value="50">50 to 100</option><option value="250">100 to 500</option><option value="750">500 to 1,000</option><option value="1000">More than 1,000</option></select>
-    <button class="btn btn-gold" type="submit">Continue</button>
-    <ul><li>Sizes in mm or inches</li><li>Gold foil, embossing or print</li><li>Paid samples available</li></ul>
-  </form>
-</div></section>
+  <div class="hx-media">
+    <picture><source type="image/webp" srcset="/img/work/magnetic-gift-box-foam-insert-600.webp 600w, /img/work/magnetic-gift-box-foam-insert-1200.webp 1200w" sizes="(max-width:980px) 90vw, 45vw"><img src="/img/work/magnetic-gift-box-foam-insert-1200.jpg" alt="Black magnetic gift box with foam insert made by Luxora Packaging" width="1200" height="1200" fetchpriority="high"></picture>
+    <div class="hx-card"><b>Trusted by brands in the UK &amp; USA</b><span>Registered in England · Co. ${esc(s.company_number || '16012866')}</span><span>From ${ctx.min} boxes · Reply in 24 hours</span></div>
+  </div>
+</div>
+<div class="wrap"><form class="hero-panel hx-form" action="/quote" method="get">
+  <h2>Request a quote</h2>
+  <div class="hx-fields">
+    <div><label for="hp_style">Box style</label>
+    <select id="hp_style" name="product">${d.products.map((p) => `<option>${esc(p.name)}</option>`).join('')}<option>Not sure yet</option></select></div>
+    <div><label for="hp_qty">How many boxes?</label>
+    <select id="hp_qty" name="qty"><option value="50">50 to 100</option><option value="250">100 to 500</option><option value="750">500 to 1,000</option><option value="1000">More than 1,000</option></select></div>
+    <button class="btn btn-gold" type="submit">Get my price</button>
+  </div>
+</form></div></section>
 <section class="stats"><div class="wrap">
   <div><b>${ctx.min}</b><span>boxes minimum order</span></div>
   <div><b>24 h</b><span>quote reply</span></div>
@@ -551,16 +565,16 @@ function home(ctx) {
 </div></section>
 ${offerHtml}
 <section id="products"><div class="wrap">
-  <div class="section-head"><h2>${rich(s.products_title)}</h2><p>${esc(s.products_subtitle)}</p></div>
+  <div class="section-head"><span class="eyebrow">Our box styles</span><h2>${rich(s.products_title)}</h2><p>${esc(s.products_subtitle)}</p></div>
   ${productGrid(ctx, d.products)}
 </div></section>
 ${homeWork(ctx)}
 <section id="industries" class="industries"><div class="wrap">
-  <div class="section-head"><h2>Packaging for every kind of product</h2><p>Custom rigid boxes for brands in the UK, USA, Canada and Europe, whatever you sell.</p></div>
+  <div class="section-head"><span class="eyebrow">Industries</span><h2>Packaging for every kind of product</h2><p>Custom rigid boxes for brands in the UK, USA, Canada and Europe, whatever you sell.</p></div>
   <div class="ind-grid"><a class="ind" href="/perfume-boxes"><picture><source type="image/webp" srcset="/img/magnetic-flip-top-perfume-box-2-600.webp 600w, /img/magnetic-flip-top-perfume-box-2-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/magnetic-flip-top-perfume-box-2-1200.jpg" alt="Perfume & fragrance packaging" width="1200" height="1200"></picture><span>Perfume & fragrance</span></a><a class="ind" href="/candle-boxes"><picture><source type="image/webp" srcset="/img/lid-and-base-box-3-600.webp 600w, /img/lid-and-base-box-3-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/lid-and-base-box-3-1200.jpg" alt="Candles & diffusers packaging" width="1200" height="1200"></picture><span>Candles & diffusers</span></a><a class="ind" href="/cosmetic-boxes"><picture><source type="image/webp" srcset="/img/magnetic-flip-top-perfume-box-4-600.webp 600w, /img/magnetic-flip-top-perfume-box-4-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/magnetic-flip-top-perfume-box-4-1200.jpg" alt="Cosmetics & skincare packaging" width="1200" height="1200"></picture><span>Cosmetics & skincare</span></a><a class="ind" href="/jewellery-boxes"><picture><source type="image/webp" srcset="/img/magnetic-flip-top-perfume-box-5-600.webp 600w, /img/magnetic-flip-top-perfume-box-5-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/magnetic-flip-top-perfume-box-5-1200.jpg" alt="Jewellery & watches packaging" width="1200" height="1200"></picture><span>Jewellery & watches</span></a><a class="ind" href="/chocolate-boxes"><picture><source type="image/webp" srcset="/img/magnetic-flip-top-perfume-box-6-600.webp 600w, /img/magnetic-flip-top-perfume-box-6-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/magnetic-flip-top-perfume-box-6-1200.jpg" alt="Chocolates & sweets packaging" width="1200" height="1200"></picture><span>Chocolates & sweets</span></a><a class="ind" href="/rigid-gift-boxes"><picture><source type="image/webp" srcset="/img/double-door-perfume-box-2-600.webp 600w, /img/double-door-perfume-box-2-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/double-door-perfume-box-2-1200.jpg" alt="Corporate & luxury gifts packaging" width="1200" height="1200"></picture><span>Corporate & luxury gifts</span></a><a class="ind" href="/hamper-boxes"><picture><source type="image/webp" srcset="/img/magnetic-flip-top-perfume-box-3-600.webp 600w, /img/magnetic-flip-top-perfume-box-3-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/magnetic-flip-top-perfume-box-3-1200.jpg" alt="Hampers & gift sets packaging" width="1200" height="1200"></picture><span>Hampers & gift sets</span></a><a class="ind" href="/display-box"><picture><source type="image/webp" srcset="/img/display-box-600.webp 600w, /img/display-box-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/display-box-1200.jpg" alt="Retail display boxes packaging" width="1200" height="1200"></picture><span>Retail display boxes</span></a></div>
 </div></section>
 <section id="finishes" class="finishes"><div class="wrap">
-  <div class="section-head"><h2>Finishes that make a box feel expensive</h2><p>Mix and match on any style. We'll tell you which ones suit your design and budget.</p></div>
+  <div class="section-head"><span class="eyebrow">Why Luxora</span><h2>Finishes that make a box feel expensive</h2><p>Mix and match on any style. We'll tell you which ones suit your design and budget.</p></div>
   <div class="fin-grid">
     <div class="fin"><i class="sw foil"></i><h3>Gold &amp; silver foil</h3><p>Hot-foil logos and text that catch the light.</p></div>
     <div class="fin"><i class="sw emboss"></i><h3>Embossing &amp; debossing</h3><p>Raised or pressed-in logos you can feel.</p></div>
@@ -575,7 +589,7 @@ ${homeWork(ctx)}
   <div class="mk"><h2>Custom setup boxes for US brands</h2><p>Rigid setup boxes, magnetic gift boxes and custom printed boxes with your logo for American brands and Amazon sellers. Sizes in inches, prices in USD, shipped to all 50 states.</p><a href="/usa">Packaging for the USA</a></div>
 </div></section>
 <section id="how" style="background:var(--paper-2)"><div class="wrap">
-  <div class="section-head"><h2>How an order usually goes</h2><p>You deal with the same person the whole way through.</p></div>
+  <div class="section-head"><span class="eyebrow">How it works</span><h2>How an order usually goes</h2><p>You deal with the same person the whole way through.</p></div>
   <div class="steps five">
     <div class="step"><h3>You send the details</h3><p>Box size (or your product size), quantity and the finish you like. We come back with a price, usually within a day, then a dieline and proof for you to sign off.</p></div>
     <div class="step"><h3>Sample, if you want one</h3><p>Not required, but a lot of people like to hold one first. It's paid, as it's made one-off.</p></div>
@@ -601,9 +615,9 @@ ${homeWork(ctx)}
 </div></section>
 ${reviews.length ? `<section style="background:var(--paper-2)"><div class="wrap"><div class="section-head"><span class="eyebrow">Reviews</span><h2>What our customers say</h2></div>
   <div class="reviews">${reviews.map((r) => reviewCard(ctx, r)).join('')}</div><p class="more-link"><a class="btn btn-dark" href="/reviews">All reviews</a></p></div></section>` : ''}
-${posts.length ? `<section><div class="wrap"><div class="section-head"><h2>Things buyers often ask us about</h2><p>Longer answers on sizing, finishes and costs.</p></div>
+${posts.length ? `<section><div class="wrap"><div class="section-head"><span class="eyebrow">From the blog</span><h2>Things buyers often ask us about</h2><p>Longer answers on sizing, finishes and costs.</p></div>
   <div class="posts">${posts.map((b) => postCard(ctx, b)).join('')}</div><p class="more-link"><a class="btn btn-dark" href="/blog">All articles</a></p></div></section>` : ''}
-${faqs.length ? `<section id="faq" style="background:var(--paper-2)"><div class="wrap"><div class="section-head"><h2>Common questions</h2></div>
+${faqs.length ? `<section id="faq" style="background:var(--paper-2)"><div class="wrap"><div class="section-head"><span class="eyebrow">FAQ</span><h2>Common questions</h2></div>
   <div class="faq">${faqs.map((f) => `<details><summary>${esc(f.question)}</summary><p>${esc(f.answer || '')}</p></details>`).join('')}</div>
   <p class="more-link"><a class="btn btn-dark" href="/faq">All questions</a></p></div></section>` : ''}
 <section class="contact" id="contact"><div class="wrap">
