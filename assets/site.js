@@ -290,3 +290,16 @@
   var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
   els.forEach(function (el) { var r = el.getBoundingClientRect(); if (r.top > innerHeight) { el.classList.add('rv'); io.observe(el); } });
 })();
+
+// 3D tilt on cards (mouse only; off for touch and reduced motion)
+(function () {
+  if (!window.matchMedia || !matchMedia('(hover:hover) and (pointer:fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.grid .card, .fin-grid .fin, .ind, .mk').forEach(function (el) {
+    el.classList.add('tilt');
+    el.addEventListener('mousemove', function (e) {
+      var r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      el.style.transform = 'perspective(900px) rotateY(' + (x * 10).toFixed(2) + 'deg) rotateX(' + (-y * 10).toFixed(2) + 'deg) translateY(-6px)';
+    });
+    el.addEventListener('mouseleave', function () { el.style.transform = ''; });
+  });
+})();

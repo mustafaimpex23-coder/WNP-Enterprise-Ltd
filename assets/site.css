@@ -891,3 +891,34 @@ header .btn:hover{background:var(--blue-dark)}
 .grid .card:nth-child(odd) .card-body .btn{background:var(--gold);border-color:var(--gold);color:#fff}
 .grid .card:nth-child(even) .card-body .btn{background:var(--ink);border-color:var(--ink);color:#fff}
 .hx .hero-ticks li::before{color:var(--gold)}
+/* ===== 3D depth (Nov 9) ===== */
+.btn{position:relative;transition:transform .12s ease,box-shadow .12s ease,background .2s}
+.btn-gold{box-shadow:0 5px 0 #b8480a,0 12px 22px rgba(242,106,27,.35)}
+.btn-dark,header .btn{box-shadow:0 5px 0 #06123a,0 12px 22px rgba(11,27,77,.3)}
+header .btn{box-shadow:0 5px 0 #073a91,0 12px 22px rgba(11,85,208,.3)}
+.btn-outline{box-shadow:0 5px 0 rgba(11,27,77,.85)}
+.btn-wa{box-shadow:0 5px 0 #0f6b33,0 12px 22px rgba(20,140,70,.3)}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.4)}
+.grid .card .card-body .btn{box-shadow:none;transform:none}
+/* headings with layered depth */
+.hx h1{text-shadow:1px 1px 0 #c9d6f3,2px 2px 0 #b9c9ee,3px 3px 0 #a9bce8,4px 4px 0 #99afe2,6px 10px 18px rgba(11,27,77,.25)}
+.section-head h2{text-shadow:1px 1px 0 #d6def0,2px 2px 0 #c6d1ea,4px 6px 12px rgba(11,27,77,.15)}
+.finishes .section-head h2{text-shadow:1px 1px 0 #0943a8,2px 2px 0 #08399a,3px 3px 0 #072f80,6px 10px 18px rgba(0,0,0,.3)}
+.stats b{text-shadow:1px 1px 0 #c4500d,2px 2px 0 #9a3f0a,4px 6px 12px rgba(0,0,0,.4)}
+/* hero image floats in 3D */
+.hx-grid{perspective:1400px}
+.hx-media{transform-style:preserve-3d;animation:float3d 7s ease-in-out infinite}
+.hx-media img{transform:rotateY(-14deg) rotateX(6deg);box-shadow:-30px 40px 60px rgba(11,27,77,.35),-8px 10px 0 #0b55d0;border-radius:14px}
+.hx-card{transform:translateZ(80px) rotateY(-14deg);box-shadow:0 30px 50px rgba(11,27,77,.28)}
+@keyframes float3d{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+/* cards lift and tilt */
+.tilt{transform-style:preserve-3d;transition:transform .25s ease,box-shadow .25s ease;will-change:transform}
+.grid .card,.fin-grid .fin,.ind,.mk,.post-card,.hx-form{box-shadow:0 2px 0 var(--line),0 14px 30px rgba(11,27,77,.10)}
+.grid .card:hover,.fin-grid .fin:hover,.ind:hover,.mk:hover{box-shadow:0 30px 50px rgba(11,27,77,.22)}
+.fin-grid .fin .sw{box-shadow:inset 0 -4px 0 rgba(0,0,0,.25),0 8px 14px rgba(0,0,0,.25);transform:translateZ(30px)}
+.hx-form{box-shadow:0 6px 0 #0943a8,0 30px 60px rgba(11,27,77,.25)}
+.stats .wrap>*{transition:transform .25s}
+.stats .wrap>*:hover{transform:translateY(-6px)}
+@media (max-width:980px){.hx-media img{transform:rotateY(-8deg) rotateX(4deg)}.hx-card{transform:none}}
+@media (prefers-reduced-motion:reduce){.hx-media{animation:none}.tilt{transition:none}}
