@@ -283,3 +283,10 @@
   document.addEventListener('focusin', function (e) { if (e.target.matches('input,select,textarea')) wa.classList.add('away'); });
   document.addEventListener('focusout', function () { setTimeout(function () { var a = document.activeElement; if (!a || !a.matches('input,select,textarea')) wa.classList.remove('away'); }, 150); });
 })();
+/* Sections fade in gently as they scroll into view */
+(function () {
+  if (!('IntersectionObserver' in window)) return;
+  var els = document.querySelectorAll('main > section:not(.hero):not(.stats), body > section:not(.hero):not(.stats)');
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
+  els.forEach(function (el) { var r = el.getBoundingClientRect(); if (r.top > innerHeight) { el.classList.add('rv'); io.observe(el); } });
+})();

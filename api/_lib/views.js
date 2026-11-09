@@ -507,19 +507,13 @@ function home(ctx) {
   const faqs = d.faqs.slice(0, 5);
 
   const body = `
-<section class="hero" id="home"><svg class="dieline" viewBox="0 0 640 640" aria-hidden="true" focusable="false">
-  <path class="cut" d="M200 200 L200 110 L440 110 L440 200 L530 200 L530 440 L440 440 L440 530 L200 530 L200 440 L110 440 L110 200 Z"/>
-  <path class="cut" d="M200 110 L178 128 L178 182 L200 200 M440 110 L462 128 L462 182 L440 200 M200 530 L178 512 L178 458 L200 440 M440 530 L462 512 L462 458 L440 440"/>
-  <path class="cut" d="M200 110 L215 70 L425 70 L440 110"/>
-  <rect class="fold" x="200" y="200" width="240" height="240"/>
-  <path class="fold" d="M200 110 L440 110 M200 530 L440 530 M110 200 L110 440 M530 200 L530 440"/>
-</svg><div class="wrap hero-split">
+<section class="hero hero-rich" id="home"><div class="wrap hero-split">
   <div class="hero-text">
   <h1>${rich(s.hero_title)}</h1>
   <p>${esc(s.hero_subtitle)}</p>
-  <div class="hero-actions"><a href="/quote" class="btn btn-gold">Get a quote</a>
+  <div class="hero-actions"><a href="/quote" class="btn btn-gold">Get a free quote</a>
     <a class="btn btn-outline" href="${waLink(ctx, 'Hi Luxora Packaging, I would like to know more about your custom rigid boxes.')}" target="_blank" rel="noopener">WhatsApp us</a></div>
-  <p class="hero-note">Registered in England, company no. ${COMPANY_NO}. Orders from ${ctx.min} boxes.</p>
+  <ul class="hero-ticks"><li>From ${ctx.min} boxes</li><li>Your size and logo</li><li>Free quote in 24 hours</li></ul>
   </div>
   <form class="hero-panel" action="/quote" method="get">
     <h2>Get a price for your boxes</h2>
@@ -532,12 +526,38 @@ function home(ctx) {
     <ul><li>Sizes in mm or inches</li><li>Gold foil, embossing or print</li><li>Paid samples available</li></ul>
   </form>
 </div></section>
+<section class="stats"><div class="wrap">
+  <div><b>${ctx.min}</b><span>boxes minimum order</span></div>
+  <div><b>24 h</b><span>quote reply</span></div>
+  <div><b>${d.products.length}+</b><span>box styles</span></div>
+  <div><b>UK &amp; US</b><span>registered companies</span></div>
+  <div><b>4</b><span>regions delivered: UK, USA, Canada, Europe</span></div>
+</div></section>
 ${offerHtml}
 <section id="products"><div class="wrap">
   <div class="section-head"><h2>${rich(s.products_title)}</h2><p>${esc(s.products_subtitle)}</p></div>
   ${productGrid(ctx, d.products)}
 </div></section>
 ${homeWork(ctx)}
+<section id="industries" class="industries"><div class="wrap">
+  <div class="section-head"><h2>Packaging for every kind of product</h2><p>Custom rigid boxes for brands in the UK, USA, Canada and Europe, whatever you sell.</p></div>
+  <div class="ind-grid"><a class="ind" href="/perfume-boxes"><picture><source type="image/webp" srcset="/img/magnetic-flip-top-perfume-box-2-600.webp 600w, /img/magnetic-flip-top-perfume-box-2-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/magnetic-flip-top-perfume-box-2-1200.jpg" alt="Perfume & fragrance packaging" width="1200" height="1200"></picture><span>Perfume & fragrance</span></a><a class="ind" href="/candle-boxes"><picture><source type="image/webp" srcset="/img/lid-and-base-box-3-600.webp 600w, /img/lid-and-base-box-3-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/lid-and-base-box-3-1200.jpg" alt="Candles & diffusers packaging" width="1200" height="1200"></picture><span>Candles & diffusers</span></a><a class="ind" href="/cosmetic-boxes"><picture><source type="image/webp" srcset="/img/magnetic-flip-top-perfume-box-4-600.webp 600w, /img/magnetic-flip-top-perfume-box-4-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/magnetic-flip-top-perfume-box-4-1200.jpg" alt="Cosmetics & skincare packaging" width="1200" height="1200"></picture><span>Cosmetics & skincare</span></a><a class="ind" href="/jewellery-boxes"><picture><source type="image/webp" srcset="/img/magnetic-flip-top-perfume-box-5-600.webp 600w, /img/magnetic-flip-top-perfume-box-5-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/magnetic-flip-top-perfume-box-5-1200.jpg" alt="Jewellery & watches packaging" width="1200" height="1200"></picture><span>Jewellery & watches</span></a><a class="ind" href="/chocolate-boxes"><picture><source type="image/webp" srcset="/img/magnetic-flip-top-perfume-box-6-600.webp 600w, /img/magnetic-flip-top-perfume-box-6-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/magnetic-flip-top-perfume-box-6-1200.jpg" alt="Chocolates & sweets packaging" width="1200" height="1200"></picture><span>Chocolates & sweets</span></a><a class="ind" href="/rigid-gift-boxes"><picture><source type="image/webp" srcset="/img/double-door-perfume-box-2-600.webp 600w, /img/double-door-perfume-box-2-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/double-door-perfume-box-2-1200.jpg" alt="Corporate & luxury gifts packaging" width="1200" height="1200"></picture><span>Corporate & luxury gifts</span></a><a class="ind" href="/hamper-boxes"><picture><source type="image/webp" srcset="/img/magnetic-flip-top-perfume-box-3-600.webp 600w, /img/magnetic-flip-top-perfume-box-3-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/magnetic-flip-top-perfume-box-3-1200.jpg" alt="Hampers & gift sets packaging" width="1200" height="1200"></picture><span>Hampers & gift sets</span></a><a class="ind" href="/display-box"><picture><source type="image/webp" srcset="/img/display-box-600.webp 600w, /img/display-box-1200.webp 1200w" sizes="(max-width:900px) 50vw, 25vw"><img src="/img/display-box-1200.jpg" alt="Retail display boxes packaging" width="1200" height="1200"></picture><span>Retail display boxes</span></a></div>
+</div></section>
+<section id="finishes" class="finishes"><div class="wrap">
+  <div class="section-head"><h2>Finishes that make a box feel expensive</h2><p>Mix and match on any style. We'll tell you which ones suit your design and budget.</p></div>
+  <div class="fin-grid">
+    <div class="fin"><i class="sw foil"></i><h3>Gold &amp; silver foil</h3><p>Hot-foil logos and text that catch the light.</p></div>
+    <div class="fin"><i class="sw emboss"></i><h3>Embossing &amp; debossing</h3><p>Raised or pressed-in logos you can feel.</p></div>
+    <div class="fin"><i class="sw uv"></i><h3>Spot UV</h3><p>A glossy logo on a matt box for contrast.</p></div>
+    <div class="fin"><i class="sw soft"></i><h3>Soft-touch &amp; textured papers</h3><p>Velvety matt, linen, leatherette or kraft wraps.</p></div>
+    <div class="fin"><i class="sw velvet"></i><h3>Velvet, satin &amp; EVA foam inserts</h3><p>Cut to hold your bottle, jar or gift set.</p></div>
+    <div class="fin"><i class="sw ribbon"></i><h3>Magnets, ribbons &amp; windows</h3><p>Hidden magnetic closures, ribbon pulls and clear windows.</p></div>
+  </div>
+</div></section>
+<section class="markets"><div class="wrap">
+  <div class="mk"><h2>Bespoke packaging for UK brands</h2><p>Luxury gift boxes, presentation boxes, perfume boxes and hamper boxes for UK businesses, from ${ctx.min} pieces. Sizes in millimetres, prices in GBP, delivered anywhere in the UK through WNP Enterprise Ltd.</p><a href="/uk">Packaging for the UK</a></div>
+  <div class="mk"><h2>Custom setup boxes for US brands</h2><p>Rigid setup boxes, magnetic gift boxes and custom printed boxes with your logo for American brands and Amazon sellers. Sizes in inches, prices in USD, shipped to all 50 states.</p><a href="/usa">Packaging for the USA</a></div>
+</div></section>
 <section id="how" style="background:var(--paper-2)"><div class="wrap">
   <div class="section-head"><h2>How an order usually goes</h2><p>You deal with the same person the whole way through.</p></div>
   <div class="steps five">
