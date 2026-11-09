@@ -185,6 +185,21 @@ function landingLinks(d, list, tag) {
   return list.filter(([slug]) => d.pages[slug]).map(([slug, label]) => tag === 'li' ? `<li><a href="/${slug}">${esc(label)}</a></li>` : `<a href="/${slug}">${esc(label)}</a>`).join('');
 }
 
+// Scrolling headline bar above the header (like a luxury-brand announcement bar).
+function tickerHtml(s, ctx) {
+  const items = [
+    ['Christmas orders are open – book your gift boxes now', '/quote'],
+    [`Custom rigid boxes from just ${ctx.min} pieces`, '/quote'],
+    ['Paid samples available before you order', '/samples'],
+    ['Free quote within 24 hours', '/quote'],
+    ['Gold foil, embossing and fitted inserts', '/portfolio'],
+    ['Delivered to the UK, USA, Canada and Europe', '/contact'],
+  ];
+  if (s.announcement) items.unshift([s.announcement, '/quote']);
+  const row = items.map(([t, h]) => `<a href="${h}">${esc(t)}</a><i aria-hidden="true">✦</i>`).join('');
+  return `<div class="ticker" role="region" aria-label="Latest news"><div class="ticker-track"><div class="ticker-row">${row}</div><div class="ticker-row" aria-hidden="true">${row.replace(/<a /g, '<a tabindex="-1" ')}</div></div></div>`;
+}
+
 function navHtml(ctx) {
   const d = ctx.data, p = ctx.path;
   const on = (x) => (p === x || p.startsWith(x + '/') ? ' class="on" aria-current="page"' : '');
@@ -270,7 +285,7 @@ ${schemas.map((x) => `<script type="application/ld+json">${JSON.stringify(x).rep
 </head>
 <body data-wa="${ctx.wa}" data-min="${ctx.min}"${s.ga_id ? ` data-ga="${esc(s.ga_id)}"` : ''}>
 <a class="skip" href="#main">Skip to content</a>
-${s.announcement ? `<div class="announce">${esc(s.announcement)}</div>` : ''}
+${tickerHtml(s, ctx)}
 <header><div class="wrap">
   <a href="/" class="logo" aria-label="Luxora Packaging home"><b>Luxora</b><span>Packaging</span></a>
   <nav aria-label="Main"><button class="menu-btn" aria-label="Open menu" aria-controls="menu" aria-expanded="false"><span></span><span></span><span></span></button>

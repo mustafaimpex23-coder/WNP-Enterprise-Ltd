@@ -761,3 +761,14 @@ footer{background:#0d0d0d;color:#9b9488}
 @media (max-width:1280px) and (min-width:981px){.stats b{font-size:26px}}
 @media (max-width:400px){.stats a.st-link b{font-size:25px}}
 @media (min-width:981px){.stats .wrap{grid-template-columns:repeat(5,1fr) 1.4fr}}
+/* Scrolling headline bar (Nov 9) */
+.ticker{background:#141414;color:#e9dcc2;overflow:hidden;border-bottom:1px solid rgba(184,147,90,.35);font-size:13px;font-weight:600;letter-spacing:.02em;line-height:1}
+.ticker-track{display:flex;width:max-content;animation:tick 45s linear infinite}
+.ticker:hover .ticker-track,.ticker:focus-within .ticker-track{animation-play-state:paused}
+.ticker-row{display:flex;align-items:center;flex-shrink:0}
+.ticker a{color:inherit;text-decoration:none;padding:11px 0;white-space:nowrap}
+.ticker a:hover{color:var(--gold)}
+.ticker i{font-style:normal;color:var(--gold);margin:0 26px;font-size:10px}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker-track{animation:none}.ticker{overflow-x:auto}}
+@media (max-width:560px){.ticker{font-size:12px}.ticker i{margin:0 18px}.ticker-track{animation-duration:35s}}
